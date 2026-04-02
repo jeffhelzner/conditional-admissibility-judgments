@@ -1,0 +1,259 @@
+---
+title: "Foundations of Conditional Admissibility: A Lean4 Formalization"
+author: "Jeffrey Helzner"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    code-fold: true
+    code-tools: true
+    number-sections: true
+  pdf:
+    toc: true
+    toc-depth: 3
+    documentclass: article
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+    number-sections: true
+bibliography: references.bib
+---
+
+# Introduction
+
+This report provides a natural-language overview of a Lean4 formalization of *conditional judgments of admissibility*---a framework for reasoning about rational choice under uncertainty. The formalization, built atop Mathlib4, encodes the core mathematical structures, their morphisms, and a concrete example with a verified expected-utility representation theorem.
+
+The framework is motivated by philosophical questions in the foundations of decision theory, in the tradition of Anscombe--Aumann and related work on normative choice. The central question is: *what should a rational agent choose given their epistemic situation?* The formalization provides machine-checked answers to this question for a simple but illustrative case, and lays the groundwork for scaling to richer settings including imprecise probabilities and E-admissibility.
+
+# Philosophical Context
+
+## Conditional Admissibility
+
+The primitive notion in this framework is *admissibility*: given information about the state of the world, which alternatives from a menu would a rational decision maker regard as acceptable? This differs from classical choice theory in two important respects.
+
+First, the judgment is **conditional**: the decision maker's assessment of which alternatives are admissible depends on their *epistemic state*---what they consider possible about the world. The epistemic state $e \subseteq X$ is a subset of the state space, representing the set of states the agent has not ruled out. As new information arrives, the epistemic state contracts, potentially changing which alternatives are judged admissible.
+
+Second, the judgment yields a **set** of admissible alternatives, not a single "best" choice. This set-valued formulation is essential for supporting imprecise probabilities and credal sets in future extensions, where multiple probability distributions may each rationalize different alternatives.
+
+## Terminological Choices
+
+The terminology is deliberately chosen to reflect the philosophical framing:
+
+- **Epistemic state** (not "event" or "conditioning set"): emphasizes that $e$ represents what the agent knows or considers possible.
+- **Admissible** (not "optimal" or "selected"): reflects that multiple alternatives may be judged acceptable.
+- **Judgment** (not "choice rule" or "selection function"): emphasizes the normative, evaluative character of the framework.
+
+# Core Structures
+
+The formalization defines four principal structures, organized across four source files. All definitions reside in the `ConditionalChoice` namespace.
+
+## Set Algebra
+
+The `SetAlgebra` structure ([SetAlgebra.lean](../src/SetAlgebra.lean)) captures the collection of epistemic states available to a decision maker. It is a Boolean algebra of subsets of the state space $X$: a family of sets closed under union, intersection, complement, and containing the universe.
+
+```
+structure SetAlgebra (X : Type u) where
+  carrier : Set (Set X)
+  univ_mem : Set.univ ∈ carrier
+  union_mem : ∀ {s t}, s ∈ carrier → t ∈ carrier → s ∪ t ∈ carrier
+  inter_mem : ∀ {s t}, s ∈ carrier → t ∈ carrier → s ∩ t ∈ carrier
+  compl_mem : ∀ {s}, s ∈ carrier → Set.compl s ∈ carrier
+```
+
+A `Membership` instance allows writing `s ∈ E` as shorthand for `s ∈ E.carrier`. Two derived results are proved:
+
+- **`empty_mem`**: the empty set belongs to every set algebra (via complement of the universe).
+- **`nonempty`**: the carrier of any set algebra is nonempty (it contains `Set.univ`).
+
+### Design Rationale
+
+`SetAlgebra` is a custom bundle rather than Mathlib's `MeasurableSpace` because the framework requires only *finite* additivity, not $\sigma$-additivity. There are no countable closure requirements on the collection of epistemic states.
+
+## Conditional Judgment
+
+The `ConditionalJudgment` structure ([ConditionalJudgment.lean](../src/ConditionalJudgment.lean)) is the central object of the formalization. It bundles together:
+
+| Component | Type | Interpretation |
+|-----------|------|----------------|
+| $X$ | `Type u` | State space: possible states of the world |
+| $K$ | `Type v` | Consequence space: possible outcomes |
+| $E$ | `SetAlgebra X` | Boolean algebra of epistemic states |
+| $A$ | `Set (X → K)` | Set of available alternatives (acts) |
+| $M$ | `Set (Set (X → K))` | Set of available menus |
+| $C$ | `Set X → Set (X → K) → Set (X → K)` | Conditional choice function |
+
+The structure carries six well-formedness axioms:
+
+1. **`X_nonempty`**, **`K_nonempty`**: both spaces are inhabited.
+2. **`A_nonempty`**, **`M_nonempty`**: alternatives and menus exist.
+3. **`M_elements_nonempty`**: every menu contains at least one alternative.
+4. **`C_in_M`**: the choice from any valid epistemic state and menu is itself a valid menu.
+5. **`C_subset_menu`**: the choice is a subset of the menu.
+
+An important design decision is that $C$ is **raw**: it accepts *any* `Set X` and `Set (X → K)` as arguments. Well-formedness is enforced only when hypotheses `e ∈ E` and `m ∈ M` hold, avoiding the complexity of subtype-based indexing.
+
+# Probability and Expected Utility
+
+## Finitely Additive Probability
+
+The `Fap` structure ([ConditionalJudgment.lean](../src/ConditionalJudgment.lean)) defines a finitely additive probability measure on a set algebra:
+
+```
+structure Fap {X : Type u} (E : SetAlgebra X) where
+  p : { s // s ∈ E.carrier } → ℝ
+  nonneg : ∀ s, 0 ≤ p s
+  p_univ : p ⟨Set.univ, E.univ_mem⟩ = 1
+  additive : ∀ (s t : { s // s ∈ E.carrier }),
+    Disjoint s.val t.val →
+    p ⟨s.val ∪ t.val, E.union_mem s.prop t.prop⟩ = p s + p t
+```
+
+The probability measure $p$ is defined on subtypes---elements of the carrier of the set algebra, bundled with their membership proof. This makes the `additive` field self-contained: the union `s.val ∪ t.val` is in the carrier by `E.union_mem`, so no external proof is needed.
+
+## Expected Utility
+
+Expected utility is defined as a finite sum (since we require `Fintype X`):
+
+$$
+\mathrm{EU}(p, u, e, a) = \frac{1}{p(e)} \sum_{k \in \mathrm{range}(a)} u(k) \cdot p(a^{-1}\{k\} \cap e)
+$$
+
+The `expected_utility` function takes a probability $p$, utility $u : K \to \mathbb{R}$, an epistemic state $e$ with $p(e) \neq 0$, an alternative $a : X \to K$, and a proof that each level set $a^{-1}\{k\} \cap e$ belongs to the set algebra.
+
+The function is marked `noncomputable` because it depends on `Finset.sum` over the image of $a$, which in turn depends on `DecidableEq K`.
+
+A key lemma is **`expected_utility_const`**: for a constant alternative $(\lambda x.\, k)$, the expected utility equals $u(k)$. The proof proceeds by:
+
+1. Showing the range of a constant function is the singleton $\{k\}$.
+2. Observing that the level set $a^{-1}\{k\} \cap e = e$.
+3. Simplifying the sum to $\frac{1}{p(e)} \cdot u(k) \cdot p(e) = u(k)$.
+
+## HasEURepresentation
+
+The `HasEURepresentation` predicate captures when a conditional judgment admits an expected-utility representation:
+
+> There exist a finitely additive probability $p$ and a utility function $u$ such that, for every non-null epistemic state $e$ and every menu $m$, an alternative $a$ is in $C(e, m)$ if and only if $a$ has maximal expected utility among all alternatives in $m$.
+
+This is encoded as an existential over `Fap` and a utility function, with the body asserting a biconditional (iff) between membership in the choice set and EU-maximality.
+
+# Transformations
+
+## CJTransformation
+
+The `CJTransformation` structure ([Transformation.lean](../src/Transformation.lean)) defines morphisms between conditional judgments. Given judgments $\chi$ over $(X, K)$ and $\chi'$ over $(X', K')$, a transformation consists of:
+
+- A map $f : X \to X'$ on state spaces (pulling back epistemic states).
+- A map $g : K' \to K$ on consequence spaces (pushing forward consequences, contravariantly).
+
+Together with five coherence axioms:
+
+1. **`f_preimage_surjective_on_E`**: every epistemic state of $\chi$ arises as a preimage under $f$ of some epistemic state of $\chi'$.
+2. **`preimage_preserves_E`**: preimages of $\chi'$-epistemic states belong to $\chi$'s set algebra.
+3. **`alternatives_closed`**: composing $g$ after a $\chi'$-alternative and before $f$ yields a $\chi$-alternative.
+4. **`menus_closed`**: transforming a $\chi'$-menu yields a $\chi$-menu.
+5. **`choice_preserved`**: chosen alternatives transform to chosen alternatives.
+
+The key observation is that $f$ acts **covariantly** on state spaces but **contravariantly** on epistemic states (via preimage), while $g$ acts **contravariantly** on consequence spaces. An alternative $a' : X' \to K'$ is transformed to $g \circ a' \circ f : X \to K$.
+
+Three derived theorems provide convenient access to the coherence axioms for transformed alternatives, menus, and choices.
+
+## Categorical Structure
+
+The formalization ([Category.lean](../src/Category.lean)) verifies that conditional judgments and their transformations form a (pre-)category by constructing:
+
+### Identity
+
+`CJTransformation.id` uses $f = \mathrm{id}$ and $g = \mathrm{id}$. All coherence fields follow from `Set.preimage_id` and the fact that composing with the identity is trivial.
+
+### Composition
+
+Given $T : \chi \to \chi'$ and $T' : \chi' \to \chi''$, their composition $T' \circ T : \chi \to \chi''$ uses:
+
+- $f = T'.f \circ T.f$ (covariant)
+- $g = T.g \circ T'.g$ (contravariant)
+
+The proofs proceed by chaining the corresponding coherence fields of $T$ and $T'$. The key identities are:
+
+- `Set.preimage_comp`: $(T'.f \circ T.f)^{-1}(e'') = T.f^{-1}(T'.f^{-1}(e''))$.
+- For images: the image under the composed transformation equals the image under $T$ of the image under $T'$.
+- For alternatives: $(T.g \circ T'.g) \circ a'' \circ (T'.f \circ T.f) = T.g \circ (T'.g \circ a'' \circ T'.f) \circ T.f$.
+
+These extensional equalities are proved by `Function.comp` associativity and applied to rewrite the goal into a form where the fields of $T$ and $T'$ can be applied sequentially.
+
+# The Bool Example
+
+The test file ([Examples.lean](../test/Examples.lean)) provides a fully verified concrete instantiation of the framework over the type `Bool`.
+
+## Setup
+
+| Component | Definition |
+|-----------|------------|
+| $X$ | `Bool` |
+| $K$ | `Bool` |
+| $E$ | Full powerset (`carrier := Set.univ`) |
+| $A$ | $\{(\lambda x.\, \mathrm{true}),\; (\lambda x.\, \mathrm{false})\}$ |
+| $M$ | $\{\{(\lambda x.\, \mathrm{false})\},\; \{(\lambda x.\, \mathrm{true}),\; (\lambda x.\, \mathrm{false})\}\}$ |
+| $C\,e\,m$ | $\{(\lambda x.\, \mathrm{false})\}$ for all $e$, $m$ |
+
+This represents a decision maker who always judges the constant-false alternative as the uniquely admissible option, regardless of epistemic state or menu composition.
+
+## Identity Transformation
+
+A `CJTransformation` from `bool_example` to itself is constructed with $f = g = \mathrm{id}$, verifying that all coherence axioms are satisfied trivially.
+
+## Expected-Utility Representation
+
+The representation theorem states that `bool_example` has an expected-utility representation. The witnesses are:
+
+- **Probability**: a uniform distribution on `Bool`, with $p(\{\mathrm{true}\}) = p(\{\mathrm{false}\}) = 1/2$ and $p(\{\mathrm{true}, \mathrm{false}\}) = 1$.
+- **Utility**: $u(\mathrm{false}) = 1$, $u(\mathrm{true}) = 0$.
+
+Under these witnesses, the constant-false alternative achieves expected utility $1$, while the constant-true alternative achieves expected utility $0$. Since $C$ always selects $\{(\lambda x.\, \mathrm{false})\}$, this matches the EU-maximization criterion exactly.
+
+The proof verifies both directions of the biconditional for each combination of menu and alternative:
+
+- **Forward**: if $a \in C(e, m)$ then $a$ is EU-maximizing (by case analysis on the menu and appeal to `expected_utility_const`).
+- **Backward**: if $a$ is EU-maximizing then $a \in C(e, m)$ (by contradiction---if the constant-true alternative were EU-maximizing, it would need $u(\mathrm{false}) \leq u(\mathrm{true})$, i.e., $1 \leq 0$, which is absurd).
+
+### A Note on Classical Reasoning
+
+The proof of `bool_representation` uses classical reasoning (`open Classical`) to handle decidability of `Set` membership when constructing the `Fap` witness. This is confined to the test file; the core library is entirely classical-free.
+
+# Design Decisions
+
+Several design choices merit explicit discussion:
+
+1. **Raw choice function**: $C$ accepts any sets, not just algebra/menu members. This avoids pervasive subtype coercions and keeps the structure definition clean.
+
+2. **Custom `SetAlgebra`**: A purpose-built structure rather than Mathlib's `MeasurableSpace`, because the framework needs only finite additivity ($\sigma$-additivity is too strong for this philosophical setting).
+
+3. **`Fintype X` as a constraint on operations, not on structures**: The `ConditionalJudgment` structure is fully general; the finiteness requirement `[Fintype X]` appears only on `expected_utility` and `HasEURepresentation`, leaving the core theory open to future extension.
+
+4. **Contravariant consequence maps**: The direction $g : K' \to K$ reflects the natural variance---pulling back value assessments from the codomain judgment to the domain judgment.
+
+5. **Weak preimage surjectivity**: `f_preimage_surjective_on_E` requires only that each $\chi$-epistemic state arises as a preimage, not that $f$ is globally surjective. This weaker condition is all that is needed for the core theory and composes cleanly.
+
+# Summary and Future Work
+
+The formalization establishes a solid foundation:
+
+- **Four structures**: `SetAlgebra`, `ConditionalJudgment`, `Fap`, `CJTransformation`.
+- **Key operations**: `expected_utility`, `HasEURepresentation`, categorical identity and composition.
+- **Verified example**: a complete Bool-valued instance with a sorry-free representation theorem.
+
+The entire codebase compiles cleanly under Lean 4.29.0 with Mathlib4, with no `sorry`'s, warnings, or errors.
+
+Future directions include:
+
+- **Preference extraction**: deriving a weak preference order on $K$ from the choice function via constant alternatives.
+- **Cardinal utility**: axiomatizing conditions under which the derived preference admits a von Neumann--Morgenstern representation.
+- **Credal sets and E-admissibility**: generalizing from a single prior $p$ to a convex set $P$ of priors, where admissibility means Bayes-optimality under *some* $p \in P$. This connects to Levi's E-admissibility and the Seidenfeld--Schervish--Kadane theory.
+- **Full representation theorem**: extending from `Bool` to arbitrary finite---and eventually infinite---state spaces.
+- **Categorical development**: functoriality, natural transformations, and the subcategory of representable judgments.
+
+# References
+
+::: {#refs}
+:::

@@ -1,0 +1,7 @@
+# Lean 4 build artifacts
+.lake/build/
+.lake/config/
+.lake/packages/
+
+# Quarto output
+reports/_output/

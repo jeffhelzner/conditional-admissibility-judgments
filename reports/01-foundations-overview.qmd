@@ -112,23 +112,27 @@ structure Fap {X : Type u} (E : SetAlgebra X) where
 
 The probability measure $p$ is defined on subtypes---elements of the carrier of the set algebra, bundled with their membership proof. This makes the `additive` field self-contained: the union `s.val ∪ t.val` is in the carrier by `E.union_mem`, so no external proof is needed.
 
+A derived result **`Fap.p_empty`** establishes that $p(\emptyset) = 0$ for any finitely additive probability, by applying additivity to $\emptyset \cup X = X$ and normalization. This is used in the proof of `expected_utility_const` below.
+
 ## Expected Utility
 
-Expected utility is defined as a finite sum (since we require `Fintype X`):
+Expected utility is defined as a finite sum over the consequence space $K$ (since we require `Fintype K`):
 
 $$
-\mathrm{EU}(p, u, e, a) = \frac{1}{p(e)} \sum_{k \in \mathrm{range}(a)} u(k) \cdot p(a^{-1}\{k\} \cap e)
+\mathrm{EU}(p, u, e, a) = \frac{1}{p(e)} \sum_{k \in K} u(k) \cdot p(a^{-1}\{k\} \cap e)
 $$
+
+The sum ranges over all consequences $k \in K$, not just those in the range of $a$. Consequences outside the range contribute zero: if $k \notin \mathrm{range}(a)$ then $a^{-1}\{k\} = \emptyset$, so $p(a^{-1}\{k\} \cap e) = p(\emptyset) = 0$. This formulation requires only that $K$ is finite, placing no finiteness constraint on the state space $X$.
 
 The `expected_utility` function takes a probability $p$, utility $u : K \to \mathbb{R}$, an epistemic state $e$ with $p(e) \neq 0$, an alternative $a : X \to K$, and a proof that each level set $a^{-1}\{k\} \cap e$ belongs to the set algebra.
 
-The function is marked `noncomputable` because it depends on `Finset.sum` over the image of $a$, which in turn depends on `DecidableEq K`.
+The function is marked `noncomputable` because it depends on `Finset.sum` over `Finset.univ : Finset K`, which requires `DecidableEq K`.
 
 A key lemma is **`expected_utility_const`**: for a constant alternative $(\lambda x.\, k)$, the expected utility equals $u(k)$. The proof proceeds by:
 
-1. Showing the range of a constant function is the singleton $\{k\}$.
-2. Observing that the level set $a^{-1}\{k\} \cap e = e$.
-3. Simplifying the sum to $\frac{1}{p(e)} \cdot u(k) \cdot p(e) = u(k)$.
+1. Using `Finset.sum_eq_single_of_mem` to reduce the sum to the single term at $k$: for $k' \neq k$, the level set $(\lambda x.\, k)^{-1}\{k'\} \cap e = \emptyset$, so $p(\emptyset) = 0$ by `Fap.p_empty`.
+2. Observing that the level set $(\lambda x.\, k)^{-1}\{k\} \cap e = e$.
+3. Simplifying to $\frac{1}{p(e)} \cdot u(k) \cdot p(e) = u(k)$.
 
 ## HasEURepresentation
 
@@ -229,7 +233,7 @@ Several design choices merit explicit discussion:
 
 2. **Custom `SetAlgebra`**: A purpose-built structure rather than Mathlib's `MeasurableSpace`, because the framework needs only finite additivity ($\sigma$-additivity is too strong for this philosophical setting).
 
-3. **`Fintype X` as a constraint on operations, not on structures**: The `ConditionalJudgment` structure is fully general; the finiteness requirement `[Fintype X]` appears only on `expected_utility` and `HasEURepresentation`, leaving the core theory open to future extension.
+3. **`Fintype K` as a constraint on operations, not on structures**: The `ConditionalJudgment` structure places no finiteness requirements on either $X$ or $K$. The constraint `[Fintype K]` appears only on `expected_utility` and `HasEURepresentation`, where it is needed to make the sum over consequences finite. The state space $X$ is entirely unconstrained, allowing infinite or uncountable state spaces. This is decision-theoretically natural: finiteness of consequences, not states, is what makes expected utility a finite sum.
 
 4. **Contravariant consequence maps**: The direction $g : K' \to K$ reflects the natural variance---pulling back value assessments from the codomain judgment to the domain judgment.
 
@@ -250,7 +254,7 @@ Future directions include:
 - **Preference extraction**: deriving a weak preference order on $K$ from the choice function via constant alternatives.
 - **Cardinal utility**: axiomatizing conditions under which the derived preference admits a von Neumann--Morgenstern representation.
 - **Credal sets and E-admissibility**: generalizing from a single prior $p$ to a convex set $P$ of priors, where admissibility means Bayes-optimality under *some* $p \in P$. This connects to Levi's E-admissibility and the Seidenfeld--Schervish--Kadane theory.
-- **Full representation theorem**: extending from `Bool` to arbitrary finite---and eventually infinite---state spaces.
+- **Full representation theorem**: extending from `Bool` to arbitrary (finite or infinite) state spaces with finite consequence spaces.
 - **Categorical development**: functoriality, natural transformations, and the subcategory of representable judgments.
 
 # References

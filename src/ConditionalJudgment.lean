@@ -1,4 +1,5 @@
--- Using Option A (Fintype X): expected utility is a finite sum over X.
+-- Expected utility is a finite sum over the consequence space K (Fintype K).
+-- The state space X is unconstrained, allowing infinite (even uncountable) state spaces.
 
 import Mathlib.Data.Set.Basic
 import Mathlib.Data.Set.Function
@@ -68,47 +69,58 @@ structure Fap {X : Type u} (E : SetAlgebra X) where
     Disjoint s.val t.val →
     p ⟨s.val ∪ t.val, E.union_mem s.prop t.prop⟩ = p s + p t
 
+/-- The probability of the empty set is zero (derived from additivity and normalization). -/
+theorem Fap.p_empty {X : Type u} {E : SetAlgebra X} (p : Fap E) :
+    p.p ⟨∅, E.empty_mem⟩ = 0 := by
+  have h := p.additive ⟨∅, E.empty_mem⟩ ⟨Set.univ, E.univ_mem⟩ disjoint_bot_left
+  have hunion : (⟨∅ ∪ Set.univ, E.union_mem E.empty_mem E.univ_mem⟩ : { s // s ∈ E.carrier }) =
+    ⟨Set.univ, E.univ_mem⟩ := Subtype.ext (Set.empty_union _)
+  rw [hunion] at h
+  linarith [p.p_univ]
+
 /-! ### Expected Utility -/
 
 /-- Expected utility of alternative `a` given epistemic state `e` with `p(e) ≠ 0`.
-    Under Option A (Finite X), computed as a finite sum over the range of `a`:
-    `EU(p,u,e,a) = (1 / p(e)) * Σ_{k ∈ range(a)} u(k) * p(a⁻¹'{k} ∩ e)`.
+    Computed as a finite sum over the consequence space K:
+    `EU(p,u,e,a) = (1 / p(e)) * Σ_{k ∈ K} u(k) * p(a⁻¹'{k} ∩ e)`.
+
+    Consequences not in the range of `a` contribute zero (their level sets are
+    empty, so the probability term vanishes). This requires only `Fintype K`,
+    not `Fintype X`, allowing the state space to be infinite.
 
     The `hlevel` argument witnesses that each level set `a⁻¹'{k} ∩ e` belongs
     to the set algebra, which is needed to apply the probability measure. -/
 noncomputable def expected_utility {X : Type u} {K : Type v}
-    [Fintype X] [DecidableEq K]
+    [Fintype K] [DecidableEq K]
     {E : SetAlgebra X} (p : Fap E) (u : K → ℝ)
     (e : { s // s ∈ E.carrier }) (_he : p.p e ≠ 0)
     (a : X → K)
     (hlevel : ∀ k, a ⁻¹' {k} ∩ e.val ∈ E.carrier) : ℝ :=
-  let range_finset := (Finset.univ.image a)
   (1 / p.p e) *
-    range_finset.sum (fun k =>
+    Finset.univ.sum (fun k =>
       u k * p.p ⟨a ⁻¹' {k} ∩ e.val, hlevel k⟩)
 
 /-- The expected utility of a constant alternative `fun _ => k` equals `u k`
     (when `p.p e ≠ 0`). -/
 theorem expected_utility_const {X : Type u} {K : Type v}
-    [Fintype X] [DecidableEq K] [Nonempty X]
+    [Fintype K] [DecidableEq K]
     {E : SetAlgebra X} (p : Fap E) (u : K → ℝ)
     (e : { s // s ∈ E.carrier }) (he : p.p e ≠ 0)
     (k : K)
     (hlevel : ∀ k', (fun (_ : X) => k) ⁻¹' {k'} ∩ e.val ∈ E.carrier) :
     expected_utility p u e he (fun _ => k) hlevel = u k := by
   simp only [expected_utility]
-  have hrange : Finset.univ.image (fun (_ : X) => k) = {k} := by
-    ext x
-    constructor
-    · simp only [Finset.mem_image, Finset.mem_univ, true_and, Finset.mem_singleton]
-      exact fun ⟨_, hk⟩ => hk.symm
-    · simp only [Finset.mem_image, Finset.mem_univ, true_and, Finset.mem_singleton]
-      exact fun hk => ⟨‹Nonempty X›.some, hk.symm⟩
-  rw [hrange, Finset.sum_singleton]
-  have hpre : (fun (_ : X) => k) ⁻¹' {k} ∩ e.val = e.val := by
-    ext x; simp
+  -- For k' ≠ k the level set is empty; for k' = k it equals e
+  have hpre_eq : (fun (_ : X) => k) ⁻¹' {k} ∩ e.val = e.val := by ext x; simp
+  have hpre_ne : ∀ k', k' ≠ k → (fun (_ : X) => k) ⁻¹' {k'} ∩ e.val = ∅ := by
+    intro k' hk'; ext x; simp [Ne.symm hk']
+  -- The sum reduces to the single k-th term
+  rw [Finset.sum_eq_single_of_mem k (Finset.mem_univ k) (fun k' _ hk' => by
+    have : (⟨(fun (_ : X) => k) ⁻¹' {k'} ∩ e.val, hlevel k'⟩ : { s // s ∈ E.carrier }) =
+        ⟨∅, E.empty_mem⟩ := Subtype.ext (hpre_ne k' hk')
+    rw [this, p.p_empty, mul_zero])]
   have hsub : (⟨(fun (_ : X) => k) ⁻¹' {k} ∩ e.val, hlevel k⟩ : { s // s ∈ E.carrier }) =
-      ⟨e.val, e.prop⟩ := Subtype.ext hpre
+      ⟨e.val, e.prop⟩ := Subtype.ext hpre_eq
   rw [hsub, show (⟨e.val, e.prop⟩ : { s // s ∈ E.carrier }) = e from by cases e; rfl]
   field_simp
 
@@ -131,7 +143,7 @@ theorem expected_utility_const {X : Type u} {K : Type v}
     a finitely-additive probability and a utility function such that the choice
     function selects exactly the EU-maximizing alternatives from each menu,
     conditional on each non-null epistemic state. -/
-def HasEURepresentation {X : Type u} {K : Type v} [Fintype X] [DecidableEq K]
+def HasEURepresentation {X : Type u} {K : Type v} [Fintype K] [DecidableEq K]
     (χ : ConditionalJudgment X K) : Prop :=
   ∃ (p : Fap χ.E) (u : K → ℝ),
     ∀ (e : { s // s ∈ χ.E.carrier }),

@@ -1,6 +1,22 @@
 project:
-  type: default
+  type: website
   output-dir: _output
+
+website:
+  title: "Conditional Admissibility Reports"
+  site-url: "https://jeffhelzner.github.io/conditional-admissibility-judgments/"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Reports Home
+      - href: 01-foundations-overview.qmd
+        text: Foundations Overview
+    right:
+      - href: https://github.com/jeffhelzner/conditional-admissibility-judgments
+        text: Repository
+  page-footer:
+    left: "Conditional Admissibility Judgments"
+    right: "Rendered with Quarto and deployed through GitHub Pages."
 
 format:
   html:
@@ -16,3 +32,5 @@ format:
     geometry:
       - margin=1in
     fontsize: 11pt
+
+link-external-newwindow: true

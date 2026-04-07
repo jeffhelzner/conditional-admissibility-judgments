@@ -51,7 +51,7 @@ The formalization defines four principal structures, organized across four sourc
 
 ## Set Algebra
 
-The `SetAlgebra` structure ([SetAlgebra.lean](../src/SetAlgebra.lean)) captures the collection of epistemic states available to a decision maker. It is a Boolean algebra of subsets of the state space $X$: a family of sets closed under union, intersection, complement, and containing the universe.
+The `SetAlgebra` structure ([SetAlgebra.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/SetAlgebra.lean)) captures the collection of epistemic states available to a decision maker. It is a Boolean algebra of subsets of the state space $X$: a family of sets closed under union, intersection, complement, and containing the universe.
 
 ```
 structure SetAlgebra (X : Type u) where
@@ -73,7 +73,7 @@ A `Membership` instance allows writing `s ∈ E` as shorthand for `s ∈ E.carri
 
 ## Conditional Judgment
 
-The `ConditionalJudgment` structure ([ConditionalJudgment.lean](../src/ConditionalJudgment.lean)) is the central object of the formalization. It bundles together:
+The `ConditionalJudgment` structure ([ConditionalJudgment.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/ConditionalJudgment.lean)) is the central object of the formalization. It bundles together:
 
 | Component | Type | Interpretation |
 |-----------|------|----------------|
@@ -98,7 +98,7 @@ An important design decision is that $C$ is **raw**: it accepts *any* `Set X` an
 
 ## Finitely Additive Probability
 
-The `Fap` structure ([ConditionalJudgment.lean](../src/ConditionalJudgment.lean)) defines a finitely additive probability measure on a set algebra:
+The `Fap` structure ([ConditionalJudgment.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/ConditionalJudgment.lean)) defines a finitely additive probability measure on a set algebra:
 
 ```
 structure Fap {X : Type u} (E : SetAlgebra X) where
@@ -146,7 +146,7 @@ This is encoded as an existential over `Fap` and a utility function, with the bo
 
 ## CJTransformation
 
-The `CJTransformation` structure ([Transformation.lean](../src/Transformation.lean)) defines morphisms between conditional judgments. Given judgments $\chi$ over $(X, K)$ and $\chi'$ over $(X', K')$, a transformation consists of:
+The `CJTransformation` structure ([Transformation.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/Transformation.lean)) defines morphisms between conditional judgments. Given judgments $\chi$ over $(X, K)$ and $\chi'$ over $(X', K')$, a transformation consists of:
 
 - A map $f : X \to X'$ on state spaces (pulling back epistemic states).
 - A map $g : K' \to K$ on consequence spaces (pushing forward consequences, contravariantly).
@@ -165,7 +165,7 @@ Three derived theorems provide convenient access to the coherence axioms for tra
 
 ## Categorical Structure
 
-The formalization ([Category.lean](../src/Category.lean)) verifies that conditional judgments and their transformations form a (pre-)category by constructing:
+The formalization ([Category.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/Category.lean)) verifies that conditional judgments and their transformations form a (pre-)category by constructing:
 
 ### Identity
 
@@ -188,7 +188,7 @@ These extensional equalities are proved by `Function.comp` associativity and app
 
 # The Bool Example
 
-The test file ([Examples.lean](../test/Examples.lean)) provides a fully verified concrete instantiation of the framework over the type `Bool`.
+The test file ([Examples.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/test/Examples.lean)) provides a fully verified concrete instantiation of the framework over the type `Bool`.
 
 ## Setup
 

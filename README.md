@@ -18,6 +18,8 @@ This project formalizes a framework for reasoning about rational choice under un
 ```
 lakefile.lean                 -- Lake build configuration with Mathlib4 dependency
 lean-toolchain                -- Lean toolchain version
+.github/workflows/
+  publish-reports.yml         -- GitHub Pages deployment for rendered Quarto reports
 src/
   SetAlgebra.lean             -- SetAlgebra structure and Membership instance
   ConditionalJudgment.lean    -- ConditionalJudgment, Fap, expected_utility, HasEURepresentation
@@ -27,6 +29,7 @@ test/
   Examples.lean               -- Bool example, transformation example, representation theorem
 reports/
   _quarto.yml                 -- Quarto project configuration
+  index.qmd                   -- Public landing page for the report series
   01-foundations-overview.qmd  -- Overview of the formalization foundations
   references.bib              -- Bibliography
 ```
@@ -54,11 +57,60 @@ All definitions live in the `ConditionalChoice` namespace.
 
 ## Reports
 
-The `reports/` directory contains Quarto-based technical reports documenting the formalization. To render a report:
+The `reports/` directory is a Quarto website that publishes the project reports through GitHub Pages.
+
+### Local development
+
+To render the HTML site locally:
 
 ```bash
-cd reports
-quarto render 01-foundations-overview.qmd
+quarto render reports --to html
+```
+
+To preview the site locally with live reload:
+
+```bash
+quarto preview reports
+```
+
+To render only the foundations report as HTML:
+
+```bash
+quarto render reports/01-foundations-overview.qmd --to html
+```
+
+Rendered output is written to `reports/_output/`.
+
+### Deployment
+
+The repository includes a GitHub Actions workflow at `.github/workflows/publish-reports.yml`. On each push to `main` that changes the workflow or files under `reports/`, GitHub Actions:
+
+1. installs Quarto,
+2. renders the `reports/` site to HTML, and
+3. deploys `reports/_output/` to GitHub Pages.
+
+### Expected public URLs
+
+Once GitHub Pages is enabled for this repository, the stable public URLs are:
+
+- Landing page: `https://jeffhelzner.github.io/conditional-admissibility-judgments/`
+- Foundations report: `https://jeffhelzner.github.io/conditional-admissibility-judgments/01-foundations-overview.html`
+
+### Required GitHub setting
+
+If GitHub Pages has not already been configured for this repository, open **Settings > Pages** and set **Build and deployment** to **GitHub Actions**.
+
+### Adding future reports
+
+1. Add a new `.qmd` file under `reports/`.
+2. Add a link to it from `reports/index.qmd`.
+3. Preview locally with `quarto preview reports`.
+4. Push to `main` to publish the updated site.
+
+The `reports/` directory contains Quarto-based technical reports documenting the formalization. The current foundations report can also be rendered directly:
+
+```bash
+quarto render reports/01-foundations-overview.qmd
 ```
 
 Requires [Quarto](https://quarto.org/) to be installed.

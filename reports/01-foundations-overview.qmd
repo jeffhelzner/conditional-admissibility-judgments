@@ -25,25 +25,7 @@ bibliography: references.bib
 
 This report provides a natural-language overview of a Lean4 formalization of *conditional judgments of admissibility*---a framework for reasoning about rational choice under uncertainty. The formalization, built atop Mathlib4, encodes the core mathematical structures, their morphisms, and a concrete example with a verified expected-utility representation theorem.
 
-The framework is motivated by philosophical questions in the foundations of decision theory, in the tradition of Anscombe--Aumann and related work on normative choice. The central question is: *what should a rational agent choose given their epistemic situation?* The formalization provides machine-checked answers to this question for a simple but illustrative case, and lays the groundwork for scaling to richer settings including imprecise probabilities and E-admissibility.
-
-# Philosophical Context
-
-## Conditional Admissibility
-
-The primitive notion in this framework is *admissibility*: given information about the state of the world, which alternatives from a menu would a rational decision maker regard as acceptable? This differs from classical choice theory in two important respects.
-
-First, the judgment is **conditional**: the decision maker's assessment of which alternatives are admissible depends on their *epistemic state*---what they consider possible about the world. The epistemic state $e \subseteq X$ is a subset of the state space, representing the set of states the agent has not ruled out. As new information arrives, the epistemic state contracts, potentially changing which alternatives are judged admissible.
-
-Second, the judgment yields a **set** of admissible alternatives, not a single "best" choice. This set-valued formulation is essential for supporting imprecise probabilities and credal sets in future extensions, where multiple probability distributions may each rationalize different alternatives.
-
-## Terminological Choices
-
-The terminology is deliberately chosen to reflect the philosophical framing:
-
-- **Epistemic state** (not "event" or "conditioning set"): emphasizes that $e$ represents what the agent knows or considers possible.
-- **Admissible** (not "optimal" or "selected"): reflects that multiple alternatives may be judged acceptable.
-- **Judgment** (not "choice rule" or "selection function"): emphasizes the normative, evaluative character of the framework.
+The primitive notion in this framework is *conditional admissibility*: which alternatives from a menu would a rational decision maker regard as acceptable, given what they have learned about the state of the world? A conditional admissibility structure represents the agent's internal state at a fixed point in time, insofar as that state bears on matters of rational choice. The state space $X$ encodes the agent's *full beliefs* at that time: its elements are what the agent counts as *serious possibilities*, in the sense of Levi [-@levi1980enterprise]. Each $e \subseteq X$ in the set algebra $E$ represents something the agent could learn. While the agent is in the state represented by a conditional judgment structure $\chi$, the set $C(e, m)$ is the set of alternatives that the agent would judge admissible if they were to learn $e$ and be offered the menu $m$. This synchronic, weakly Bayesian conditioning within a fixed structure follows the tradition of Levi and Seidenfeld. Changes that go beyond conditioning within a fixed structure---such as expansions or contractions of the state space itself---are handled by transformations between conditional admissibility structures and are discussed in §5.
 
 # Core Structures
 
@@ -51,7 +33,7 @@ The formalization defines four principal structures, organized across four sourc
 
 ## Set Algebra
 
-The `SetAlgebra` structure ([SetAlgebra.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/SetAlgebra.lean)) captures the collection of epistemic states available to a decision maker. It is a Boolean algebra of subsets of the state space $X$: a family of sets closed under union, intersection, complement, and containing the universe.
+The `SetAlgebra` structure ([SetAlgebra.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/SetAlgebra.lean)) captures the collection of things the agent could learn. It is a Boolean algebra of subsets of $X$: a family of sets closed under union, intersection, complement, and containing the universe.
 
 ```
 structure SetAlgebra (X : Type u) where
@@ -69,7 +51,7 @@ A `Membership` instance allows writing `s ∈ E` as shorthand for `s ∈ E.carri
 
 ### Design Rationale
 
-`SetAlgebra` is a custom bundle rather than Mathlib's `MeasurableSpace` because the framework requires only *finite* additivity, not $\sigma$-additivity. There are no countable closure requirements on the collection of epistemic states.
+`SetAlgebra` is a custom bundle rather than Mathlib's `MeasurableSpace` because the framework requires only *finite* additivity, not $\sigma$-additivity. There are no countable closure requirements on the algebra.
 
 ## Conditional Judgment
 
@@ -79,7 +61,7 @@ The `ConditionalJudgment` structure ([ConditionalJudgment.lean](https://github.c
 |-----------|------|----------------|
 | $X$ | `Type u` | State space: possible states of the world |
 | $K$ | `Type v` | Consequence space: possible outcomes |
-| $E$ | `SetAlgebra X` | Boolean algebra of epistemic states |
+| $E$ | `SetAlgebra X` | Boolean algebra of things the agent could learn |
 | $A$ | `Set (X → K)` | Set of available alternatives (acts) |
 | $M$ | `Set (Set (X → K))` | Set of available menus |
 | $C$ | `Set X → Set (X → K) → Set (X → K)` | Conditional choice function |
@@ -89,7 +71,7 @@ The structure carries six well-formedness axioms:
 1. **`X_nonempty`**, **`K_nonempty`**: both spaces are inhabited.
 2. **`A_nonempty`**, **`M_nonempty`**: alternatives and menus exist.
 3. **`M_elements_nonempty`**: every menu contains at least one alternative.
-4. **`C_in_M`**: the choice from any valid epistemic state and menu is itself a valid menu.
+4. **`C_in_M`**: the choice from any valid $e \in E$ and menu is itself a valid menu.
 5. **`C_subset_menu`**: the choice is a subset of the menu.
 
 An important design decision is that $C$ is **raw**: it accepts *any* `Set X` and `Set (X → K)` as arguments. Well-formedness is enforced only when hypotheses `e ∈ E` and `m ∈ M` hold, avoiding the complexity of subtype-based indexing.
@@ -124,7 +106,7 @@ $$
 
 The sum ranges over all consequences $k \in K$, not just those in the range of $a$. Consequences outside the range contribute zero: if $k \notin \mathrm{range}(a)$ then $a^{-1}\{k\} = \emptyset$, so $p(a^{-1}\{k\} \cap e) = p(\emptyset) = 0$. This formulation requires only that $K$ is finite, placing no finiteness constraint on the state space $X$.
 
-The `expected_utility` function takes a probability $p$, utility $u : K \to \mathbb{R}$, an epistemic state $e$ with $p(e) \neq 0$, an alternative $a : X \to K$, and a proof that each level set $a^{-1}\{k\} \cap e$ belongs to the set algebra.
+The `expected_utility` function takes a probability $p$, utility $u : K \to \mathbb{R}$, an $e \in E$ with $p(e) \neq 0$, an alternative $a : X \to K$, and a proof that each level set $a^{-1}\{k\} \cap e$ belongs to the set algebra.
 
 The function is marked `noncomputable` because it depends on `Finset.sum` over `Finset.univ : Finset K`, which requires `DecidableEq K`.
 
@@ -138,7 +120,7 @@ A key lemma is **`expected_utility_const`**: for a constant alternative $(\lambd
 
 The `HasEURepresentation` predicate captures when a conditional judgment admits an expected-utility representation:
 
-> There exist a finitely additive probability $p$ and a utility function $u$ such that, for every non-null epistemic state $e$ and every menu $m$, an alternative $a$ is in $C(e, m)$ if and only if $a$ has maximal expected utility among all alternatives in $m$.
+> There exist a finitely additive probability $p$ and a utility function $u$ such that, for every non-null $e \in E$ and every menu $m$, an alternative $a$ is in $C(e, m)$ if and only if $a$ has maximal expected utility among all alternatives in $m$.
 
 This is encoded as an existential over `Fap` and a utility function, with the body asserting a biconditional (iff) between membership in the choice set and EU-maximality.
 
@@ -148,18 +130,18 @@ This is encoded as an existential over `Fap` and a utility function, with the bo
 
 The `CJTransformation` structure ([Transformation.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/Transformation.lean)) defines morphisms between conditional judgments. Given judgments $\chi$ over $(X, K)$ and $\chi'$ over $(X', K')$, a transformation consists of:
 
-- A map $f : X \to X'$ on state spaces (pulling back epistemic states).
+- A map $f : X \to X'$ on state spaces (pulling back elements of the set algebra).
 - A map $g : K' \to K$ on consequence spaces (pushing forward consequences, contravariantly).
 
 Together with five coherence axioms:
 
-1. **`f_preimage_surjective_on_E`**: every epistemic state of $\chi$ arises as a preimage under $f$ of some epistemic state of $\chi'$.
-2. **`preimage_preserves_E`**: preimages of $\chi'$-epistemic states belong to $\chi$'s set algebra.
+1. **`f_preimage_surjective_on_E`**: every element of $\chi.E$ arises as a preimage under $f$ of some element of $\chi'.E$.
+2. **`preimage_preserves_E`**: preimages of $\chi'.E$-elements belong to $\chi$'s set algebra.
 3. **`alternatives_closed`**: composing $g$ after a $\chi'$-alternative and before $f$ yields a $\chi$-alternative.
 4. **`menus_closed`**: transforming a $\chi'$-menu yields a $\chi$-menu.
 5. **`choice_preserved`**: chosen alternatives transform to chosen alternatives.
 
-The key observation is that $f$ acts **covariantly** on state spaces but **contravariantly** on epistemic states (via preimage), while $g$ acts **contravariantly** on consequence spaces. An alternative $a' : X' \to K'$ is transformed to $g \circ a' \circ f : X \to K$.
+The key observation is that $f$ acts **covariantly** on state spaces but **contravariantly** on the set algebra (via preimage), while $g$ acts **contravariantly** on consequence spaces. An alternative $a' : X' \to K'$ is transformed to $g \circ a' \circ f : X \to K$.
 
 Three derived theorems provide convenient access to the coherence axioms for transformed alternatives, menus, and choices.
 
@@ -201,7 +183,7 @@ The test file ([Examples.lean](https://github.com/jeffhelzner/conditional-admiss
 | $M$ | $\{\{(\lambda x.\, \mathrm{false})\},\; \{(\lambda x.\, \mathrm{true}),\; (\lambda x.\, \mathrm{false})\}\}$ |
 | $C\,e\,m$ | $\{(\lambda x.\, \mathrm{false})\}$ for all $e$, $m$ |
 
-This represents a decision maker who always judges the constant-false alternative as the uniquely admissible option, regardless of epistemic state or menu composition.
+This represents a decision maker who always judges the constant-false alternative as the uniquely admissible option, regardless of $e$ or menu composition.
 
 ## Identity Transformation
 
@@ -237,7 +219,7 @@ Several design choices merit explicit discussion:
 
 4. **Contravariant consequence maps**: The direction $g : K' \to K$ reflects the natural variance---pulling back value assessments from the codomain judgment to the domain judgment.
 
-5. **Weak preimage surjectivity**: `f_preimage_surjective_on_E` requires only that each $\chi$-epistemic state arises as a preimage, not that $f$ is globally surjective. This weaker condition is all that is needed for the core theory and composes cleanly.
+5. **Weak preimage surjectivity**: `f_preimage_surjective_on_E` requires only that each element of $\chi.E$ arises as a preimage, not that $f$ is globally surjective. This weaker condition is all that is needed for the core theory and composes cleanly.
 
 # Summary and Future Work
 

@@ -5,11 +5,11 @@ namespace ConditionalChoice
 
 universe u
 
-/-- A Boolean algebra of subsets of a type, representing the possible
-    epistemic states available to a decision maker. Closure under union,
-    intersection, complement, and containing the universe ensures that the
-    collection of epistemic conditions is closed under standard logical
-    operations. -/
+/-- A Boolean algebra of subsets of a type. The state space X encodes the
+    agent's serious possibilities; each member of the algebra represents
+    something the agent could learn. Closure under union, intersection,
+    complement, and containing the universe ensures that the collection
+    is closed under standard logical operations. -/
 structure SetAlgebra (X : Type u) where
   carrier : Set (Set X)
   univ_mem : Set.univ ∈ carrier

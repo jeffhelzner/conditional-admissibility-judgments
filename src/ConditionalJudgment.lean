@@ -14,23 +14,23 @@ namespace ConditionalChoice
 universe u v
 
 /-- A conditional judgment of admissibility over state space X
-    and consequence space K. The choice function C maps an epistemic state
-    (a member of the set algebra E) and a menu (a set of alternatives) to
-    the subset of the menu that the decision maker judges admissible. -/
+    and consequence space K. The choice function C maps an element of
+    the set algebra E and a menu (a set of alternatives) to the subset
+    of the menu that the decision maker judges admissible. -/
 structure ConditionalJudgment (X : Type u) (K : Type v) where
   /-- Nonemptiness of the state space. -/
   X_nonempty : Nonempty X
   /-- Nonemptiness of the consequence space. -/
   K_nonempty : Nonempty K
-  /-- The Boolean algebra of epistemic states (subsets of X the decision
-      maker may regard as the set of possible states of the world). -/
+  /-- The Boolean algebra of subsets of X representing things the agent
+      could learn. -/
   E : SetAlgebra X
   /-- The set of available alternatives (acts mapping states to consequences). -/
   A : Set (X → K)
   /-- The set of available menus (sets of alternatives). -/
   M : Set (Set (X → K))
   /-- The conditional choice function: C e m is the set of alternatives in m
-      that the decision maker judges admissible given epistemic state e. -/
+      that the decision maker judges admissible given e. -/
   C : Set X → Set (X → K) → Set (X → K)
   /-- The set of alternatives is nonempty. -/
   A_nonempty : A.Nonempty
@@ -38,9 +38,9 @@ structure ConditionalJudgment (X : Type u) (K : Type v) where
   M_nonempty : M.Nonempty
   /-- Every menu is nonempty. -/
   M_elements_nonempty : ∀ m ∈ M, Set.Nonempty m
-  /-- The choice from any valid epistemic state and menu is itself a valid menu. -/
+  /-- The choice from any valid e ∈ E and menu is itself a valid menu. -/
   C_in_M : ∀ e m, e ∈ E → m ∈ M → C e m ∈ M
-  /-- The choice from any valid epistemic state and menu is a subset of that menu. -/
+  /-- The choice from any valid e ∈ E and menu is a subset of that menu. -/
   C_subset_menu : ∀ e m, e ∈ E → m ∈ M → C e m ⊆ m
 
 /-- Wrapper restating `C_subset_menu`. -/
@@ -80,7 +80,7 @@ theorem Fap.p_empty {X : Type u} {E : SetAlgebra X} (p : Fap E) :
 
 /-! ### Expected Utility -/
 
-/-- Expected utility of alternative `a` given epistemic state `e` with `p(e) ≠ 0`.
+/-- Expected utility of alternative `a` given `e` with `p(e) ≠ 0`.
     Computed as a finite sum over the consequence space K:
     `EU(p,u,e,a) = (1 / p(e)) * Σ_{k ∈ K} u(k) * p(a⁻¹'{k} ∩ e)`.
 
@@ -142,7 +142,7 @@ theorem expected_utility_const {X : Type u} {K : Type v}
 /-- A conditional judgment has an expected-utility representation if there exist
     a finitely-additive probability and a utility function such that the choice
     function selects exactly the EU-maximizing alternatives from each menu,
-    conditional on each non-null epistemic state. -/
+    for each non-null element of the set algebra. -/
 def HasEURepresentation {X : Type u} {K : Type v} [Fintype K] [DecidableEq K]
     (χ : ConditionalJudgment X K) : Prop :=
   ∃ (p : Fap χ.E) (u : K → ℝ),

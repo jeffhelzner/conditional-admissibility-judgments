@@ -9,7 +9,7 @@ import Transformation
 namespace ConditionalChoice
 
 -- Classical reasoning is used in this test file only, to inspect membership
--- in Set-valued epistemic states when constructing concrete Fap witnesses.
+-- in Set-valued elements of the algebra when constructing concrete Fap witnesses.
 -- The core library (src/) remains classical-free.
 open Classical
 

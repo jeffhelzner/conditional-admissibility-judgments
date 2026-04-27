@@ -1,10 +1,14 @@
--- Expected utility is a finite sum over the consequence space K (Fintype K).
--- The state space X is unconstrained, allowing infinite (even uncountable) state spaces.
+-- Expected utility is a finite sum over the (finite) range of the act on the
+-- supposition `e`. Neither the consequence space `K` nor the state space `X`
+-- is required to be finite; the finiteness assumption is localized as a
+-- per-act hypothesis `(a '' e.val).Finite`. This is the form needed for
+-- cardinal-utility / vNM extensions where `K` is closed under mixtures and
+-- is therefore typically infinite.
 
 import Mathlib.Data.Set.Basic
 import Mathlib.Data.Set.Function
+import Mathlib.Data.Set.Finite.Basic
 import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Fintype.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Tactic
 import SetAlgebra
@@ -14,16 +18,19 @@ namespace ConditionalChoice
 universe u v
 
 /-- A conditional judgment of admissibility over state space X
-    and consequence space K. The choice function C maps an element of
-    the set algebra E and a menu (a set of alternatives) to the subset
-    of the menu that the decision maker judges admissible. -/
+    and consequence space K. The choice function C maps a supposition
+    (an element of the set algebra E) and a menu (a set of alternatives)
+    to the subset of the menu that the decision maker judges admissible
+    under that supposition. -/
 structure ConditionalJudgment (X : Type u) (K : Type v) where
   /-- Nonemptiness of the state space. -/
   X_nonempty : Nonempty X
   /-- Nonemptiness of the consequence space. -/
   K_nonempty : Nonempty K
-  /-- The Boolean algebra of subsets of X representing things the agent
-      could learn. -/
+  /-- The Boolean algebra of subsets of X representing propositions the
+      agent can suppose. Conditioning `C e m` is suppositional reasoning
+      within the synchronic state `χ`; genuine learning that breaks out
+      of `χ` is modeled by a `CJTransformation` to a different structure. -/
   E : SetAlgebra X
   /-- The set of available alternatives (acts mapping states to consequences). -/
   A : Set (X → K)
@@ -80,47 +87,70 @@ theorem Fap.p_empty {X : Type u} {E : SetAlgebra X} (p : Fap E) :
 
 /-! ### Expected Utility -/
 
-/-- Expected utility of alternative `a` given `e` with `p(e) ≠ 0`.
-    Computed as a finite sum over the consequence space K:
-    `EU(p,u,e,a) = (1 / p(e)) * Σ_{k ∈ K} u(k) * p(a⁻¹'{k} ∩ e)`.
+/-- Expected utility of alternative `a` given supposition `e` with `p(e) ≠ 0`.
+    Computed as a finite sum over the (finite) range of `a` on `e.val`:
+    `EU(p,u,e,a) = (1 / p(e)) * Σ_{k ∈ a''e} u(k) * p(a⁻¹'{k} ∩ e)`.
 
-    Consequences not in the range of `a` contribute zero (their level sets are
-    empty, so the probability term vanishes). This requires only `Fintype K`,
-    not `Fintype X`, allowing the state space to be infinite.
+    The consequence space `K` is *not* required to be finite. Finiteness is
+    instead a per-act hypothesis `hfin : (a '' e.val).Finite`, asserting that
+    `a` takes only finitely many values on `e.val` (i.e., `a` has finite
+    support relative to `e`). Consequences outside `a '' e.val` would
+    contribute zero (their level sets intersected with `e` are empty), so
+    summing only over `a '' e.val` yields the same value as summing over a
+    larger Finset.
 
     The `hlevel` argument witnesses that each level set `a⁻¹'{k} ∩ e` belongs
     to the set algebra, which is needed to apply the probability measure. -/
 noncomputable def expected_utility {X : Type u} {K : Type v}
-    [Fintype K] [DecidableEq K]
     {E : SetAlgebra X} (p : Fap E) (u : K → ℝ)
     (e : { s // s ∈ E.carrier }) (_he : p.p e ≠ 0)
     (a : X → K)
+    (hfin : (a '' e.val).Finite)
     (hlevel : ∀ k, a ⁻¹' {k} ∩ e.val ∈ E.carrier) : ℝ :=
   (1 / p.p e) *
-    Finset.univ.sum (fun k =>
+    hfin.toFinset.sum (fun k =>
       u k * p.p ⟨a ⁻¹' {k} ∩ e.val, hlevel k⟩)
+
+/-- A constant alternative `fun _ => k` has finite range on any set. -/
+theorem image_const_finite {X : Type u} {K : Type v} (k : K) (s : Set X) :
+    ((fun (_ : X) => k) '' s).Finite :=
+  (Set.finite_singleton k).subset (by
+    rintro k' ⟨x, _, rfl⟩; exact Set.mem_singleton _)
 
 /-- The expected utility of a constant alternative `fun _ => k` equals `u k`
     (when `p.p e ≠ 0`). -/
 theorem expected_utility_const {X : Type u} {K : Type v}
-    [Fintype K] [DecidableEq K]
     {E : SetAlgebra X} (p : Fap E) (u : K → ℝ)
     (e : { s // s ∈ E.carrier }) (he : p.p e ≠ 0)
     (k : K)
+    (hfin : ((fun (_ : X) => k) '' e.val).Finite)
     (hlevel : ∀ k', (fun (_ : X) => k) ⁻¹' {k'} ∩ e.val ∈ E.carrier) :
-    expected_utility p u e he (fun _ => k) hlevel = u k := by
-  simp only [expected_utility]
-  -- For k' ≠ k the level set is empty; for k' = k it equals e
+    expected_utility p u e he (fun _ => k) hfin hlevel = u k := by
+  -- `p e ≠ 0` forces `e.val` to be nonempty (else `p e = p_empty = 0`).
+  have hne : e.val.Nonempty := by
+    by_contra hempty
+    rw [Set.not_nonempty_iff_eq_empty] at hempty
+    apply he
+    have hsub : e = (⟨e.val, e.prop⟩ : { s // s ∈ E.carrier }) := by cases e; rfl
+    rw [hsub]
+    have hpe : (⟨e.val, e.prop⟩ : { s // s ∈ E.carrier }) =
+        ⟨∅, E.empty_mem⟩ := Subtype.ext hempty
+    rw [hpe]; exact p.p_empty
+  -- The image of a constant on a nonempty set is `{k}`.
+  have himg : (fun (_ : X) => k) '' e.val = {k} := by
+    ext k'
+    refine ⟨?_, ?_⟩
+    · rintro ⟨_, _, rfl⟩; rfl
+    · rintro rfl; exact ⟨hne.choose, hne.choose_spec, rfl⟩
+  -- The level set at `k` equals `e.val`.
   have hpre_eq : (fun (_ : X) => k) ⁻¹' {k} ∩ e.val = e.val := by ext x; simp
-  have hpre_ne : ∀ k', k' ≠ k → (fun (_ : X) => k) ⁻¹' {k'} ∩ e.val = ∅ := by
-    intro k' hk'; ext x; simp [Ne.symm hk']
-  -- The sum reduces to the single k-th term
-  rw [Finset.sum_eq_single_of_mem k (Finset.mem_univ k) (fun k' _ hk' => by
-    have : (⟨(fun (_ : X) => k) ⁻¹' {k'} ∩ e.val, hlevel k'⟩ : { s // s ∈ E.carrier }) =
-        ⟨∅, E.empty_mem⟩ := Subtype.ext (hpre_ne k' hk')
-    rw [this, p.p_empty, mul_zero])]
-  have hsub : (⟨(fun (_ : X) => k) ⁻¹' {k} ∩ e.val, hlevel k⟩ : { s // s ∈ E.carrier }) =
-      ⟨e.val, e.prop⟩ := Subtype.ext hpre_eq
+  -- `hfin.toFinset = {k}`.
+  have htoFinset : hfin.toFinset = ({k} : Finset K) := by
+    ext k'
+    rw [Set.Finite.mem_toFinset, himg, Finset.mem_singleton, Set.mem_singleton_iff]
+  simp only [expected_utility, htoFinset, Finset.sum_singleton]
+  have hsub : (⟨(fun (_ : X) => k) ⁻¹' {k} ∩ e.val, hlevel k⟩ :
+      { s // s ∈ E.carrier }) = ⟨e.val, e.prop⟩ := Subtype.ext hpre_eq
   rw [hsub, show (⟨e.val, e.prop⟩ : { s // s ∈ E.carrier }) = e from by cases e; rfl]
   field_simp
 
@@ -142,19 +172,23 @@ theorem expected_utility_const {X : Type u} {K : Type v}
 /-- A conditional judgment has an expected-utility representation if there exist
     a finitely-additive probability and a utility function such that the choice
     function selects exactly the EU-maximizing alternatives from each menu,
-    for each non-null element of the set algebra. -/
-def HasEURepresentation {X : Type u} {K : Type v} [Fintype K] [DecidableEq K]
+    for each non-null supposition. EU is computed via the finite-support form
+    of `expected_utility`; the per-act hypotheses `hfin`, `hfin'` witness that
+    each act takes only finitely many values on `e.val`. -/
+def HasEURepresentation {X : Type u} {K : Type v}
     (χ : ConditionalJudgment X K) : Prop :=
   ∃ (p : Fap χ.E) (u : K → ℝ),
     ∀ (e : { s // s ∈ χ.E.carrier }),
       (he : p.p e ≠ 0) →
       ∀ m ∈ χ.M,
         ∀ a ∈ m,
+          (hfin : (a '' e.val).Finite) →
           (ha : ∀ k, a ⁻¹' {k} ∩ e.val ∈ χ.E.carrier) →
           (a ∈ χ.C e.val m ↔
             ∀ a' ∈ m,
+              (hfin' : (a' '' e.val).Finite) →
               (ha' : ∀ k, a' ⁻¹' {k} ∩ e.val ∈ χ.E.carrier) →
-              expected_utility p u e he a' ha' ≤
-                expected_utility p u e he a ha)
+              expected_utility p u e he a' hfin' ha' ≤
+                expected_utility p u e he a hfin ha)
 
 end ConditionalChoice

@@ -7,7 +7,12 @@ universe u
 
 /-- A Boolean algebra of subsets of a type. The state space X encodes the
     agent's serious possibilities; each member of the algebra represents
-    something the agent could learn. Closure under union, intersection,
+    a proposition the agent can suppose (in Levi's sense), conditioning
+    on which is suppositional, weakly Bayesian reasoning within a fixed
+    synchronic state. Genuine learning that breaks out of the current
+    state---e.g., learning something not supported by current beliefs---
+    is modeled by a `CJTransformation` to a different structure, not by
+    conditioning on a member of `E`. Closure under union, intersection,
     complement, and containing the universe ensures that the collection
     is closed under standard logical operations. -/
 structure SetAlgebra (X : Type u) where

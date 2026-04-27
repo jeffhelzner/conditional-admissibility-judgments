@@ -134,13 +134,13 @@ noncomputable def bool_u : Bool → ℝ
     probability `bool_p` and utility `bool_u`. -/
 theorem bool_representation : HasEURepresentation bool_example := by
   refine ⟨bool_p, bool_u, ?_⟩
-  intro e he m hm a ham hlevel
+  intro e he m hm a ham hfin hlevel
   -- C e m = {fun _ => false} for all e, m in bool_example
   -- M = {{fun _ => false}, {fun _ => true, fun _ => false}}
   -- All alternatives are constant, so EU = u k by expected_utility_const
   constructor
   · -- Forward: a ∈ C e.val m → a is EU-maximizing
-    intro ha_in_C a' ha'_in_m ha'_level
+    intro ha_in_C a' ha'_in_m ha'_fin ha'_level
     -- a ∈ C e.val m means a = fun _ => false
     change a ∈ ({fun _ => false} : Set (Bool → Bool)) at ha_in_C
     rw [Set.mem_singleton_iff] at ha_in_C
@@ -160,14 +160,14 @@ theorem bool_representation : HasEURepresentation bool_example := by
       subst ha_in_C
       rcases ha'_in_m with rfl | rfl
       · -- a' = const_true: EU(const_true) ≤ EU(const_false)
-        have h1 := expected_utility_const bool_p bool_u e he true ha'_level
-        have h2 := expected_utility_const bool_p bool_u e he false hlevel
-        calc expected_utility bool_p bool_u e he (fun x => true) ha'_level
+        have h1 := expected_utility_const bool_p bool_u e he true ha'_fin ha'_level
+        have h2 := expected_utility_const bool_p bool_u e he false hfin hlevel
+        calc expected_utility bool_p bool_u e he (fun x => true) ha'_fin ha'_level
             = bool_u true := h1
           _ = 0 := rfl
           _ ≤ 1 := by norm_num
           _ = bool_u false := rfl
-          _ = expected_utility bool_p bool_u e he (fun x => false) hlevel := h2.symm
+          _ = expected_utility bool_p bool_u e he (fun x => false) hfin hlevel := h2.symm
       · -- a' = const_false: EU(const_false) ≤ EU(const_false)
         exact le_refl _
   · -- Backward: a is EU-maximizing → a ∈ C e.val m
@@ -190,11 +190,13 @@ theorem bool_representation : HasEURepresentation bool_example := by
         exfalso
         have h_false_in : (fun (_ : Bool) => false) ∈ ({fun (_ : Bool) => true, fun _ => false} : Set (Bool → Bool)) :=
           Set.mem_insert_of_mem _ (Set.mem_singleton _)
+        have hfalse_fin : ((fun (_ : Bool) => false) '' e.val).Finite :=
+          image_const_finite false _
         have hfalse_level : ∀ k, (fun (_ : Bool) => false) ⁻¹' {k} ∩ e.val ∈ bool_example.E.carrier := by
           intro k; exact Set.mem_univ _
-        have := hmax (fun _ => false) h_false_in hfalse_level
-        have h1 := expected_utility_const bool_p bool_u e he true hlevel
-        have h2 := expected_utility_const bool_p bool_u e he false hfalse_level
+        have := hmax (fun _ => false) h_false_in hfalse_fin hfalse_level
+        have h1 := expected_utility_const bool_p bool_u e he true hfin hlevel
+        have h2 := expected_utility_const bool_p bool_u e he false hfalse_fin hfalse_level
         -- this : EU(const_false) ≤ EU(const_true), i.e., 1 ≤ 0
         have : bool_u false ≤ bool_u true := by
           have := h2 ▸ h1 ▸ this

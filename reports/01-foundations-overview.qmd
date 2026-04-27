@@ -25,7 +25,9 @@ bibliography: references.bib
 
 This report provides a natural-language overview of a Lean4 formalization of *conditional judgments of admissibility*---a framework for reasoning about rational choice under uncertainty. The formalization, built atop Mathlib4, encodes the core mathematical structures, their morphisms, and a concrete example with a verified expected-utility representation theorem.
 
-The primitive notion in this framework is *conditional admissibility*: which alternatives from a menu would a rational decision maker regard as acceptable, given what they have learned about the state of the world? A conditional admissibility structure represents the agent's internal state at a fixed point in time, insofar as that state bears on matters of rational choice. The state space $X$ encodes the agent's *full beliefs* at that time: its elements are what the agent counts as *serious possibilities*, in the sense of Levi [-@levi1980enterprise]. Each $e \subseteq X$ in the set algebra $E$ represents something the agent could learn. While the agent is in the state represented by a conditional judgment structure $\chi$, the set $C(e, m)$ is the set of alternatives that the agent would judge admissible if they were to learn $e$ and be offered the menu $m$. This synchronic, weakly Bayesian conditioning within a fixed structure follows the tradition of Levi and Seidenfeld. Changes that go beyond conditioning within a fixed structure---such as expansions or contractions of the state space itself---are handled by transformations between conditional admissibility structures and are discussed in §5.
+The primitive notion in this framework is *conditional admissibility*: which alternatives from a menu would a rational decision maker regard as acceptable, given a supposition about the state of the world? A conditional admissibility structure represents the agent's internal state at a fixed point in time, insofar as that state bears on matters of rational choice. The state space $X$ encodes the agent's *full beliefs* at that time: its elements are what the agent counts as *serious possibilities*, in the sense of Levi [-@levi1980enterprise]. Each $e \in E$ represents a proposition the agent can *suppose*: while in the state represented by $\chi$, the set $C(e, m)$ is the set of alternatives that the agent would judge admissible *under the supposition that $e$*, when offered the menu $m$. This synchronic, suppositional, weakly Bayesian conditioning within a fixed structure follows the tradition of Levi and Seidenfeld.
+
+It is essential to distinguish this suppositional reading of $E$ from genuine learning. An agent can come to learn things that are not supported by their current beliefs---for example, a coin landing on its side when only heads and tails were treated as serious possibilities, or the discovery of a consequence not in $K$. Such events cannot be modeled as conditioning on some $e \in E$, because no such $e$ exists within $\chi$. Genuine learning that breaks out of $\chi$, together with expansions or contractions of $X$, $K$, or $E$ themselves, is modeled as a transition to a *different* conditional admissibility structure $\chi'$, via a `CJTransformation` (§5). The separation between *suppositional change within a structure* and *transformational change between structures* is one of the principal motivations for the categorical formalism.
 
 # Core Structures
 
@@ -33,7 +35,7 @@ The formalization defines four principal structures, organized across four sourc
 
 ## Set Algebra
 
-The `SetAlgebra` structure ([SetAlgebra.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/SetAlgebra.lean)) captures the collection of things the agent could learn. It is a Boolean algebra of subsets of $X$: a family of sets closed under union, intersection, complement, and containing the universe.
+The `SetAlgebra` structure ([SetAlgebra.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/SetAlgebra.lean)) captures the propositions over $X$ that the agent can suppose. It is a Boolean algebra of subsets of $X$: a family of sets closed under union, intersection, complement, and containing the universe.
 
 ```
 structure SetAlgebra (X : Type u) where
@@ -61,7 +63,7 @@ The `ConditionalJudgment` structure ([ConditionalJudgment.lean](https://github.c
 |-----------|------|----------------|
 | $X$ | `Type u` | State space: possible states of the world |
 | $K$ | `Type v` | Consequence space: possible outcomes |
-| $E$ | `SetAlgebra X` | Boolean algebra of things the agent could learn |
+| $E$ | `SetAlgebra X` | Boolean algebra of propositions the agent can suppose |
 | $A$ | `Set (X → K)` | Set of available alternatives (acts) |
 | $M$ | `Set (Set (X → K))` | Set of available menus |
 | $C$ | `Set X → Set (X → K) → Set (X → K)` | Conditional choice function |
@@ -98,17 +100,21 @@ A derived result **`Fap.p_empty`** establishes that $p(\emptyset) = 0$ for any f
 
 ## Expected Utility
 
-Expected utility is defined as a finite sum over the consequence space $K$ (since we require `Fintype K`):
+Expected utility is defined as a finite sum over the (finite) range of the act on the supposition $e$:
 
 $$
-\mathrm{EU}(p, u, e, a) = \frac{1}{p(e)} \sum_{k \in K} u(k) \cdot p(a^{-1}\{k\} \cap e)
+\mathrm{EU}(p, u, e, a) = \frac{1}{p(e)} \sum_{k \in a(e)} u(k) \cdot p(a^{-1}\{k\} \cap e)
 $$
 
-The sum ranges over all consequences $k \in K$, not just those in the range of $a$. Consequences outside the range contribute zero: if $k \notin \mathrm{range}(a)$ then $a^{-1}\{k\} = \emptyset$, so $p(a^{-1}\{k\} \cap e) = p(\emptyset) = 0$. This formulation requires only that $K$ is finite, placing no finiteness constraint on the state space $X$.
+Neither the consequence space $K$ nor the state space $X$ is required to be finite. Finiteness is instead a *per-act* hypothesis: each call to `expected_utility` carries a witness `hfin : (a '' e.val).Finite` asserting that $a$ takes only finitely many values on $e$. Equivalently, $a$ has finite support relative to $e$. Consequences outside $a(e)$ would contribute zero (their level sets intersected with $e$ are empty), so summing only over $a(e)$ yields the same value as summing over a larger Finset.
 
-The `expected_utility` function takes a probability $p$, utility $u : K \to \mathbb{R}$, an $e \in E$ with $p(e) \neq 0$, an alternative $a : X \to K$, and a proof that each level set $a^{-1}\{k\} \cap e$ belongs to the set algebra.
+The `expected_utility` function takes a probability $p$, a utility $u : K \to \mathbb{R}$, an $e \in E$ with $p(e) \neq 0$, an alternative $a : X \to K$, the finite-range proof `hfin`, and a proof that each level set $a^{-1}\{k\} \cap e$ belongs to the set algebra. The function is marked `noncomputable` because the sum, indexed by `hfin.toFinset`, is constructed classically.
 
-The function is marked `noncomputable` because it depends on `Finset.sum` over `Finset.univ : Finset K`, which requires `DecidableEq K`.
+### Why finite-support over arbitrary $K$
+
+This design preserves a finite-sum EU formula without committing to `Fintype K`. The motivation is downstream: a *cardinal* utility representation in the von Neumann--Morgenstern / Herstein--Milnor tradition requires $K$ to carry a mixture structure (closure under at least some convex combinations). Closing $K$ under all rational mixtures already makes $K$ countably infinite, so any approach that relies on `Fintype K` cannot survive that step. By contrast, finite-support acts compose cleanly with mixture structure: even when $K$ is uncountable, an act with finite range gives a finite EU sum.
+
+A finitary $n$-grid on $K$ (closing a finite base of consequences under the rational mixtures $\lambda k + (1-\lambda) k'$ with $\lambda \in \{0/n, 1/n, \ldots, n/n\}$) is a natural special case: every act over a finite $K$ automatically has finite range, so the present formulation specializes to the grid setting without modification.
 
 A key lemma is **`expected_utility_const`**: for a constant alternative $(\lambda x.\, k)$, the expected utility equals $u(k)$. The proof proceeds by:
 
@@ -215,7 +221,7 @@ Several design choices merit explicit discussion:
 
 2. **Custom `SetAlgebra`**: A purpose-built structure rather than Mathlib's `MeasurableSpace`, because the framework needs only finite additivity ($\sigma$-additivity is too strong for this philosophical setting).
 
-3. **`Fintype K` as a constraint on operations, not on structures**: The `ConditionalJudgment` structure places no finiteness requirements on either $X$ or $K$. The constraint `[Fintype K]` appears only on `expected_utility` and `HasEURepresentation`, where it is needed to make the sum over consequences finite. The state space $X$ is entirely unconstrained, allowing infinite or uncountable state spaces. This is decision-theoretically natural: finiteness of consequences, not states, is what makes expected utility a finite sum.
+3. **No finiteness on $X$ or $K$; finite-support per act instead**: The `ConditionalJudgment` structure places no finiteness requirements on either $X$ or $K$. Even `expected_utility` and `HasEURepresentation` avoid `Fintype K`: finiteness is localized to a per-act hypothesis `(a '' e.val).Finite`, which asserts that the act takes only finitely many values on the supposition $e$. This is the form needed for cardinal-utility extensions (§3.2).
 
 4. **Contravariant consequence maps**: The direction $g : K' \to K$ reflects the natural variance---pulling back value assessments from the codomain judgment to the domain judgment.
 
@@ -234,7 +240,7 @@ The entire codebase compiles cleanly under Lean 4.29.0 with Mathlib4, with no `s
 Future directions include:
 
 - **Preference extraction**: deriving a weak preference order on $K$ from the choice function via constant alternatives.
-- **Cardinal utility**: axiomatizing conditions under which the derived preference admits a von Neumann--Morgenstern representation.
+- **Cardinal utility**: axiomatizing conditions under which the derived preference admits a von Neumann--Morgenstern representation. The current finite-support EU machinery is already compatible with $K$ being closed under mixtures (see §3.2); the next step is to introduce a `MixtureSpace K` structure and the standard mixture-set axioms.
 - **Credal sets and E-admissibility**: generalizing from a single prior $p$ to a convex set $P$ of priors, where admissibility means Bayes-optimality under *some* $p \in P$. This connects to Levi's E-admissibility and the Seidenfeld--Schervish--Kadane theory.
 - **Full representation theorem**: extending from `Bool` to arbitrary (finite or infinite) state spaces with finite consequence spaces.
 - **Categorical development**: functoriality, natural transformations, and the subcategory of representable judgments.

@@ -9,7 +9,7 @@ package conditionalAdmissibility where
 @[default_target]
 lean_lib ConditionalChoice where
   srcDir := "src"
-  roots := #[`SetAlgebra, `ConditionalJudgment, `Transformation, `Category, `RevealedPreference, `ConstantActs, `ConstActInvariance, `EUImpliesWARP, `MultiRepresentable, `StrictIndiffIncomp]
+  roots := #[`SetAlgebra, `ConditionalJudgment, `Transformation, `Category, `RevealedPreference, `ConstantActs, `ConstActInvariance, `EUImpliesWARP, `MultiRepresentable, `StrictIndiffIncomp, `EAdmissible, `CredalEU]
 
 lean_lib Examples where
   srcDir := "test"

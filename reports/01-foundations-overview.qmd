@@ -174,6 +174,18 @@ The proofs proceed by chaining the corresponding coherence fields of $T$ and $T'
 
 These extensional equalities are proved by `Function.comp` associativity and applied to rewrite the goal into a form where the fields of $T$ and $T'$ can be applied sequentially.
 
+### Category laws
+
+The morphism scaffolding is promoted to an actual category by three theorems in [src/Category.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/Category.lean):
+
+* `CJTransformation.id_comp` — $(\mathrm{id}_\chi).\mathrm{comp}\,T = T$. *This says, informally, that pre-composing any morphism with the identity leaves it unchanged.*
+* `CJTransformation.comp_id` — $T.\mathrm{comp}\,(\mathrm{id}_{\chi'}) = T$. *This says, informally, that post-composing any morphism with the identity leaves it unchanged.*
+* `CJTransformation.assoc` — $(T.\mathrm{comp}\,T').\mathrm{comp}\,T'' = T.\mathrm{comp}\,(T'.\mathrm{comp}\,T'')$. *This says, informally, that composing three morphisms is associative.*
+
+The proofs rely on the `@[ext]` attribute attached to `CJTransformation`, which reduces equality of morphisms to equality of the underlying maps $f$ and $g$ (the five coherence fields are propositions and so are equal automatically by proof irrelevance). After extensionality the equalities reduce to `Function.comp_id` / `Function.id_comp` and follow by `rfl`.
+
+This makes precise the slogan that conditional judgments form a category: at the level of a fixed pair of universes, with `CJTransformation.id` as the identity morphisms and `CJTransformation.comp` as composition, the three category axioms hold definitionally up to η.
+
 # The Bool Example
 
 The test file ([Examples.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/test/Examples.lean)) provides a fully verified concrete instantiation of the framework over the type `Bool`.
@@ -329,6 +341,23 @@ The single-relation case is recovered by `multiRepresentable_singleton_iff_repre
 
 These coincide if and only if $|\mathcal{R}| = 1$ (`cautious_singleton`, `cautiousIncomp_singleton`).
 
+### E-admissibility as a named predicate
+
+The "bold" / E-admissible side has a long-standing name in the philosophical literature, and [src/EAdmissible.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/EAdmissible.lean) lifts it to a first-class object so it can be referenced directly:
+
+$$
+\text{EAdmissible}\,\mathcal{R}\,m \;:=\; \{\, a \in m \;:\; \exists R \in \mathcal{R},\ \forall b \in m,\ a \mathrel{R} b \,\}.
+$$
+
+Four headline theorems give the predicate its expected algebraic shape and pin down its relationship to single-relation maximization and to multi-representability:
+
+* `eAdmissible_subset_menu` — $\text{EAdmissible}\,\mathcal{R}\,m \subseteq m$. *This says, informally, that E-admissibility never adds alternatives to a menu; it only narrows it.*
+* `eAdmissible_singleton` — for any singleton menu $\{a\}$, $\text{EAdmissible}\,\mathcal{R}\,\{a\} = \{a\}$ whenever $\mathcal{R}$ is non-empty and reflexive at $a$. *This says, informally, that an act faced with no competitors is always admissible.*
+* `eAdmissible_eq_maxSet_of_singleton` — for a singleton family $\{R\}$, $\text{EAdmissible}\,\{R\}\,m = \{a \in m : \forall b \in m,\ a\,R\,b\}$. *This says, informally, that E-admissibility against a single relation is just ordinary maximization against that relation.*
+* `multiRepresentable_iff_C_eq_eAdmissible` — $\text{MultiRepresentable}\,\chi\,e\,\mathcal{R} \;\Leftrightarrow\; \forall m \in \chi.M,\ \chi.C(e, m) = \text{EAdmissible}\,\mathcal{R}\,m$. *This says, informally, that being multi-representable is exactly the claim that the choice function is E-admissibility against $\mathcal{R}$.*
+
+The Levi two-prior example is then a concrete instance: the corollary `levi_C_eq_eAdmissible` (in [test/Levi2PriorExample.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/test/Levi2PriorExample.lean)) reads, on every menu, $\text{levi\_judgment}.C(\text{Set.univ}, m) = \text{EAdmissible}\,\{R_0, R_1\}\,m$. *This says, informally, that the Levi example's choice function is literally Levi's own E-admissibility predicate against the two-prior family.*
+
 A small but informative finding lives at this layer: **multi-rationalizability by weak orders is strictly stronger than single-relation representability**. The `Fin 3` rep-without-WARP example is *not* multi-rationalizable by any family of weak orders on $\chi.A$ (theorem `fin3_not_multiRepresentable_by_weakOrders` in [test/Fin3RepNotWARP.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/test/Fin3RepNotWARP.lean)). The argument is short and worth recording in prose:
 
 * From $\mathrm{act}\,2 \notin C(\{\mathrm{act}\,0, \mathrm{act}\,2\})$: every $R \in \mathcal{R}$ satisfies $R\,(\mathrm{act}\,0)\,(\mathrm{act}\,2)$ (otherwise totality gives the reverse, and $\mathrm{act}\,2$ becomes $R$-max in $\{\mathrm{act}\,0, \mathrm{act}\,2\}$).
@@ -370,6 +399,20 @@ Three theorems are proved:
 This example is the conceptual mirror image of the `Fin 3` rep-without-WARP example. There, single-relation rationalizability *succeeded* but transitivity of $R_e$ failed; incomparability was empty. Here, single-relation rationalizability *fails* but the multi-relation generalization succeeds, and incomparability is the very mechanism that makes it succeed. Together the two examples mark the two distinct ways the WARP equivalence can break down — and exactly delineate the territory in which the alternative- and consequence-level revealed-preference theory of the project applies, the territory in which Levi/SSK theory takes over, and the (non-empty) intersection of the two failure modes.
 
 A natural next module would tie this back to expected utility: define `HasCredalEURepresentation` as the existence of a *family* $P$ of priors and a *single* utility $u : K \to \mathbb{R}$ such that $C$ is exactly the family-EU-admissible set, and prove `HasCredalEURepresentation → MultiRepresentable` paralleling the existing `HasEURepresentation → WARP`. The constant-act menu invariance axiom (above) is precisely what lets a single $u$ stand in place of a family.
+
+### Credal-set EU representation
+
+That next module is now in place: [src/CredalEU.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/CredalEU.lean) defines `HasCredalEURepresentation χ e` as a non-empty family $P$ of finitely-additive priors (each non-null on $e$) together with a single utility $u : K \to \mathbb{R}$ such that, on every menu, the choice equals the credal-set EU-admissible set:
+
+$$
+\chi.C(e, m) \;=\; \{\, a \in m \;:\; \exists\, p \in P,\ \forall b \in m,\ \mathrm{EU}_p(b) \le \mathrm{EU}_p(a)\,\}.
+$$
+
+Each prior $p \in P$ induces a weak order $R_p$ on $\chi.A$ by EU comparison (`credalRfam` in the module).
+
+* `credalRfam_refl`, `credalRfam_trans` — for each $p \in P$, $R_p$ is reflexive and transitive *through* $\chi.A$. *This says, informally, that each prior in the credal set induces a well-behaved preference ordering on the agent's available acts.*
+* `hasCredalEURepresentation_implies_multiRepresentable` — every credal-set EU representation entails `MultiRepresentable χ e.val { R_p : p ∈ P }`. *This says, informally, that EU-maximization against a family of priors is a special case of the multi-relation revealed-preference layer — exactly the credal analogue of "EU implies WARP".*
+* `hasCredalEURepresentation_of_singleton_eu` and `singleton_credalEU_to_eu` — when $P = \{p_0\}$, the credal-set representation is equivalent to a single-prior EU representation at $e$ (`HasEURepresentationAt χ e p₀ u`). *This says, informally, that the credal-set framework is a strict generalization of single-prior SEU: the latter is exactly the singleton-credal special case.*
 
 ## From alternatives to consequences: the relation $R_e^K$
 

@@ -13,6 +13,7 @@ universe u v u' v'
     CJTransformation is a morphism. The map `f : X → X'` pulls back
     elements of the set algebra (coarse-to-fine); the map `g : K' → K`
     pushes forward consequences. -/
+@[ext]
 structure CJTransformation
     {X : Type u} {K : Type v} {X' : Type u'} {K' : Type v'}
     (χ : ConditionalJudgment X K) (χ' : ConditionalJudgment X' K') where

@@ -47,6 +47,7 @@ gamble, but inadmissible against the menu of *both* gambles.
 import RevealedPreference
 import MultiRepresentable
 import StrictIndiffIncomp
+import EAdmissible
 
 namespace ConditionalChoice
 
@@ -488,6 +489,19 @@ theorem levi_cautiousIncomp_aS_a1 : CautiousIncomp Rℛ aS a1 := by
   refine ⟨?_, ?_⟩
   · intro hC; exact not_R1_aS_a1 (hC R1 R1_mem)
   · intro hC; exact not_R0_a1_aS (hC R0 R0_mem)
+
+/-! ## E-admissibility witness
+
+The Levi example is a concrete `EAdmissible` instance: on every menu,
+the choice set equals `EAdmissible {R0, R1} m`. This is an immediate
+restatement of `levi_multiRepresentable` after unfolding the
+`MultiRepresentable` ↔ "C = EAdmissible" equivalence. -/
+
+theorem levi_C_eq_eAdmissible :
+    ∀ m ∈ levi_M, levi_judgment.C univE m = EAdmissible Rℛ m := by
+  have h := levi_multiRepresentable
+  rw [multiRepresentable_iff_C_eq_eAdmissible] at h
+  intro m hm; exact h m hm
 
 /-! ## Headline summary -/
 

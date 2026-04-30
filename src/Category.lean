@@ -126,4 +126,45 @@ def CJTransformation.comp {X : Type u} {K : Type v}
     rw [hf_eq, ← hcomp_eq, ← himg_eq]
     exact h2
 
+/-! ## Category laws
+
+The three category-axiom equalities for `CJTransformation`. Together
+with the existing `id` and `comp` definitions, these promote the
+morphism scaffolding to an actual category (over a fixed pair of
+universes/types). The proofs are extensionality on the `f` and `g`
+fields followed by `Function.id_comp` / `Function.comp_id`
+/ `Function.comp_assoc`. -/
+
+/-- Left-identity law: `(id χ).comp T = T`. -/
+@[simp] theorem CJTransformation.id_comp
+    {X : Type u} {K : Type v} {X' : Type u'} {K' : Type v'}
+    {χ : ConditionalJudgment X K} {χ' : ConditionalJudgment X' K'}
+    (T : CJTransformation χ χ') :
+    (CJTransformation.id χ).comp T = T := by
+  ext <;> rfl
+
+/-- Right-identity law: `T.comp (id χ') = T`. -/
+@[simp] theorem CJTransformation.comp_id
+    {X : Type u} {K : Type v} {X' : Type u'} {K' : Type v'}
+    {χ : ConditionalJudgment X K} {χ' : ConditionalJudgment X' K'}
+    (T : CJTransformation χ χ') :
+    T.comp (CJTransformation.id χ') = T := by
+  ext <;> rfl
+
+/-- Associativity of composition: `(T.comp T').comp T'' = T.comp (T'.comp T'')`. -/
+theorem CJTransformation.assoc
+    {X : Type u} {K : Type v}
+    {X' : Type u'} {K' : Type v'}
+    {X'' : Type u''} {K'' : Type v''}
+    {X''' : Type*} {K''' : Type*}
+    {χ : ConditionalJudgment X K}
+    {χ' : ConditionalJudgment X' K'}
+    {χ'' : ConditionalJudgment X'' K''}
+    {χ''' : ConditionalJudgment X''' K'''}
+    (T : CJTransformation χ χ')
+    (T' : CJTransformation χ' χ'')
+    (T'' : CJTransformation χ'' χ''') :
+    (T.comp T').comp T'' = T.comp (T'.comp T'') := by
+  ext <;> rfl
+
 end ConditionalChoice

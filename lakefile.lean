@@ -9,11 +9,11 @@ package conditionalAdmissibility where
 @[default_target]
 lean_lib ConditionalChoice where
   srcDir := "src"
-  roots := #[`SetAlgebra, `ConditionalJudgment, `Transformation, `Category]
+  roots := #[`SetAlgebra, `ConditionalJudgment, `Transformation, `Category, `RevealedPreference, `ConstantActs, `ConstActInvariance, `EUImpliesWARP, `MultiRepresentable, `StrictIndiffIncomp]
 
 lean_lib Examples where
   srcDir := "test"
-  roots := #[`Examples]
+  roots := #[`Examples, `RevealedPreferenceExamples, `Fin3RepNotWARP, `Levi2PriorExample]
 
 require mathlib from git
   "https://github.com/leanprover-community/mathlib4" @ "master"

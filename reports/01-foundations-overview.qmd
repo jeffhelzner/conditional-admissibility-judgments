@@ -213,6 +213,241 @@ The proof verifies both directions of the biconditional for each combination of 
 
 The proof of `bool_representation` uses classical reasoning (`open Classical`) to handle decidability of `Set` membership when constructing the `Fap` witness. This is confined to the test file; the core library is entirely classical-free.
 
+# Revealed Preference on Alternatives
+
+The module [RevealedPreference.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/RevealedPreference.lean) develops the Sen-style theory of revealed preference within `ConditionalJudgment`. For each event $e \in \chi.E$ a *base relation* on the alternative space is defined,
+
+$$
+a \mathrel{R_e} a' \;\iff\; \exists m \in \chi.M,\ a \in m,\ a' \in m,\ \text{and}\ a \in \chi.C(e, m),
+$$
+
+and the module then asks (i) when $R_e$ is a weak ordering on $\chi.A$, and (ii) when $\chi.C$ is *representable* by $R_e$ in the sense that $\chi.C(e, m) = \{ a \in m : \forall a' \in m, a R_e a' \}$.
+
+## Closure conditions and choice-consistency axioms
+
+Sen-style proofs use small submenus (singletons, pairs, triples) that need not be present in $\chi.M$ a priori. The `MenuClosure χ` predicate bundles the closure clauses needed for the present theorems:
+
+* `menu_subset_alt`: every menu is a subset of $\chi.A$.
+* `singleton_mem`: every singleton drawn from $\chi.A$ is a menu.
+* `pair_mem`: every (unordered) pair of alternatives is a menu.
+* `triple_mem`: every (unordered) triple of alternatives is a menu.
+
+The `menu_subset_alt` clause was added to the original plan during implementation: without it, `chosen_is_maximal` cannot quote `pair_mem` for an arbitrary member of an arbitrary menu.
+
+The standard choice-consistency axioms are formalized as event-indexed predicates `AxiomAlphaAt`, `AxiomBetaAt`, `AxiomGammaAt`, and `WARPAt`, each with an event-uniform variant (`AxiomAlpha`, etc.) that quantifies over $e \in \chi.E$.
+
+## Theorems established
+
+Under `MenuClosure χ` and `e ∈ χ.E`:
+
+| Result | Hypotheses used |
+|---|---|
+| `revealedPref_refl_at` ($R_e$ reflexive on $\chi.A$) | `singleton_mem` |
+| `revealedPref_total_at` ($R_e$ total on $\chi.A$) | `pair_mem` |
+| `warpAt_iff_alphaAt_betaAt` (WARP $\leftrightarrow$ $\alpha\wedge\beta$) | `pair_mem`, `menu_subset_alt` |
+| `revealedPref_trans_via_warp` ($R_e$ transitive) | WARP, `triple_mem` |
+| `revealedPref_weakOrder_at` ($R_e$ a weak ordering) | WARP, `singleton_mem`, `pair_mem`, `triple_mem` |
+| `chosen_is_maximal` ($C \subseteq \mathrm{maxSet}$) | $\alpha$, `pair_mem` |
+| `max_is_chosen_under_warp` ($\mathrm{maxSet} \subseteq C$) | WARP |
+| `representable_of_warp` ($C = \mathrm{maxSet}$) | WARP, `pair_mem` |
+| `representable_imp_alphaAt` (Representable $\to \alpha$) | none beyond Representable |
+| `representable_imp_gammaAt` (Representable $\to \gamma$) | none beyond Representable |
+| `warpAt_of_representable_of_transitive` (Representable $\wedge$ Trans$(R_e) \to$ WARP) | `pair_mem`, `menu_subset_alt` |
+| `warpAt_iff_representable_and_transitive` (WARP $\leftrightarrow$ Representable $\wedge$ Trans$(R_e)$) | `pair_mem`, `triple_mem`, `menu_subset_alt` |
+
+A small definition `EventIndependentR` records the event-independence property of $R_e$ at the alternative level. The corresponding consequence-level property `EventIndependentRK` is developed in the constant-acts module below.
+
+## The sharp equivalence: WARP = representability + transitivity of $R_e$
+
+The classical Arrow–Sen theorem characterizes WARP as equivalence to rationalizability of $\chi.C$ by *some* weak order. The `Representable` predicate of the present module makes a stronger demand: it asks $\chi.C$ to be rationalized specifically by the revealed relation $R_e$. Under that strengthening, WARP is *not* equivalent to representability alone — representability is consistent with $R_e$ failing to be transitive (see below). What does hold under `MenuClosure` is the sharp equivalence
+
+$$
+\text{WARP}_e \;\;\leftrightarrow\;\; \text{Representable}_e \;\wedge\; \text{Transitive}(R_e \restriction \chi.A),
+$$
+
+formalized as `warpAt_iff_representable_and_transitive`. Conceptually, this isolates the additional content of WARP beyond representability: precisely the claim that the revealed relation is itself transitive. Where representability says "the chosen elements are exactly those at the top of the revealed ordering on each menu", WARP says additionally that "the revealed ordering is itself a weak order on $\chi.A$".
+
+## Findings: where the plan diverges from what is provable
+
+Two implications proposed in the original plan turned out to be *not provable* under `MenuClosure` alone, and are excluded from the module accordingly:
+
+1. **No "$\alpha + \gamma \to$ transitivity" route.** A choice function on three alternatives with $C(\{a, a'\}) = \{a, a'\}$, $C(\{a, b\}) = \{a\}$, $C(\{a', b\}) = \{b\}$, $C(\{a, a', b\}) = \{a\}$ satisfies both Sen's $\alpha$ and Sen's $\gamma$ but its base relation $R_e$ is not transitive: $a' R_e a$ and $a R_e b$ both hold, yet $a' R_e b$ fails (no admissible witness menu exists). Only the WARP route to transitivity is therefore developed. The Lean theorem `revealedPref_trans_via_warp` records this route.
+
+2. **No "Representable $\leftrightarrow$ WARP" equivalence.** The same example also has $\chi.C(e, m) = \mathrm{maxSet}_{R_e}(m)$ for *every* menu $m$ (so `Representable` holds), but Sen's $\beta$ fails for $(m, m') = (\{a, a', b\}, \{a, a'\})$ — both $a, a' \in \chi.C(e, m')$ yet $a \in \chi.C(e, m)$ while $a' \notin \chi.C(e, m)$ — and consequently WARP fails. Hence the forward direction of the classical equivalence breaks down at `MenuClosure`, even when $\chi.M$ is closed under *all* finite nonempty subsets of $\chi.A$. What is recovered in its place is the sharp equivalence above.
+
+The example accompanying these findings is documented in [test/RevealedPreferenceExamples.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/test/RevealedPreferenceExamples.lean), together with a short proof that the existing `bool_example` does *not* satisfy `MenuClosure` (its $\chi.M$ lacks the singleton menu containing the constant-true alternative). A concrete `Fin 3` realization of the rep-without-WARP example is provided in [test/Fin3RepNotWARP.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/test/Fin3RepNotWARP.lean), which constructs `fin3_judgment : ConditionalJudgment Unit (Fin 3)` with three constant acts $\mathrm{act}\,0, \mathrm{act}\,1, \mathrm{act}\,2$ and the choice function
+
+$$
+C(\{0,1\}) = \{0,1\}, \quad C(\{0,2\}) = \{0\}, \quad C(\{1,2\}) = \{2\}, \quad C(\{0,1,2\}) = \{0\},
+$$
+
+and proves the headline triple `fin3_summary`:
+
+* `Representable fin3_judgment Set.univ`,
+* $\neg\,$`TransitiveOnAlt fin3_judgment Set.univ` (the chain $\mathrm{act}\,1 \mathrel{R_e} \mathrm{act}\,0$ and $\mathrm{act}\,0 \mathrel{R_e} \mathrm{act}\,2$ holds, but $\mathrm{act}\,1 \mathrel{R_e} \mathrm{act}\,2$ fails — neither candidate witness menu has $\mathrm{act}\,1$ admissible), and
+* $\neg\,$`WARPAt fin3_judgment Set.univ` (direct counterexample at $(m, m') = (\{0,1,2\}, \{0,1\})$, $(a, a') = (\mathrm{act}\,1, \mathrm{act}\,0)$).
+
+This is the conceptual contrapositive of the sharp equivalence: representability and transitivity of $R_e$ are independent components of WARP, and dropping either alone is consistent with rationalizability of $\chi.C$ by its own induced relation.
+
+## Strict preference, indifference, and incomparability
+
+Once the WARP regime is left, four mutually exclusive relations on $\chi.A \times \chi.A$ appear. The module [src/StrictIndiffIncomp.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/StrictIndiffIncomp.lean) makes them all first-class:
+
+|              | $a \mathrel{R_e} b$ | $\neg\,a \mathrel{R_e} b$ |
+|--------------|---------------------|----------------------------|
+| $b \mathrel{R_e} a$  | `Indiff χ e a b`     | `StrictPref χ e b a`       |
+| $\neg\,b \mathrel{R_e} a$ | `StrictPref χ e a b` | `Incomp χ e a b`          |
+
+The theorem `trichotomy` records that, for any pair $(a,b)$, exactly one of these four cells obtains. The conceptually central fact about the WARP regime is then `not_incomp_of_warp`:
+
+$$
+\text{MenuClosure}(\chi) \;\wedge\; \text{WARPAt}(\chi, e)
+\;\;\Longrightarrow\;\;
+\forall a, b \in \chi.A,\ \neg\,\text{Incomp}(\chi, e, a, b).
+$$
+
+This is the precise sense in which **WARP collapses incomparability into indifference**. The collapse is *not* automatic in any weakening of WARP: it relies on the totality of $R_e$ on $\chi.A$, which `revealedPref_total_at` derives directly from `WARPAt + MenuClosure`. Once totality goes, `Incomp` becomes inhabited.
+
+Levi and Seidenfeld–Schervish–Kadane both insist on the philosophical importance of distinguishing incomparability from indifference. In the formalism of this project the distinction is *invisible* under WARP and *visible* without it: that is the essence of moving beyond a single weak order on alternatives. Under WARP, `StrictPref` is asymmetric, irreflexive, and transitive on $\chi.A$, and `Indiff` is an equivalence relation on $\chi.A$ (theorems `strictPref_trans`, `indiff_equiv` in the same module).
+
+The `Fin 3` rep-without-WARP example, however, has $\text{Incomp}\,(\chi, e, \cdot, \cdot)$ *empty* on $\chi.A$ (theorem `fin3_no_incomp` in [test/Fin3RepNotWARP.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/test/Fin3RepNotWARP.lean)): every pair of distinct alternatives admits a witness menu in at least one direction. So that example separates *non-transitivity* of $R_e$ from *incomparability*: the failure of WARP it exhibits is in the transitivity dimension only. A genuine incomparability example must come from a setting where some pair has no witness menu — which is the case on credal-set / multi-relation rationalizations, treated next.
+
+## Multi-rationalizability: relaxing the single-relation assumption
+
+Levi's theory of E-admissibility, and the Seidenfeld–Schervish–Kadane / Walley imprecise-probability tradition more broadly, generalize subjective expected utility theory by replacing a single prior–utility pair with a *family*. The associated revealed-preference layer is captured in [src/MultiRepresentable.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/MultiRepresentable.lean).
+
+A `ConditionalJudgment χ` is *multi-representable* on event $e$ by a family $\mathcal{R}$ of binary relations on $X \to K$ if, on every menu $m \in \chi.M$,
+
+$$
+\chi.C(e, m) \;=\; \{\, a \in m \;:\; \exists R \in \mathcal{R},\ \forall a' \in m,\ a \mathrel{R} a' \,\}.
+$$
+
+The single-relation case is recovered by `multiRepresentable_singleton_iff_representable`: $\text{MultiRepresentable}\,\chi\, e\, \{R_e\} \Leftrightarrow \text{Representable}\,\chi\, e$. The multi-relation generalization makes two preference notions distinguishable from day one:
+
+* the *cautious* (a.k.a. unanimity / Bewley) relation, $a \succsim^c_{\mathcal{R}} b \;:\!\!\iff\; \forall R \in \mathcal{R},\ R\,a\,b$, with strict and incomparable parts derived in the obvious way (`Cautious`, `CautiousIncomp` in the module). When $\mathcal{R}$ is non-singleton and non-unanimous, `CautiousIncomp` is genuinely inhabited;
+* the *bold* / E-admissible acceptance, captured directly by `MultiRepresentable`.
+
+These coincide if and only if $|\mathcal{R}| = 1$ (`cautious_singleton`, `cautiousIncomp_singleton`).
+
+A small but informative finding lives at this layer: **multi-rationalizability by weak orders is strictly stronger than single-relation representability**. The `Fin 3` rep-without-WARP example is *not* multi-rationalizable by any family of weak orders on $\chi.A$ (theorem `fin3_not_multiRepresentable_by_weakOrders` in [test/Fin3RepNotWARP.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/test/Fin3RepNotWARP.lean)). The argument is short and worth recording in prose:
+
+* From $\mathrm{act}\,2 \notin C(\{\mathrm{act}\,0, \mathrm{act}\,2\})$: every $R \in \mathcal{R}$ satisfies $R\,(\mathrm{act}\,0)\,(\mathrm{act}\,2)$ (otherwise totality gives the reverse, and $\mathrm{act}\,2$ becomes $R$-max in $\{\mathrm{act}\,0, \mathrm{act}\,2\}$).
+* From $\mathrm{act}\,1 \notin C(\{\mathrm{act}\,1, \mathrm{act}\,2\})$: every $R \in \mathcal{R}$ satisfies $\neg\,R\,(\mathrm{act}\,1)\,(\mathrm{act}\,2)$. By totality, $R\,(\mathrm{act}\,2)\,(\mathrm{act}\,1)$ strictly.
+* Transitivity in each $R$: $R\,(\mathrm{act}\,0)\,(\mathrm{act}\,2)$ and $R\,(\mathrm{act}\,2)\,(\mathrm{act}\,1)$ force $R\,(\mathrm{act}\,0)\,(\mathrm{act}\,1)$. Combined with $\neg\,R\,(\mathrm{act}\,1)\,(\mathrm{act}\,2)$ and a second transitivity step, $\neg\,R\,(\mathrm{act}\,1)\,(\mathrm{act}\,0)$.
+* But $\mathrm{act}\,1 \in C(\{\mathrm{act}\,0, \mathrm{act}\,1\})$ requires *some* $R \in \mathcal{R}$ to have $\mathrm{act}\,1$ as $R$-max in $\{\mathrm{act}\,0, \mathrm{act}\,1\}$, hence $R\,(\mathrm{act}\,1)\,(\mathrm{act}\,0)$ — contradiction.
+
+So the rep-without-WARP example does **not** witness Levi-style E-admissibility either. A genuinely Levi-flavored example must live in the stricter regime: two priors over a binary state space, with three acts whose EU rankings differ across priors. The next section constructs exactly such an example.
+
+### A two-prior, three-act example: the canonical Levi setup
+
+The module [test/Levi2PriorExample.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/test/Levi2PriorExample.lean) constructs the smallest concrete instance of a `ConditionalJudgment` that witnesses *all three* conceptual moves of the Levi/SSK tradition simultaneously: multi-rationalizability, irreducibility to a single weak order, and genuine `CautiousIncomp`.
+
+Set $X = \text{Fin } 2$, $K = \text{Fin } 3$ with utility $u(k) := k.\text{val}$, and define three acts:
+
+| act    | value at state 0 | value at state 1 |
+|--------|------------------|------------------|
+| `aS`   | 1                | 1                |
+| `a0`   | 2                | 0                |
+| `a1`   | 0                | 2                |
+
+`aS` is a constant act (a "safe" choice), and `a0`, `a1` are gambles betting on opposite states. Two integer-weighted priors $(7,3)$ and $(3,7)$ induce expected utilities
+
+| act    | $\text{EU}_{R_0}$ | $\text{EU}_{R_1}$ |
+|--------|-------------------|-------------------|
+| `aS`   | 10                | 10                |
+| `a0`   | 14                | 6                 |
+| `a1`   | 6                 | 14                |
+
+so $R_0$ orders $a_0 \succ a_S \succ a_1$ and $R_1$ orders $a_1 \succ a_S \succ a_0$. The choice function returns the whole menu in every case **except** the full triple $\{a_S, a_0, a_1\}$, where it returns $\{a_0, a_1\}$. The safe act survives every two-element menu (under each prior, *some* act is best, and `aS` is the runner-up of both priors), but is excluded from the full menu (under both priors, *some* gamble strictly dominates it).
+
+Three theorems are proved:
+
+* `levi_multiRepresentable` — `MultiRepresentable levi_judgment Set.univ {R₀, R₁}`. The proof is by case analysis on the seven menus: each pair menu has both elements admissible because some prior makes each one EU-best; the full menu has $a_0, a_1$ admissible (each is best under one prior) and $a_S$ inadmissible (no prior makes it best in the triple).
+* `levi_not_representable` — $\neg\,\text{Representable}\,\text{levi\_judgment}\,\text{Set.univ}$. Every two-element menu has both elements admissible, so the alternative-level $R_e$ is the *total* relation on the three acts, hence $\text{maxSet}(\{a_S, a_0, a_1\}) = \{a_S, a_0, a_1\}$. But $C(\{a_S, a_0, a_1\}) = \{a_0, a_1\} \neq \{a_S, a_0, a_1\}$, contradicting `Representable`. The single-relation revealed-preference machinery cannot see the structure that makes $a_S$ inadmissible.
+* `levi_cautiousIncomp_a0_a1`, `levi_cautiousIncomp_aS_a0`, `levi_cautiousIncomp_aS_a1` — every distinct pair of alternatives is `CautiousIncomp`. This is the formal residence of "$a_0$ and $a_1$ disagree about which state is more likely, and the disagreement is irresolvable inside the credal set" — the precise content that Levi and SSK insist must be representable.
+* `levi_alt_R_total` and `levi_no_alt_incomp` — the alternative-level $R_e$ is total on `levi_A`, so the alternative-level `Incomp` predicate (from `StrictIndiffIncomp.lean`) is *empty* on `levi_A`. The contrast with the previous bullet is the conceptually decisive fact: the very same example exhibits inhabited `CautiousIncomp` at the multi-relation layer and *zero* `Incomp` at the single-relation layer. Levi/SSK incomparability is therefore not a phenomenon of any one revealed-preference relation reading off $C$; it lives one level up, in the family $\mathcal{R}$.
+
+This example is the conceptual mirror image of the `Fin 3` rep-without-WARP example. There, single-relation rationalizability *succeeded* but transitivity of $R_e$ failed; incomparability was empty. Here, single-relation rationalizability *fails* but the multi-relation generalization succeeds, and incomparability is the very mechanism that makes it succeed. Together the two examples mark the two distinct ways the WARP equivalence can break down — and exactly delineate the territory in which the alternative- and consequence-level revealed-preference theory of the project applies, the territory in which Levi/SSK theory takes over, and the (non-empty) intersection of the two failure modes.
+
+A natural next module would tie this back to expected utility: define `HasCredalEURepresentation` as the existence of a *family* $P$ of priors and a *single* utility $u : K \to \mathbb{R}$ such that $C$ is exactly the family-EU-admissible set, and prove `HasCredalEURepresentation → MultiRepresentable` paralleling the existing `HasEURepresentation → WARP`. The constant-act menu invariance axiom (above) is precisely what lets a single $u$ stand in place of a family.
+
+## From alternatives to consequences: the relation $R_e^K$
+
+The module [ConstantActs.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/ConstantActs.lean) specializes the alternative-level theory to the consequence space $K$. A consequence $k \in K$ is realized as the *constant act* $\mathrm{constAct}\,k := (\lambda x. k) : X \to K$. A `ConditionalJudgment` *has constant acts* (`HasConstantActs χ`) when every $k \in K$ is so realized in $\chi.A$:
+
+$$
+\text{HasConstantActs}\,\chi \;:=\; \forall k \in K,\ \mathrm{constAct}\,k \in \chi.A.
+$$
+
+The consequence-level revealed-preference relation $R_e^K$ is the pullback of $R_e$ along the constant-act embedding:
+
+$$
+k \mathrel{R_e^K} k' \;:\!\!\iff\; \mathrm{constAct}\,k \mathrel{R_e} \mathrm{constAct}\,k'.
+$$
+
+In philosophical terms: the agent reveals $k$ at-least-as-good as $k'$ under supposition $e$ exactly when, faced with a menu in which the choice between "always $k$" and "always $k'$" is on offer (perhaps among other options), the agent judges always-$k$ admissible. This recovers the classical setting in which preference is ultimately preference over consequences while preserving the conditional-on-$e$ stratification.
+
+Each structural property of $R_e$ transports immediately to $R_e^K$ when constant acts are available: under `MenuClosure χ` and `HasConstantActs χ`,
+
+* `revealedPrefK_refl_at` — $R_e^K$ is reflexive on $K$;
+* `revealedPrefK_total_at` — $R_e^K$ is total on $K$;
+* `revealedPrefK_trans_via_warp` — $R_e^K$ is transitive on $K$ under $\text{WARP}_e$;
+* `revealedPrefK_weakOrder_at` — $R_e^K$ is a weak ordering on $K$ under $\text{WARP}_e$.
+
+These are inherited as one-line corollaries; no fresh proof obligation is introduced.
+
+### Event-independence and state-dependent valuation
+
+`EventIndependentRK χ` asks whether $R_e^K$ and $R_{e'}^K$ agree on all consequences for every pair $e, e' \in \chi.E$. The philosophical content is sharper here than at the alternative level: event-independence on $K$ is the formal correlate of *state-independent valuation*, the assumption that the agent's intrinsic preferences over outcomes do not shift with what is being supposed. State-dependent utility, central to recent decision-theoretic work, is precisely the failure of `EventIndependentRK`.
+
+A trivial transport theorem (`eventIndependentRK_of_eventIndependentR`) records that event-independence of $R_e$ on $\chi.A$ implies event-independence of $R_e^K$ on $K$ when constant acts are present. The converse is not generally available — agents may exhibit state-dependent valuation on non-constant acts even when their constant-act preferences are state-independent — and is left for future investigation.
+
+### Constant-act menu invariance: a Savage-P3 axiom at the level of $C$
+
+A natural and conceptually clean axiom asserts that, on any menu consisting solely of constant acts, the choice function is the same for every conditioning event. The module [src/ConstActInvariance.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/ConstActInvariance.lean) makes this precise:
+
+$$
+\text{ConstActMenuInvariant}(\chi) \;:=\; \forall m \in \chi.M,\ \text{AllConst}(m) \;\Longrightarrow\; \forall e, e' \in \chi.E,\ \chi.C(e, m) = \chi.C(e', m).
+$$
+
+Conceptually this is the choice-function form of Savage's P3 / state-independence-of-taste: the agent's preferences *over consequences alone* do not shift with the supposition. Crucially, it is asserted as a stand-alone predicate rather than baked into the `ConditionalJudgment` structure, keeping the base structure honest about what is bookkeeping and what is substantive.
+
+The principal payoff is the theorem `eventIndependentRK_of_constActMenuInvariant`: under `MenuClosure`, `HasConstantActs`, event-uniform $\alpha$ (Sen's contraction axiom), and `ConstActMenuInvariant`, the consequence-level relation $R_e^K$ is event-independent. The proof routes through a pair-menu characterization (`revealedPrefK_iff_pair`): under $\alpha$ and `HasConstantActs`, the existential statement $k \mathrel{R_e^K} k'$ collapses to the single-witness statement $\mathrm{constAct}\,k \in \chi.C(e, \{\mathrm{constAct}\,k, \mathrm{constAct}\,k'\})$, and `ConstActMenuInvariant` makes the right-hand side $e$-invariant.
+
+Once $R_e^K$ is event-independent there is a single canonical taste relation $R^K$ on $K$ — formalized as `CanonicalRK χ e₀` for any choice of witness event $e_0$, with `canonicalRK_eq` showing that the choice of $e_0$ is irrelevant. This is the formal residence of *the agent's taste over consequences*, as opposed to *the agent's beliefs about states*. The separation is what makes it possible, in the Levi / SSK / Walley tradition, to fragment belief into a credal set $P$ while keeping taste $u : K \to \mathbb{R}$ fixed: it is exactly the conceptual shape `MultiRepresentable` is meant to support, and `ConstActMenuInvariant` is the axiom that lets `HasCredalEURepresentation` be stated with a *single* utility from the start.
+
+# Expected Utility implies Revealed Preference
+
+The module [EUImpliesWARP.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/EUImpliesWARP.lean) provides the bridging theorem connecting the project's two main strands. Stated informally: every EU-maximizing agent is automatically revealed-preference rational. Formally, `HasEURepresentation χ` together with `MenuClosure χ` and a regularity condition on acts entails $\text{WARP}_e$, and hence (via the equivalences of the previous sections) $\text{Representable}_e$ and the weak-ordering of $R_e$ on $\chi.A$ and of $R_e^K$ on $K$, on every non-null event.
+
+## Regularity of acts
+
+Finite-support EU computation requires per-act witnesses: each act must have finite range on each event ($\mathit{hfin}$) and each level set must lie in the algebra ($\mathit{hlev}$). The bridging theorem bundles these as a single regularity predicate
+
+$$
+\text{EUWellFormed}\,\chi \;:=\; \forall a \in \chi.A,\ \forall e \in \chi.E,\ \bigl( a''e \text{ is finite} \bigr)\ \wedge\ \bigl( \forall k,\ a^{-1}\{k\}\cap e \in \chi.E \bigr).
+$$
+
+This is the standard "well-behaved" condition under which the finite-support EU machinery applies uniformly to every act in $\chi.A$. It is independent of the rest of the conditional-judgment data and can be checked once for a given $\chi$.
+
+## The bridging theorems
+
+The following are established under `MenuClosure χ` and `EUWellFormed χ`, with the existential witnesses $(p, u)$ from `HasEURepresentation`:
+
+| Result | Conclusion (on every non-null event) |
+|---|---|
+| `warpAt_of_eu_witnesses` | $\text{WARP}_e$ from explicit $(p, u)$-witnesses of EU-rationalization |
+| `warpAt_of_hasEURepresentation` | $\text{WARP}_e$ |
+| `representable_of_hasEURepresentation` | $\text{Representable}_e$ (the EU agent's choice function is rationalized by $R_e$) |
+| `weakOrderingAt_of_hasEURepresentation` | $R_e$ is a weak order on $\chi.A$ |
+| `weakOrderingKAt_of_hasEURepresentation` | $R_e^K$ is a weak order on $K$ (under `HasConstantActs`) |
+
+The proof of `warpAt_of_eu_witnesses` is the conceptual core. Suppose $a, a' \in m \cap m'$ with $a \in \chi.C(e, m)$ and $a' \in \chi.C(e, m')$. The EU representation at $(m, a)$ gives $\mathrm{EU}(a') \le \mathrm{EU}(a)$; at $(m', a')$ it gives $\mathrm{EU}(a) \le \mathrm{EU}(a')$. Hence $\mathrm{EU}(a) = \mathrm{EU}(a')$. Then for any $b \in m'$, $\mathrm{EU}(b) \le \mathrm{EU}(a') = \mathrm{EU}(a)$, so $a$ EU-maximizes on $m'$ and the EU representation at $(m', a)$ delivers $a \in \chi.C(e, m')$. The regularity predicate `EUWellFormed` is needed precisely to supply the $\mathit{hfin}/\mathit{hlev}$ witnesses required by the existing `expected_utility` API.
+
+## A note on null events
+
+`HasEURepresentation` provides an EU-rationalization equivalence only on events $e$ with $p(e) \ne 0$, and the bridging theorem accordingly establishes WARP only on non-null events. On null events the EU representation is silent — the choice function is unconstrained by EU-maximization there — and so revealed-preference rationality on null events does not follow from EU-rationality. This is the standard story in Bayesian decision theory: null events are exactly those on which expected-utility considerations impose no constraint, leaving the agent free (or, philosophically, undetermined) about admissibility there. The Lean theorems make this precise: the conclusion is $\forall e,\ p(e) \ne 0 \to \text{WARP}_e$, not $\text{WARP}$ uniformly on $\chi.E$.
+
 # Design Decisions
 
 Several design choices merit explicit discussion:
@@ -239,9 +474,8 @@ The entire codebase compiles cleanly under Lean 4.29.0 with Mathlib4, with no `s
 
 Future directions include:
 
-- **Preference extraction**: deriving a weak preference order on $K$ from the choice function via constant alternatives.
 - **Cardinal utility**: axiomatizing conditions under which the derived preference admits a von Neumann--Morgenstern representation. The current finite-support EU machinery is already compatible with $K$ being closed under mixtures (see §3.2); the next step is to introduce a `MixtureSpace K` structure and the standard mixture-set axioms.
-- **Credal sets and E-admissibility**: generalizing from a single prior $p$ to a convex set $P$ of priors, where admissibility means Bayes-optimality under *some* $p \in P$. This connects to Levi's E-admissibility and the Seidenfeld--Schervish--Kadane theory.
+- **Credal sets and E-admissibility**: the `MultiRepresentable` predicate, the cautious / bold preference distinction, the constant-act menu invariance axiom, and the canonical two-prior three-act witness are now formalized in [src/MultiRepresentable.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/MultiRepresentable.lean), [src/ConstActInvariance.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/ConstActInvariance.lean), and [test/Levi2PriorExample.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/test/Levi2PriorExample.lean). The remaining step is to generalize `HasEURepresentation` itself to a credal set $P$ of priors with a *single* utility $u$ (`HasCredalEURepresentation`), and prove the bridge `HasCredalEURepresentation → MultiRepresentable` paralleling the existing SEU → WARP route. The constant-act menu invariance axiom is exactly what allows the single $u$ in this generalization.
 - **Full representation theorem**: extending from `Bool` to arbitrary (finite or infinite) state spaces with finite consequence spaces.
 - **Categorical development**: functoriality, natural transformations, and the subcategory of representable judgments.
 

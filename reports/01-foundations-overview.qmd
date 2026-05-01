@@ -186,6 +186,71 @@ The proofs rely on the `@[ext]` attribute attached to `CJTransformation`, which 
 
 This makes precise the slogan that conditional judgments form a category: at the level of a fixed pair of universes, with `CJTransformation.id` as the identity morphisms and `CJTransformation.comp` as composition, the three category axioms hold definitionally up to η.
 
+# The Category of Conditional Judgments
+
+This section turns the categorical scaffolding of §5 into actual content by recording (a) what the morphism conditions encode philosophically, (b) three concrete non-identity transformations exhibiting the structure, and (c) why the heterogeneous setup—where source and target may live over different state and consequence spaces—is the right level for diachronic shifts.
+
+## What the morphism conditions encode
+
+A `CJTransformation` from $\chi$ over $(X, K)$ to $\chi'$ over $(X', K')$ consists of a pair of maps $f : X \to X'$ and $g : K' \to K$, together with five coherence axioms. Read philosophically:
+
+* **`f_preimage_surjective_on_E`** says that every proposition the *source* agent can suppose is the pull-back, along $f$, of some proposition the *target* agent can suppose. The source's set algebra cannot be richer than what the target's algebra supports under the chosen state map: in transformational terms, the source agent has no propositional resources that are not already articulable downstream.
+* **`preimage_preserves_E`** is the symmetric requirement that *every* target proposition can be pulled back into the source's algebra. Together with the previous axiom, this makes the source's set algebra exactly the pullback of the target's.
+* **`alternatives_closed`** and **`menus_closed`** require that the contravariant push-forward $a' \mapsto g \circ a' \circ f$ takes target acts to source acts and target menus to source menus. Concretely: the source agent recognizes every act and every menu the target agent contemplates, expressed in source vocabulary.
+* **`choice_preserved`** is the key behavioral axiom: every target-side admissible alternative remains admissible after pull-back into the source. Diachronically, this is the statement that the morphism *commits* to the target's verdicts on the menus it sees.
+
+The directionality is contravariant on consequences and covariant on states. This matches a standard pattern in decision theory where consequences are "what the agent values" (so refinements push forward) and states are "what the world is" (so refinements pull back).
+
+## Three concrete non-identity transformations
+
+[src/Transformations/Examples.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/Transformations/Examples.lean) constructs three concrete morphisms, none of them the identity.
+
+### State refinement (`stateRefinementTransformation`)
+
+The map `refine42 : Fin 4 → Fin 2`, defined by `0,1 ↦ 0` and `2,3 ↦ 1`, is a 2-to-1 surjection. The source judgment `fineJudgment` lives over the finer state space `Fin 4`, with set algebra equal to the *pullback* of the powerset on `Fin 2` along `refine42`; the target `coarseJudgment` lives over `Fin 2` with the full powerset. Acts are constant on each side; the consequence map $g$ is the identity. The corollary `stateRefinementTransformation_collapses` records that $f$ identifies states `0` and `1`, so the morphism is genuinely non-identity.
+
+*This says, informally, that an agent who individuates the world more finely than another can faithfully project onto the coarser view, provided the coarser view's propositions all pull back to propositions the finer agent can already suppose.*
+
+### Consequence relabeling (`relabelTransformation`)
+
+Let `swap01 : Fin 3 ≃ Fin 3` be the permutation of consequences swapping `0` and `1` while fixing `2`. The source judgment `baseJudgment` has acts `{const 0, const 1, const 2}`; the target `relabeledJudgment` has acts `{const (swap 0), const (swap 1), const (swap 2)}`. The transformation uses $f := \mathrm{id}$ and $g := \mathrm{swap01.symm}$, so each target act $\mathrm{const}\,(\mathrm{swap01}\,k)$ pulls back to $\mathrm{const}\,k$. The corollary `relabelTransformation_g_ne_id` records that $g\,0 = 1$, so $g$ is not the identity.
+
+*This says, informally, that two agents can disagree about which label to attach to which consequence, while their decision-theoretic content—what gets chosen from which menu—is preserved by relabeling along the bijection.*
+
+### Identity-on-state restriction-of-acts (`restrictionOfActsTransformation`)
+
+The source `fullActJudgment` has act space `{const 0, const 1}` over `(Fin 1, Fin 2)`; the target `restrictedActJudgment` has the strictly smaller act space `{const 0}`. With $f := \mathrm{id}$ and $g := \mathrm{id}$, the transformation witnesses that every restricted act and menu is also a full-judgment act and menu, and the trivial choice agrees on the shared data. The corollary `restrictionOfActsTransformation_target_strictly_smaller` records that the target's act space is a proper subset of the source's.
+
+*This says, informally, that the morphism direction with identity component maps is from the richer judgment to the poorer one: shrinking the act and menu space is a forgetful operation, and the corresponding morphism witnesses the inclusion of the smaller decision problem inside the larger one.*
+
+## Why heterogeneous $(X, K)$ is the right level
+
+The three examples above already exhibit shifts across all three structural dimensions: state spaces (`Fin 4` vs `Fin 2`), consequence relabeling (`Fin 3 ≃ Fin 3`), and act/menu restriction (within fixed $X, K$). Diachronic shifts of confirmational commitment, in the Levi tradition, may involve *any* of these: an agent can come to refine her partition of possibilities, to reinterpret consequences, or to bring a new set of acts into deliberation. Restricting `CJTransformation` to a fixed pair $(X, K)$ would force all such shifts to be fitted into a procrustean common framework; the heterogeneous setup makes each kind of shift expressible on its own terms.
+
+In particular, the genuine learning that breaks out of a current synchronic structure—learning of a possibility not in $X$, or a consequence not in $K$—is exactly the case that motivated the categorical formalism in §1. The state-refinement example above is the simplest witness that this case is non-vacuous: an agent moving from the coarser to the finer structure cannot be modeled as conditioning within either, but is naturally modeled as a morphism between them.
+
+# Diachronic Shifts
+
+This section moves from the categorical scaffolding (§5–§6) to *diachronic content*: the formal modeling of an agent whose synchronic state changes over time. The orthodox Bayesian tradition models such changes as *conditionalization*; the Levi/SSK tradition argues that other shifts—of confirmational commitment, of serious possibilities, of the credal set—are equally legitimate and provably distinct from conditionalization. The categorical layer makes this distinction theorematic.
+
+## Bayesian conditionalization as a transformation
+
+[src/Conditionalization.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/Conditionalization.lean) constructs Bayesian conditioning on a non-null event $e_0$ as a `CJTransformation`, not as a within-$\chi$ operation. The two principal definitions are:
+
+* `Conditionalize χ e₀ he₀ hne` — a new conditional judgment over the *subtype* state space $\{x : X \mid x \in e_0\}$, with set algebra equal to the pullback of $\chi.E$ along `Subtype.val`, acts and menus equal to the restrictions of $\chi.A$ and $\chi.M$, and a trivial choice function $C'(e, m) := m$ (see design tension note below).
+* `conditionalizationTransformation χ e₀ he₀ hne : CJTransformation (Conditionalize χ e₀ he₀ hne) χ` — the morphism whose state map is `Subtype.val` and whose consequence map is the identity.
+
+*This says, informally, that conditionalization on a non-null event is a morphism in the category of conditional judgments: the conditionalized judgment is a strictly smaller object whose state space is exactly the set of possibilities consistent with the conditioning event, and the morphism witnesses that every act, menu, and chosen alternative of the original carries over, restricted to the new state space.*
+
+### Two structural lemmas
+
+* `conditionalize_univ_f_bijective` — when $e_0 = X$, the morphism's state map is a bijection. *Informally: conditionalizing on the universe is a state-space isomorphism.*
+* `conditionalize_univ_g_eq_id` — the consequence map is the identity on $K$. *Informally: conditionalizing on any event leaves consequences untouched, in line with the Bayesian intuition that learning does not change what one values.*
+
+### The C.1 design tension
+
+The natural Bayesian recipe for $C'$ would be to pick a lift of $(e, m)$ to $\chi$'s set algebra and menu collection, then take $C'(e, m) := \mathrm{restrict} \circ \chi.C(e_{\text{lift}} \cap e_0, m_{\text{lift}})$. There is a fundamental obstruction: a single subtype-menu may be the restriction of *several* distinct $\chi$-menus, on each of which $\chi.C$ may be a different set, with the restrictions failing to agree. We therefore adopt the trivial choice $C'(e, m) := m$ in the present module. The morphism `conditionalizationTransformation` and the structural lemmas above hold without further hypotheses; substantive preservation results (single-prior EU under conditioning, representability under iterated conditioning) require either an injectivity hypothesis on the menu restriction or a careful classical lift, and are deferred to a later module.
+
 # The Bool Example
 
 The test file ([Examples.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/test/Examples.lean)) provides a fully verified concrete instantiation of the framework over the type `Bool`.

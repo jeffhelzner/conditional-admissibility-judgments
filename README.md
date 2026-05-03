@@ -1,5 +1,7 @@
 # Conditional Admissibility Judgments
 
+> **🚧 Work in Progress:** This project is in early stages of development. APIs, definitions, and proofs are subject to change without notice.
+
 A Lean4 formalization of **conditional judgments of admissibility** and their transformations, backed by Mathlib4.
 
 ## Overview

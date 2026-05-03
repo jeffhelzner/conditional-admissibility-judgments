@@ -55,6 +55,10 @@ The first build will take some time as it downloads and compiles Mathlib4.
 
 All definitions live in the `ConditionalChoice` namespace.
 
+## AI Assistance
+
+This repository has benefited from the use of AI-assisted development tools, including GitHub Copilot and related large-language-model assistants, for tasks such as drafting documentation, exploring proof strategies, and developing Lean formalizations. All substantive mathematical and implementation decisions remain the responsibility of the repository author(s).
+
 ## Reports
 
 The `reports/` directory is a Quarto website that publishes the project reports through GitHub Pages.

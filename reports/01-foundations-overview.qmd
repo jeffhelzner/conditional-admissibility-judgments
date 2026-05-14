@@ -300,6 +300,14 @@ $$
 
 and the module then asks (i) when $R_e$ is a weak ordering on $\chi.A$, and (ii) when $\chi.C$ is *representable* by $R_e$ in the sense that $\chi.C(e, m) = \{ a \in m : \forall a' \in m, a R_e a' \}$.
 
+The current development also distinguishes a second, pairwise base relation
+
+$$
+a \mathrel{R'_e} a' \;\iff\; a \in \chi.C(e, \{a,a'\}),
+$$
+
+formalized as `PairwisePref`. The two relations coincide on alternatives under `MenuClosure` plus Sen's $\alpha$, but they are conceptually distinct: $R_e$ can be witnessed by any joint menu, while $R'_e$ asks specifically what happens in the pair menu.
+
 ## Closure conditions and choice-consistency axioms
 
 Sen-style proofs use small submenus (singletons, pairs, triples) that need not be present in $\chi.M$ a priori. The `MenuClosure χ` predicate bundles the closure clauses needed for the present theorems:
@@ -310,6 +318,8 @@ Sen-style proofs use small submenus (singletons, pairs, triples) that need not b
 * `triple_mem`: every (unordered) triple of alternatives is a menu.
 
 The `menu_subset_alt` clause was added to the original plan during implementation: without it, `chosen_is_maximal` cannot quote `pair_mem` for an arbitrary member of an arbitrary menu.
+
+For the classical Arrow-Sen theorem the project now also uses a stronger closure predicate, `FiniteSubsetMenuClosure`, which says that every nonempty finite subset of $\chi.A$ is available as a menu. It implies `MenuClosure`, but it is not used to replace `MenuClosure`: the latter remains the right local hypothesis for Levi-style and partial-menu settings.
 
 The standard choice-consistency axioms are formalized as event-indexed predicates `AxiomAlphaAt`, `AxiomBetaAt`, `AxiomGammaAt`, and `WARPAt`, each with an event-uniform variant (`AxiomAlpha`, etc.) that quantifies over $e \in \chi.E$.
 
@@ -331,18 +341,86 @@ Under `MenuClosure χ` and `e ∈ χ.E`:
 | `representable_imp_gammaAt` (Representable $\to \gamma$) | none beyond Representable |
 | `warpAt_of_representable_of_transitive` (Representable $\wedge$ Trans$(R_e) \to$ WARP) | `pair_mem`, `menu_subset_alt` |
 | `warpAt_iff_representable_and_transitive` (WARP $\leftrightarrow$ Representable $\wedge$ Trans$(R_e)$) | `pair_mem`, `triple_mem`, `menu_subset_alt` |
+| `warpAt_iff_weakOrderRepresentable_under_finiteSubsetClosure` (WARP $\leftrightarrow$ weak-order rationalizability by some relation) | `FiniteSubsetMenuClosure` |
+| `weakOrderRepresentable_iff_representable_and_transitive` (existential weak-order rationalizability $\leftrightarrow$ canonical representability plus transitivity) | `MenuClosure` |
+| `pairwisePref_imp_revealedPref` ($R'_e \to R_e$) | `pair_mem` |
+| `revealedPref_imp_pairwisePref_of_warp` ($R_e \to R'_e$) | WARP, `pair_mem` |
+| `pairwiseRepresentable_iff_representable_under_alphaAt` | $\alpha$, `MenuClosure` |
+| `choiceChainAxiomAt_iff_transitiveOnAlt` | witness-menu unpacking |
+| `warpAt_iff_wcaAt` | definitional equivalence |
+| `sarpAt_imp_warpAt` | `MenuClosure` |
+| `transitiveOnAlt_imp_quasiTransitiveOnAlt` and `quasiTransitiveOnAlt_imp_acyclicOnAlt` | relation-theoretic |
+| `alphaAt_imp_pathIndependent_subset` | $\alpha$, relevant menus available |
 
 A small definition `EventIndependentR` records the event-independence property of $R_e$ at the alternative level. The corresponding consequence-level property `EventIndependentRK` is developed in the constant-acts module below.
 
-## The sharp equivalence: WARP = representability + transitivity of $R_e$
+## Three rationalizability notions
 
-The classical Arrow–Sen theorem characterizes WARP as equivalence to rationalizability of $\chi.C$ by *some* weak order. The `Representable` predicate of the present module makes a stronger demand: it asks $\chi.C$ to be rationalized specifically by the revealed relation $R_e$. Under that strengthening, WARP is *not* equivalent to representability alone — representability is consistent with $R_e$ failing to be transitive (see below). What does hold under `MenuClosure` is the sharp equivalence
+The development now separates three rationalizability notions.
+
+* `Representable χ e` asks $\chi.C(e,\cdot)$ to be rationalized by the canonical joint-witness relation $R_e$.
+* `PairwiseRepresentable χ e` asks $\chi.C(e,\cdot)$ to be rationalized by the pairwise relation $R'_e$.
+* `WeakOrderRepresentable χ e` asks for rationalization by *some* weak order on alternatives, existentially quantified.
+
+The classical Arrow-Sen theorem characterizes WARP as equivalence to the third notion under `FiniteSubsetMenuClosure`:
+
+$$
+	ext{WARP}_e \;\leftrightarrow\; \text{WeakOrderRepresentable}_e.
+$$
+
+The first two notions are weaker. Under $\alpha$ and `MenuClosure`, `Representable` and `PairwiseRepresentable` coincide, because contraction to the pair menu makes $R_e$ and $R'_e$ agree on alternatives. But even with all finite nonempty submenus available, representability by the canonical relation need not imply WARP: the canonical relation may rationalize choice while failing to be transitive.
+
+## The sharp canonical equivalence: WARP = representability + transitivity of $R_e$
+
+The `Representable` predicate makes a stronger demand about the identity of the rationalizing relation: it asks $\chi.C$ to be rationalized specifically by $R_e$. Under that strengthening, WARP is *not* equivalent to representability alone. What does hold under `MenuClosure` is the sharp equivalence
 
 $$
 \text{WARP}_e \;\;\leftrightarrow\;\; \text{Representable}_e \;\wedge\; \text{Transitive}(R_e \restriction \chi.A),
 $$
 
 formalized as `warpAt_iff_representable_and_transitive`. Conceptually, this isolates the additional content of WARP beyond representability: precisely the claim that the revealed relation is itself transitive. Where representability says "the chosen elements are exactly those at the top of the revealed ordering on each menu", WARP says additionally that "the revealed ordering is itself a weak order on $\chi.A$".
+
+The theorem `weakOrderRepresentable_iff_representable_and_transitive` records that this canonical form is exactly the existential weak-order theorem unpacked along the specific witness $R_e$.
+
+## Primitive transitivity and congruence axioms
+
+The module also adds a primitive, choice-functional reading of transitivity. `ChoiceChainAxiomAt χ e` says: if some menu witnesses $a R_e b$ and another menu witnesses $b R_e c$, then some menu directly witnesses $a R_e c$. The theorem `choiceChainAxiomAt_iff_transitiveOnAlt` proves that this primitive axiom is equivalent to the derived relation-theoretic predicate `TransitiveOnAlt`.
+
+The classical congruence axioms are represented as primitive predicates too:
+
+* `WCAAt` is the weak congruence axiom; in this abstract choice-function setting it is definitionally equivalent to `WARPAt`, via `warpAt_iff_wcaAt`.
+* `SCAAt` is a formal strong-congruence predicate using the transitive closure of `PairwisePref`.
+* `SARPAt` is a formal strong-axiom predicate using finite chains of `RevealedPref`; the easy implication `sarpAt_imp_warpAt` is proved, while the converse remains a later cycle-reasoning milestone.
+
+## Intermediate rationality and path independence
+
+Between arbitrary revealed preference and weak ordering, the module now formalizes two intermediate rationality notions:
+
+* `QuasiTransitiveOnAlt χ e`: transitivity of the strict part `StrictPref χ e` on alternatives.
+* `AcyclicOnAlt χ e`: no finite strict-preference cycles on alternatives.
+
+The proved implication chain is
+
+$$
+	ext{TransitiveOnAlt} \;\Rightarrow\; \text{QuasiTransitiveOnAlt} \;\Rightarrow\; \text{AcyclicOnAlt}.
+$$
+
+Plott path independence is formalized as `PathIndependentAt χ e`:
+
+$$
+C(e, m_1 \cup m_2) = C(e, C(e,m_1) \cup C(e,m_2))
+$$
+
+whenever all menus appearing in the equation are available. The currently implemented theorem `alphaAt_imp_pathIndependent_subset` gives the sound $\alpha$-derived forward inclusion in this equation. The full textbook equivalence `PathIndependentAt ↔ α ∧ γ` is intentionally not claimed at the present closure strength: the current `AxiomGammaAt` is a binary expansion axiom over existing menus, while the path-independence equation uses the choice-union menu $C(e,m_1) \cup C(e,m_2)$ in an arbitrary partial menu domain. A sharper Plott theorem should first introduce an explicit stronger closure/expansion predicate.
+
+The multi-relation module [MultiRepresentable.lean](https://github.com/jeffhelzner/conditional-admissibility-judgments/blob/main/src/MultiRepresentable.lean) contains the corresponding sound reduction. `MultiMaxPathIndependent χ ℛ` states the exact family-level multi-max path law needed on available menus, and `multiRepresentable_imp_pathIndependent_at` proves
+
+$$
+\operatorname{MultiRepresentable}(\chi,e,\mathcal R) \wedge \operatorname{MultiMaxPathIndependent}(\chi,\mathcal R)
+\;\Rightarrow\; \text{PathIndependentAt}(\chi,e).
+$$
+
+This keeps the Levi-style multi-relation result honest about its closure assumptions while exposing the right hook for future weak-order-family proofs.
 
 ## Findings: where the plan diverges from what is provable
 

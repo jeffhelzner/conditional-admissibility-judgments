@@ -16,6 +16,12 @@ family of relations `ℛ` if its choice function picks, on every menu,
 exactly the alternatives that are maximal under *some* member of `ℛ`.
 The single-relation case (`ℛ = {R}`) recovers `Representable`.
 
+The module also contains the path-independence reduction used by the
+strengthened revealed-preference layer. `MultiMaxPathIndependent χ ℛ`
+states the exact family-level path law for the multi-max operator on the
+available menus of `χ`; together with `MultiRepresentable χ e ℛ`, it
+implies `PathIndependentAt χ e`.
+
 Two preference notions arise immediately at the multi-relation layer:
 
 * the *cautious* (a.k.a. unanimity, Bewley) relation
@@ -99,6 +105,37 @@ theorem multiRepresentable_singleton_iff_representable {X : Type u} {K : Type v}
   · intro h m hm
     rw [h m hm, multiMaxSet_singleton]
     rfl
+
+/-! ## Path independence for multi-max rules -/
+
+/-- The algebraic path law for a family of max-set relations on the available
+    menus of `χ`. This is the exact condition needed for a
+    multi-representable choice rule to satisfy `PathIndependentAt`; concrete
+    weak-order families can prove this law separately under their own closure
+    hypotheses. -/
+def MultiMaxPathIndependent {X : Type u} {K : Type v}
+    (χ : ConditionalJudgment X K)
+    (ℛ : Set ((X → K) → (X → K) → Prop)) : Prop :=
+  ∀ m₁ m₂, m₁ ∈ χ.M → m₂ ∈ χ.M → m₁ ∪ m₂ ∈ χ.M →
+    multiMaxSet ℛ m₁ ∪ multiMaxSet ℛ m₂ ∈ χ.M →
+    multiMaxSet ℛ (m₁ ∪ m₂) =
+      multiMaxSet ℛ (multiMaxSet ℛ m₁ ∪ multiMaxSet ℛ m₂)
+
+/-- If a choice rule is multi-representable by a family whose multi-max
+    operator is path independent on the available menus, then the choice rule
+    itself is path independent. -/
+theorem multiRepresentable_imp_pathIndependent_at {X : Type u} {K : Type v}
+    {χ : ConditionalJudgment X K} {e : Set X}
+    {ℛ : Set ((X → K) → (X → K) → Prop)}
+    (hMulti : MultiRepresentable χ e ℛ)
+    (hPath : MultiMaxPathIndependent χ ℛ) : PathIndependentAt χ e := by
+  intro m₁ m₂ hm₁ hm₂ hu hcu
+  have hcu_multi : multiMaxSet ℛ m₁ ∪ multiMaxSet ℛ m₂ ∈ χ.M := by
+    simpa [← hMulti m₁ hm₁, ← hMulti m₂ hm₂] using hcu
+  rw [hMulti (m₁ ∪ m₂) hu]
+  rw [hMulti m₁ hm₁, hMulti m₂ hm₂]
+  rw [hMulti (multiMaxSet ℛ m₁ ∪ multiMaxSet ℛ m₂) hcu_multi]
+  exact hPath m₁ m₂ hm₁ hm₂ hu hcu_multi
 
 /-! ## The cautious (unanimity / Bewley) relation -/
 

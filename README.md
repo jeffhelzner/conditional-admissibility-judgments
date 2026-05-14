@@ -10,10 +10,12 @@ This project formalizes a framework for reasoning about rational choice under un
 
 - **SetAlgebra**: A Boolean algebra of subsets representing possible epistemic states
 - **ConditionalJudgment**: The core structure encoding conditional choice functions with well-formedness properties
-- **Fap**: Finitely-additive probability measures on set algebras
-- **expected\_utility**: Expected utility computation for finite state spaces
-- **HasEURepresentation**: A predicate asserting the existence of a probability/utility pair rationalizing the choice function
+- **RevealedPreference**: Sen-style revealed preference on alternatives, including WARP, α/β/γ, finite-subset closure, pairwise revealed preference, weak-order representability, primitive congruence axioms, quasi-transitivity, acyclicity, and path independence
+- **ConstantActs** and **ConstActInvariance**: Consequence-level pullbacks of the alternative-level revealed-preference theory
+- **EUImpliesWARP**: A bridge from expected-utility representation to WARP
+- **MultiRepresentable**: Multi-relation rationalizability and cautious preference, including the path-independence reduction used for Levi-style admissibility
 - **CJTransformation**: Morphisms between conditional judgments (with categorical composition and identity)
+- **Conditionalization**: Bayesian conditioning represented as a transformation between conditional judgments
 
 ## Project Layout
 
@@ -24,11 +26,24 @@ lean-toolchain                -- Lean toolchain version
   publish-reports.yml         -- GitHub Pages deployment for rendered Quarto reports
 src/
   SetAlgebra.lean             -- SetAlgebra structure and Membership instance
-  ConditionalJudgment.lean    -- ConditionalJudgment, Fap, expected_utility, HasEURepresentation
+  ConditionalJudgment.lean    -- ConditionalJudgment core structure
+  RevealedPreference.lean     -- Revealed preference, WARP, representability, pairwise preference, path independence
+  ConstantActs.lean           -- Consequence-level pullback of revealed preference via constant acts
+  ConstActInvariance.lean     -- Constant-act invariance and consequence-level event independence
+  EUImpliesWARP.lean          -- Expected-utility representation implies WARP
+  MultiRepresentable.lean     -- Multi-relation rationalizability and cautious preference
+  StrictIndiffIncomp.lean     -- Strict preference, indifference, and incomparability partition
+  EAdmissible.lean            -- E-admissibility layer
+  CredalEU.lean               -- Credal expected-utility layer
+  Conditionalization.lean     -- Conditionalization as a transformation
   Transformation.lean         -- CJTransformation and derived lemmas
   Category.lean               -- Composition and identity for CJTransformation
+  Transformations/Examples.lean -- Concrete transformation examples
 test/
   Examples.lean               -- Bool example, transformation example, representation theorem
+  RevealedPreferenceExamples.lean -- Revealed-preference examples and closure checks
+  Fin3RepNotWARP.lean         -- Finite representable-but-not-WARP example
+  Levi2PriorExample.lean      -- Levi-style two-prior example
 reports/
   _quarto.yml                 -- Quarto project configuration
   index.qmd                   -- Public landing page for the report series
@@ -56,6 +71,18 @@ The first build will take some time as it downloads and compiles Mathlib4.
 ## Namespace
 
 All definitions live in the `ConditionalChoice` namespace.
+
+## Current Revealed-Preference Status
+
+The abstract revealed-preference layer now distinguishes three rationalizability strengths:
+
+- `Representable χ e`: rationalization by the canonical joint-witness relation `RevealedPref χ e`.
+- `PairwiseRepresentable χ e`: rationalization by the pairwise relation `PairwisePref χ e`, where `a R'_e a'` means `a ∈ χ.C e {a, a'}`.
+- `WeakOrderRepresentable χ e`: rationalization by some existentially quantified weak order on alternatives.
+
+Under `FiniteSubsetMenuClosure`, the classical Arrow-Sen theorem is formalized as `WARPAt χ e ↔ WeakOrderRepresentable χ e`. Under the weaker `MenuClosure`, the sharp canonical result remains `WARPAt χ e ↔ Representable χ e ∧ TransitiveOnAlt χ e`.
+
+The module also includes primitive congruence axioms (`WCAAt`, `SCAAt`, `SARPAt`), the primitive chain axiom `ChoiceChainAxiomAt`, the hierarchy `TransitiveOnAlt → QuasiTransitiveOnAlt → AcyclicOnAlt`, and `PathIndependentAt`. The full Plott equivalence `PathIndependentAt ↔ α ∧ γ` is intentionally deferred until a stronger menu-domain closure predicate is added; the implemented API records the sound α-derived inclusion and a multi-representability reduction via `MultiMaxPathIndependent`.
 
 ## AI Assistance
 

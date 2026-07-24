@@ -88,6 +88,19 @@ theorem sJoin_mono {S T : Set (AdmissibilityJudgment ctx)} (hS : S.Nonempty)
     (hT : T.Nonempty) (h : S ⊆ T) : sJoin S hS ≤ sJoin T hT :=
   sJoin_le fun _ hJ => le_sJoin hT (h hJ)
 
+/-- `sJoin` respects equality of the index class (the nonemptiness proof is
+irrelevant). -/
+theorem sJoin_congr {S T : Set (AdmissibilityJudgment ctx)} (h : S = T)
+    (hS : S.Nonempty) : sJoin S hS = sJoin T (h ▸ hS) := by
+  subst h; rfl
+
+/-- Joins split across unions of index classes. -/
+theorem sJoin_union (S T : Set (AdmissibilityJudgment ctx)) (hS : S.Nonempty)
+    (hT : T.Nonempty) :
+    sJoin (S ∪ T) hS.inl = sJoin S hS ⊔ sJoin T hT :=
+  ext fun e m => by
+    rw [sJoin_C, sup_C, sJoin_C, sJoin_C, Set.biUnion_union]
+
 @[simp]
 theorem sJoin_singleton (J : AdmissibilityJudgment ctx)
     (h : ({J} : Set (AdmissibilityJudgment ctx)).Nonempty := Set.singleton_nonempty J) :

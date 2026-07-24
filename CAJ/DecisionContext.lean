@@ -49,6 +49,14 @@ theorem menu_nonempty (m : ctx.Menu) : m.val.Nonempty :=
 /-- The vacuous supposition `univ` (supposing nothing beyond the corpus). -/
 def topEvent : ctx.Event := ⟨Set.univ, ctx.alg.univ_mem⟩
 
+/-- Conjunction of suppositions: intersection within the algebra. -/
+instance instMinEvent : Min ctx.Event :=
+  ⟨fun e f => ⟨e.val ∩ f.val, ctx.alg.inter_mem e.2 f.2⟩⟩
+
+@[simp]
+theorem inf_event_val (e f : ctx.Event) : (e ⊓ f).val = e.val ∩ f.val :=
+  rfl
+
 instance : Nonempty ctx.Event :=
   ⟨ctx.topEvent⟩
 

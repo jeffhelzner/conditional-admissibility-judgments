@@ -51,6 +51,12 @@ theorem ext {p q : Fap E} (h : ∀ s, p.p s = q.p s) : p = q := by
   have hp : p.p = q.p := funext h
   cases p; cases q; cases hp; rfl
 
+/-- The assignment depends only on the carrier set (membership proofs are
+irrelevant). -/
+theorem p_congr (p : Fap E) {s t : {s : Set X // s ∈ E}} (h : s.val = t.val) :
+    p.p s = p.p t :=
+  congrArg p.p (Subtype.ext h)
+
 /-- The null event has probability 0. -/
 theorem p_empty (p : Fap E) : p.p ⟨∅, E.empty_mem⟩ = 0 := by
   have h := p.additive ⟨∅, E.empty_mem⟩ ⟨Set.univ, E.univ_mem⟩ disjoint_bot_left

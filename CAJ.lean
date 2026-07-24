@@ -7,3 +7,6 @@ import CAJ.Join
 import CAJ.Commensuration
 import CAJ.Fap
 import CAJ.EAdmissibility
+import CAJ.MinimalClosure
+import CAJ.BetaCorollary
+import CAJ.Conditioning

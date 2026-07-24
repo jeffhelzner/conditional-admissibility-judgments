@@ -44,4 +44,27 @@ example : (⊤ : AdmissibilityJudgment tinyCtx).SenGamma :=
 example (e : tinyCtx.Event) : (⊤ : AdmissibilityJudgment tinyCtx).Live e :=
   fun m => tinyCtx.menu_nonempty m
 
+/-! ## Phase 2: joins and commensuration -/
+
+open AdmissibilityJudgment in
+example (J : AdmissibilityJudgment tinyCtx) :
+    Suspends (suspension J ⊤) J ⊤ :=
+  suspends_suspension J ⊤
+
+open AdmissibilityJudgment in
+/-- The universal class is join-closed, hence any two judgments are
+commensurable within it. -/
+example (J J' : AdmissibilityJudgment tinyCtx) :
+    Commensurable Set.univ J J' :=
+  JoinClosed.commensurable (fun _ _ _ => Set.mem_univ _) (Set.mem_univ J)
+    (Set.mem_univ J')
+
+open AdmissibilityJudgment in
+example (J J' : AdmissibilityJudgment tinyCtx) :
+    ZigZagIn Set.univ J J' :=
+  (zigZagIn_iff_commensurable (fun _ _ _ => Set.mem_univ _) (Set.mem_univ J)
+      (Set.mem_univ J')).mpr
+    (JoinClosed.commensurable (fun _ _ _ => Set.mem_univ _) (Set.mem_univ J)
+      (Set.mem_univ J'))
+
 end CAJTest

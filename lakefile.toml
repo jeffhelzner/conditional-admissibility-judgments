@@ -1,0 +1,19 @@
+name = "CAJ"
+defaultTargets = ["CAJ"]
+testDriver = "CAJTest"
+
+[leanOptions]
+pp.unicode.fun = true
+autoImplicit = false
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4"
+rev = "v4.29.0"
+
+[[lean_lib]]
+name = "CAJ"
+
+[[lean_lib]]
+name = "CAJTest"
+srcDir = "test"

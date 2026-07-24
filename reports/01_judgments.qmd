@@ -1,0 +1,478 @@
+---
+title: "Report 1: Decision Contexts and Admissibility Judgments"
+subtitle: "Conditional Admissibility Judgments, Technical Report Series"
+author: "Jeff Helzner"
+date: last-modified
+---
+
+::: {.callout-note}
+## Status and provenance
+
+Internal working document. Every definition and result below is verified in
+Lean 4 against Mathlib; each environment cites the corresponding Lean
+declaration in the form `File.lean · Name`. The Lean sources are
+authoritative where this report and the code differ. Library namespace:
+`CAJ`.
+:::
+
+## Introduction
+
+This report lays the static foundations of the project: the fixed decision
+context in which all judgments live, the notion of a *conditional
+admissibility judgment* — a choice function with a supposition slot — the
+policy governing null suppositions, the pointwise order on judgments, and
+Sen's choice-consistency postulates stated per supposition.
+
+Two design decisions made here do real work later and deserve emphasis up
+front.
+
+First, **conditioning is internal, revision is external**. A judgment
+carries a supposition argument $e$ ranging over an algebra of events:
+$C(e, m)$ is the set of acts the agent judges admissible from menu $m$ *on
+the supposition that* $e$. Suppositional reasoning — including Bayesian
+conditioning, treated in Report 4 — moves within a single judgment by
+varying $e$. Genuine change of confirmational commitment is a move *between*
+judgments $C \rightsquigarrow C'$ and is the subject of Reports 2 and 4.
+This separation is Levi's, and the commutation theorem of Report 4 is the
+payoff for maintaining it.
+
+Second, the **null-supposition policy**: at a supposition an agent treats
+as null, the choice set is *empty*, not the full menu, and nullity is
+uniform across menus (@def-judgment, @sec-null). This choice is forced by
+the join identity of Report 3 and is what lets the order theory of Report 2
+proceed without side conditions.
+
+Throughout, $\mathcal{P}(S)$ denotes the powerset of $S$.
+
+## Set algebras
+
+Only finitely many Boolean operations are ever needed: the probability
+theory of Report 3 is *finitely* additive, so no countable closure is
+assumed.
+
+::: {#def-setalgebra}
+## Set algebra
+
+Let $X$ be a set (in Lean, a type). A **set algebra** on $X$ is a
+collection $\mathcal{E} \subseteq \mathcal{P}(X)$ such that
+
+i. $X \in \mathcal{E}$;
+ii. if $s, t \in \mathcal{E}$ then $s \cup t \in \mathcal{E}$;
+iii. if $s \in \mathcal{E}$ then $s^{\mathsf{c}} \in \mathcal{E}$.
+
+*Lean:* `SetAlgebra.lean · CAJ.SetAlgebra` (fields `univ_mem`,
+`union_mem`, `compl_mem`).
+:::
+
+::: {#prp-algebra-derived}
+## Derived closure properties
+
+Let $\mathcal{E}$ be a set algebra on $X$. Then $\emptyset \in \mathcal{E}$,
+and if $s, t \in \mathcal{E}$ then $s \cap t \in \mathcal{E}$.
+
+*Lean:* `SetAlgebra.lean · SetAlgebra.empty_mem`, `SetAlgebra.inter_mem`.
+:::
+
+::: {.proof}
+$\emptyset = X^{\mathsf{c}}$, which lies in $\mathcal{E}$ by (i) and (iii).
+For intersection, De Morgan gives
+$s \cap t = (s^{\mathsf{c}} \cup t^{\mathsf{c}})^{\mathsf{c}}$; the
+right-hand side lies in $\mathcal{E}$ by (iii), (ii), (iii). $\square$
+:::
+
+## Decision contexts
+
+Version 1 of the theory fixes a single decision context once and for all;
+only the judgment varies. (Heterogeneous contexts, and functoriality in the
+context, are deferred to a later version.)
+
+::: {#def-context}
+## Decision context
+
+A **decision context** is a tuple
+$\Gamma = (X, \mathcal{E}, A, \mathcal{M})$ where
+
+i. $X$ is a set of **states** — the serious possibilities left open by the
+   agent's background corpus $K$, which is thereby implicit in $\Gamma$;
+ii. $\mathcal{E}$ is a set algebra on $X$, the algebra of
+    **suppositions** (synonymously, **events**);
+iii. $A$ is a set of **acts**;
+iv. $\mathcal{M} \subseteq \mathcal{P}(A)$ is a nonempty collection of
+    **menus**, each of which is nonempty.
+
+We write $e, f, \dots \in \mathcal{E}$ for events and
+$m, m', \dots \in \mathcal{M}$ for menus. The **vacuous supposition** is
+the event $\top := X$ (supposing nothing beyond the corpus).
+
+*Lean:* `DecisionContext.lean · CAJ.DecisionContext`; events and menus are
+the subtypes `DecisionContext.Event`, `DecisionContext.Menu`; the vacuous
+supposition is `DecisionContext.topEvent`.
+:::
+
+::: {#def-conjunction}
+## Conjunction of suppositions
+
+For events $e, f \in \mathcal{E}$, their **conjunction** is
+$e \sqcap f := e \cap f$, an event by @prp-algebra-derived. Supposing
+$e \sqcap f$ is supposing $e$ and $f$ together; the commutation theorem of
+Report 4 is stated in terms of this operation.
+
+*Lean:* `DecisionContext.lean · DecisionContext.instMinEvent`,
+`DecisionContext.inf_event_val`.
+:::
+
+## Admissibility judgments
+
+::: {#def-judgment}
+## Conditional admissibility judgment
+
+Fix a decision context $\Gamma = (X, \mathcal{E}, A, \mathcal{M})$. A
+**conditional admissibility judgment** over $\Gamma$ is a function
+$$
+C : \mathcal{E} \times \mathcal{M} \longrightarrow \mathcal{P}(A)
+$$
+satisfying:
+
+i. (*Choice from the menu.*) $C(e, m) \subseteq m$ for all $e, m$.
+ii. (*Live/dead dichotomy.*) For each event $e$: either $C(e, m) \neq
+    \emptyset$ for **every** menu $m$, or $C(e, m) = \emptyset$ for
+    **every** menu $m$. In the first case we say $C$ is **live at** $e$; in
+    the second, **dead at** $e$ (equivalently, $C$ *treats $e$ as null*).
+iii. (*Vacuous liveness.*) $C$ is live at $\top$.
+
+We read $a \in C(e, m)$ as: *on the supposition that $e$, the agent judges
+$a$ admissible from menu $m$.*
+
+*Lean:* `Judgment.lean · CAJ.AdmissibilityJudgment` (fields `C`,
+`choice_subset`, `live_or_dead`, `live_univ`); liveness and deadness are
+`AdmissibilityJudgment.Live`, `AdmissibilityJudgment.Dead`. In Lean the
+judgment is a structure bundling the function with the three properties;
+since the properties are propositions, a judgment is determined by its
+choice function (`AdmissibilityJudgment.ext`), and we permit ourselves to
+identify the two in prose.
+:::
+
+### The null-supposition policy {#sec-null}
+
+Condition (ii) is a substantive design decision, not bookkeeping. Consider
+an SEU judgment with prior $p$ (Report 3) at a supposition $e$ with
+$p(e) = 0$: conditional expected utility given $e$ is undefined or
+degenerate, and *something* must be said about $C(e, m)$. Three policies
+present themselves:
+
+- **Default to the menu**: set $C(e, m) = m$. This is the conventional
+  "anything goes on a null supposition" reading, but it destroys the
+  central identity of this project. Report 3 proves the join identity
+  (M1): the E-admissibility judgment of a credal set $P$ satisfies
+  $C_P(e, m) = \bigcup_{p \in P} C_{\{p\}}(e, m)$. If a single member
+  $p \in P$ with $p(e) = 0$ contributed the whole menu $m$ to the union,
+  every credal judgment would collapse to the top judgment at any
+  supposition some member nulls — and the identity would fail against the
+  intended semantics of E-admissibility.
+- **Partial choice functions**: restrict the domain of $C$ to non-null
+  suppositions, carried as separate domain data. Workable, but every
+  construction of Report 2 (pointwise order, pointwise joins) would then
+  need domain-compatibility side conditions.
+- **Empty choice set** (adopted): $C(e, m) = \emptyset$ at null
+  suppositions, with nullity *uniform across menus* — recorded not as
+  domain data but as the dichotomy (ii). The order theory proceeds without
+  side conditions, deadness composes correctly with joins (a join is dead
+  at $e$ iff every joinand is — Report 2), and the commutation theorem of
+  Report 4 comes out exactly right: members of a credal set that null the
+  conditioning event silently drop out of both sides.
+
+Uniformity across menus in (ii) is what makes "null" a property of the
+*supposition relative to the judgment* rather than of a
+supposition–menu pair; it holds in every intended model (an SEU judgment is
+dead at $e$ exactly when its prior gives $e$ probability zero, whatever the
+menu — Report 3, `seu_dead_iff`).
+
+### Elementary consequences of the dichotomy
+
+::: {#lem-live-of-nonempty}
+## One witness suffices
+
+Let $C$ be a judgment and $e$ an event. If $C(e, m) \neq \emptyset$ for
+*some* menu $m$, then $C$ is live at $e$.
+
+*Lean:* `Judgment.lean · AdmissibilityJudgment.live_of_nonempty`.
+:::
+
+::: {.proof}
+By the dichotomy, either $C$ is live at $e$ — as desired — or
+$C(e, m') = \emptyset$ for every $m'$, contradicting the hypothesis at
+$m' = m$. $\square$
+:::
+
+::: {#lem-live-iff-not-dead}
+## Liveness and deadness are complementary
+
+For every judgment $C$ and event $e$: exactly one of "live at $e$",
+"dead at $e$" holds.
+
+*Lean:* `Judgment.lean · AdmissibilityJudgment.live_iff_not_dead`; also
+`not_dead_of_live`, `dead_of_not_live`.
+:::
+
+::: {.proof}
+At least one holds by the dichotomy. They cannot both hold: since
+$\mathcal{M} \neq \emptyset$ (@def-context (iv)), pick any menu $m$; then
+liveness gives $C(e, m) \neq \emptyset$ while deadness gives
+$C(e, m) = \emptyset$. (This is the one place the nonemptiness of the menu
+*collection* is used in this report.) $\square$
+:::
+
+### The pointwise order
+
+::: {#def-order}
+## Pointwise order
+
+For judgments $C, D$ over the same context, define
+$$
+C \le D \quad :\Longleftrightarrow \quad C(e, m) \subseteq D(e, m)
+\ \text{ for all } e \in \mathcal{E},\ m \in \mathcal{M}.
+$$
+
+*Lean:* `Judgment.lean · instPartialOrderAdmissibilityJudgment`,
+`AdmissibilityJudgment.le_def`.
+:::
+
+::: {#prp-partial-order}
+$\le$ is a partial order on the judgments over a fixed context.
+
+*Lean:* same instance; antisymmetry uses `AdmissibilityJudgment.ext`.
+:::
+
+::: {.proof}
+Reflexivity and transitivity are inherited pointwise from $\subseteq$. For
+antisymmetry, $C \le D \le C$ gives $C(e, m) = D(e, m)$ for all $e, m$,
+and a judgment is determined by its choice function. $\square$
+:::
+
+The order carries the dynamic vocabulary of the project (developed in
+Report 2): a *descent* along $\le$, from $D$ to some $C \le D$, is a
+**contraction** of judgment (the class of such moves is denoted
+$\mathcal{L}$); an *ascent* is an **expansion** ($\mathcal{R}$). Levi's
+question — when can a change $C \rightsquigarrow C'$ be effected without
+begging the question — becomes a question about zig-zags in this order.
+
+::: {#prp-live-mono}
+## Liveness is monotone, deadness antitone
+
+Let $C \le D$ and let $e$ be an event. If $C$ is live at $e$, so is $D$;
+if $D$ is dead at $e$, so is $C$.
+
+*Lean:* `Judgment.lean · AdmissibilityJudgment.Live.mono`,
+`AdmissibilityJudgment.Dead.anti`.
+:::
+
+::: {.proof}
+For any menu $m$, $\emptyset \neq C(e, m) \subseteq D(e, m)$ gives the
+first claim; $C(e, m) \subseteq D(e, m) = \emptyset$ gives the second.
+$\square$
+:::
+
+::: {#prp-top}
+## The top judgment
+
+The assignment $C_\top(e, m) := m$ is a judgment, and it is the greatest
+element of the pointwise order.
+
+*Lean:* `Judgment.lean · AdmissibilityJudgment.top`,
+`instOrderTopAdmissibilityJudgment`, `top_C`.
+:::
+
+::: {.proof}
+Conditions (i) and (iii) of @def-judgment are immediate (menus are
+nonempty); (ii) holds with the "live" disjunct at every $e$. Greatestness
+is condition (i) for the arbitrary judgment: $C(e, m) \subseteq m =
+C_\top(e, m)$. $\square$
+:::
+
+$C_\top$ is the judgment of complete suspense: everything is admissible,
+under every supposition. Note there is no bottom element: the everywhere-
+empty function violates vacuous liveness (iii), and this is by design —
+a judgment must actually judge at $\top$. The order-theoretic consequence
+(Report 2) is that only *nonempty* joins exist.
+
+## Sen postulates, per supposition {#sec-sen}
+
+Choice-consistency postulates are stated *at* a supposition $e$ — each is a
+property of the one-supposition slice $C(e, \cdot)$ — with uniform versions
+quantifying over all $e$. This per-supposition indexing matters: the
+results of Report 4 hold slice by slice, and the witness of Report 5
+violates β already at the vacuous supposition.
+
+Throughout, $C$ is a judgment over $\Gamma$ and $e$ an event.
+
+::: {#def-alpha}
+## Sen's α (contraction consistency)
+
+$C$ satisfies **α at** $e$ iff for all menus $m, m'$ with
+$m' \subseteq m$ and every act $a \in m'$:
+$$
+a \in C(e, m) \implies a \in C(e, m').
+$$
+An act admissible from a menu remains admissible from any submenu still
+offering it.
+
+*Lean:* `Sen.lean · AdmissibilityJudgment.SenAlphaAt`; uniform version
+`SenAlpha`.
+:::
+
+::: {#def-beta}
+## Sen's β (expansion of bests)
+
+$C$ satisfies **β at** $e$ iff for all menus $m, m'$ with
+$m' \subseteq m$ and all acts $a, a'$:
+$$
+a, a' \in C(e, m') \implies \bigl(a \in C(e, m) \iff a' \in C(e, m)\bigr).
+$$
+Acts jointly admissible from a submenu stand or fall together in the larger
+menu.
+
+*Lean:* `Sen.lean · AdmissibilityJudgment.SenBetaAt`; uniform `SenBeta`.
+:::
+
+::: {#def-gamma}
+## Sen's γ (binary expansion consistency)
+
+$C$ satisfies **γ at** $e$ iff for all menus $m_1, m_2, m_u$ with
+$m_u = m_1 \cup m_2$ and every act $a$:
+$$
+a \in C(e, m_1) \text{ and } a \in C(e, m_2) \implies a \in C(e, m_u).
+$$
+(The hypothesis $m_u \in \mathcal{M}$ is carried by quantifying $m_u$ over
+menus: the postulate constrains $C$ only when the union is *available* as
+a menu.)
+
+*Lean:* `Sen.lean · AdmissibilityJudgment.SenGammaAt`; uniform `SenGamma`.
+:::
+
+::: {#def-warp}
+## WARP
+
+$C$ satisfies **WARP at** $e$ iff for all menus $m, m'$ and acts $a, a'$
+with $a, a' \in m \cap m'$:
+$$
+a \in C(e, m) \text{ and } a' \in C(e, m') \implies a \in C(e, m').
+$$
+If $a$ beats-or-ties everything in $m$ (witnessed by its admissibility
+there) and the common act $a'$ is admissible from $m'$, then $a$ must be
+admissible from $m'$ as well.
+
+*Lean:* `Sen.lean · AdmissibilityJudgment.WARPAt`; uniform `WARP`.
+:::
+
+On formulation: hypotheses derivable from $C(e, m) \subseteq m$ (e.g.
+"$a \in m$" alongside "$a \in C(e, m)$") are dropped in α–γ; WARP keeps its
+four membership hypotheses because none is derivable.
+
+::: {#thm-warp-alpha}
+## WARP implies α
+
+If $C$ satisfies WARP at $e$, then $C$ satisfies α at $e$.
+
+*Lean:* `Sen.lean · AdmissibilityJudgment.WARPAt.senAlphaAt`; uniform
+`WARP.senAlpha`.
+:::
+
+::: {.proof}
+Let $m' \subseteq m$, $a \in m'$, and $a \in C(e, m)$; we must show
+$a \in C(e, m')$.
+
+Since $C(e, m) \ni a$ is nonempty, $C$ is live at $e$ by
+@lem-live-of-nonempty — this is where the dichotomy earns its keep — so
+there exists some $a' \in C(e, m')$. Now apply WARP at $e$ to the menus
+$m, m'$ and acts $a, a'$. The membership hypotheses hold: $a \in m$ (since
+$C(e, m) \subseteq m$) and $a \in m'$ by assumption;
+$a' \in C(e, m') \subseteq m' \subseteq m$. From $a \in C(e, m)$ and
+$a' \in C(e, m')$, WARP yields $a \in C(e, m')$. $\square$
+:::
+
+Note the proof is not purely formal manipulation: without liveness there
+would be no witness $a'$ in the submenu, and indeed WARP is vacuously true
+of the everywhere-empty slice while α is too — the dichotomy makes the
+witness available exactly when it is needed.
+
+::: {#thm-warp-beta}
+## WARP implies β
+
+If $C$ satisfies WARP at $e$, then $C$ satisfies β at $e$.
+
+*Lean:* `Sen.lean · AdmissibilityJudgment.WARPAt.senBetaAt`; uniform
+`WARP.senBeta`.
+:::
+
+::: {.proof}
+Let $m' \subseteq m$ and $a, a' \in C(e, m')$. By symmetry in $a, a'$ it
+suffices to prove one direction of the biconditional: assume
+$a \in C(e, m)$ and show $a' \in C(e, m)$.
+
+Apply WARP at $e$ with the roles: menus $m'$ and $m$, acts $a'$ and $a$.
+Memberships: $a' \in m'$ and $a \in m'$ (both are chosen from $m'$), hence
+$a', a \in m$ as well since $m' \subseteq m$. From $a' \in C(e, m')$ and
+$a \in C(e, m)$, WARP gives $a' \in C(e, m)$. $\square$
+:::
+
+::: {#prp-top-postulates}
+## The top judgment satisfies everything
+
+$C_\top$ satisfies WARP (hence α and β) and γ, at every supposition.
+
+*Lean:* `Sen.lean · AdmissibilityJudgment.top_warp`,
+`AdmissibilityJudgment.top_senGamma`.
+:::
+
+::: {.proof}
+For WARP, the conclusion $a \in C_\top(e, m') = m'$ is among the
+hypotheses. For γ, if $a \in C_\top(e, m_1) = m_1$ then
+$a \in m_1 \cup m_2 = m_u = C_\top(e, m_u)$. $\square$
+:::
+
+### Outlook
+
+The converse bookkeeping (α ∧ β versus WARP, the role of γ) is not pursued
+here; what matters for the project is the asymmetry proved in Report 4:
+**joins of judgments preserve α but destroy β** — every E-admissibility
+judgment satisfies α, yet the two-prior witness of Report 5 violates β
+(hence WARP, by @thm-warp-beta read contrapositively) at the vacuous
+supposition. Since Report 2 will identify the join as the canonical
+commensurating intermediary, this becomes the β-corollary: *dynamic
+rationality entails static WARP-violation.*
+
+## Formalization notes {#sec-formalization}
+
+| Report item | Lean declaration (file · name) |
+|---|---|
+| @def-setalgebra | `SetAlgebra.lean · CAJ.SetAlgebra` |
+| @prp-algebra-derived | `SetAlgebra.lean · SetAlgebra.empty_mem`, `inter_mem` |
+| @def-context | `DecisionContext.lean · CAJ.DecisionContext`, `Event`, `Menu`, `topEvent` |
+| @def-conjunction | `DecisionContext.lean · instMinEvent`, `inf_event_val` |
+| @def-judgment | `Judgment.lean · CAJ.AdmissibilityJudgment`, `Live`, `Dead` |
+| @lem-live-of-nonempty | `Judgment.lean · live_of_nonempty` |
+| @lem-live-iff-not-dead | `Judgment.lean · live_iff_not_dead` |
+| @def-order, @prp-partial-order | `Judgment.lean · PartialOrder instance`, `le_def`, `ext` |
+| @prp-live-mono | `Judgment.lean · Live.mono`, `Dead.anti` |
+| @prp-top | `Judgment.lean · top`, `OrderTop instance`, `top_C` |
+| @def-alpha – @def-warp | `Sen.lean · SenAlphaAt`, `SenBetaAt`, `SenGammaAt`, `WARPAt` (+ uniform) |
+| @thm-warp-alpha | `Sen.lean · WARPAt.senAlphaAt`, `WARP.senAlpha` |
+| @thm-warp-beta | `Sen.lean · WARPAt.senBetaAt`, `WARP.senBeta` |
+| @prp-top-postulates | `Sen.lean · top_warp`, `top_senGamma` |
+
+Encoding remarks:
+
+- **Types, not sets.** $X$ and $A$ are Lean types (`State`, `Act`); events
+  and menus are subtypes of `Set State`, `Set Act` respectively, so an
+  event carries its membership proof. The algebra $\mathcal{E}$ is a
+  bespoke structure (`CAJ.SetAlgebra`) rather than Mathlib's
+  `MeasurableSpace`, since only finite operations are wanted.
+- **Universes.** `DecisionContext` is universe-polymorphic in `State` and
+  `Act`; all reports may be read at universe 0.
+- **The dichotomy as a field.** `live_or_dead` is data-free (a
+  proposition), so judgments with equal choice functions are equal
+  (`ext`) — the prose identification of a judgment with its choice
+  function is faithful.
+- **Conjunction as `Min`.** $e \sqcap f$ is implemented as a `Min`
+  instance on the event subtype so that Lean's lattice notation `⊓`
+  applies; `inf_event_val` unfolds it to intersection.

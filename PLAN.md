@@ -68,10 +68,19 @@ the poset J of judgments (pointwise ⊆).
    C_P; monotonicity; two-prior witness context built EARLY and reused.
 4. Headline package: M1, M2, M3, cospan normal form, β-corollary, commutation theorem,
    M5 negatives, M4 statement + partial results.
-5. Paper (Synthese): Levi's argument → commensuration property → minimal-closure
+5. Technical reports (internal, iterative): human-readable exposition in
+   mathematical English of all definitions and results (theorems, propositions,
+   lemmas, examples) established in Phases 1–4, with pointers to the Lean names.
+   Deliberately MORE detailed than a journal paper — may include material that a
+   Synthese submission would suppress. Workflow: agent drafts → user reviews →
+   adjustments flow to the reports AND back into the formal foundations where
+   prose exposes design defects. Refinement identifies which parts are mature
+   enough to seed the article.
+6. Paper (Synthese): Levi's argument → commensuration property → minimal-closure
    theorem → convexity wedge → β-corollary; Lean repo as verification appendix.
    Needs careful section defending transfer of commensuration thesis (belief revision,
    Fixation of Belief and Its Undoing 1991) to confirmational commitments.
+   Carved from the mature parts of the Phase 5 reports.
 
 ## Contributions (honest triage)
 Repackaging: M0/M1/M3 near-definitional; M4 engine is SSK identifiability.

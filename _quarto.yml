@@ -1,0 +1,35 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - index.qmd
+    - reports/
+
+website:
+  title: "Conditional Admissibility Judgments"
+  description: >
+    Technical reports on a formal (Lean 4 + Mathlib) development of
+    commensuration closure and E-admissibility.
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+    right:
+      - icon: github
+        href: https://github.com/jeffhelzner/conditional-admissibility-judgments
+  sidebar:
+    style: docked
+    contents:
+      - index.qmd
+      - section: "Reports"
+        contents:
+          - reports/01_judgments.qmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    html-math-method: katex
+    link-external-newwindow: true

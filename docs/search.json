@@ -1,0 +1,141 @@
+[
+  {
+    "objectID": "reports/01_judgments.html",
+    "href": "reports/01_judgments.html",
+    "title": "Report 1: Decision Contexts and Admissibility Judgments",
+    "section": "",
+    "text": "NoteStatus and provenance\n\n\n\nInternal working document. Every definition and result below is verified in Lean 4 against Mathlib; each environment cites the corresponding Lean declaration in the form File.lean · Name. The Lean sources are authoritative where this report and the code differ. Library namespace: CAJ.",
+    "crumbs": [
+      "Home",
+      "Reports",
+      "Report 1: Decision Contexts and Admissibility Judgments"
+    ]
+  },
+  {
+    "objectID": "reports/01_judgments.html#introduction",
+    "href": "reports/01_judgments.html#introduction",
+    "title": "Report 1: Decision Contexts and Admissibility Judgments",
+    "section": "1 Introduction",
+    "text": "1 Introduction\nThis report lays the static foundations of the project: the fixed decision context in which all judgments live, the notion of a conditional admissibility judgment — a choice function with a supposition slot — the policy governing null suppositions, the pointwise order on judgments, and Sen’s choice-consistency postulates stated per supposition.\nTwo design decisions made here do real work later and deserve emphasis up front.\nFirst, conditioning is internal, revision is external. A judgment carries a supposition argument e ranging over an algebra of events: C(e, m) is the set of acts the agent judges admissible from menu m on the supposition that e. Suppositional reasoning — including Bayesian conditioning, treated in Report 4 — moves within a single judgment by varying e. Genuine change of confirmational commitment is a move between judgments C \\rightsquigarrow C' and is the subject of Reports 2 and 4. This separation is Levi’s, and the commutation theorem of Report 4 is the payoff for maintaining it.\nSecond, the null-supposition policy: at a supposition an agent treats as null, the choice set is empty, not the full menu, and nullity is uniform across menus (Definition 4, Section 4.1). This choice is forced by the join identity of Report 3 and is what lets the order theory of Report 2 proceed without side conditions.\nThroughout, \\mathcal{P}(S) denotes the powerset of S.",
+    "crumbs": [
+      "Home",
+      "Reports",
+      "Report 1: Decision Contexts and Admissibility Judgments"
+    ]
+  },
+  {
+    "objectID": "reports/01_judgments.html#set-algebras",
+    "href": "reports/01_judgments.html#set-algebras",
+    "title": "Report 1: Decision Contexts and Admissibility Judgments",
+    "section": "2 Set algebras",
+    "text": "2 Set algebras\nOnly finitely many Boolean operations are ever needed: the probability theory of Report 3 is finitely additive, so no countable closure is assumed.\n\nDefinition 1 (Set algebra) Let X be a set (in Lean, a type). A set algebra on X is a collection \\mathcal{E} \\subseteq \\mathcal{P}(X) such that\n\nX \\in \\mathcal{E};\nif s, t \\in \\mathcal{E} then s \\cup t \\in \\mathcal{E};\nif s \\in \\mathcal{E} then s^{\\mathsf{c}} \\in \\mathcal{E}.\n\nLean: SetAlgebra.lean · CAJ.SetAlgebra (fields univ_mem, union_mem, compl_mem).\n\n\nProposition 1 (Derived closure properties) Let \\mathcal{E} be a set algebra on X. Then \\emptyset \\in \\mathcal{E}, and if s, t \\in \\mathcal{E} then s \\cap t \\in \\mathcal{E}.\nLean: SetAlgebra.lean · SetAlgebra.empty_mem, SetAlgebra.inter_mem.\n\n\nProof. \\emptyset = X^{\\mathsf{c}}, which lies in \\mathcal{E} by (i) and (iii). For intersection, De Morgan gives s \\cap t = (s^{\\mathsf{c}} \\cup t^{\\mathsf{c}})^{\\mathsf{c}}; the right-hand side lies in \\mathcal{E} by (iii), (ii), (iii). \\square",
+    "crumbs": [
+      "Home",
+      "Reports",
+      "Report 1: Decision Contexts and Admissibility Judgments"
+    ]
+  },
+  {
+    "objectID": "reports/01_judgments.html#decision-contexts",
+    "href": "reports/01_judgments.html#decision-contexts",
+    "title": "Report 1: Decision Contexts and Admissibility Judgments",
+    "section": "3 Decision contexts",
+    "text": "3 Decision contexts\nVersion 1 of the theory fixes a single decision context once and for all; only the judgment varies. (Heterogeneous contexts, and functoriality in the context, are deferred to a later version.)\n\nDefinition 2 (Decision context) A decision context is a tuple \\Gamma = (X, \\mathcal{E}, A, \\mathcal{M}) where\n\nX is a set of states — the serious possibilities left open by the agent’s background corpus K, which is thereby implicit in \\Gamma;\n\\mathcal{E} is a set algebra on X, the algebra of suppositions (synonymously, events);\nA is a set of acts;\n\\mathcal{M} \\subseteq \\mathcal{P}(A) is a nonempty collection of menus, each of which is nonempty.\n\nWe write e, f, \\dots \\in \\mathcal{E} for events and m, m', \\dots \\in \\mathcal{M} for menus. The vacuous supposition is the event \\top := X (supposing nothing beyond the corpus).\nLean: DecisionContext.lean · CAJ.DecisionContext; events and menus are the subtypes DecisionContext.Event, DecisionContext.Menu; the vacuous supposition is DecisionContext.topEvent.\n\n\nDefinition 3 (Conjunction of suppositions) For events e, f \\in \\mathcal{E}, their conjunction is e \\sqcap f := e \\cap f, an event by Proposition 1. Supposing e \\sqcap f is supposing e and f together; the commutation theorem of Report 4 is stated in terms of this operation.\nLean: DecisionContext.lean · DecisionContext.instMinEvent, DecisionContext.inf_event_val.",
+    "crumbs": [
+      "Home",
+      "Reports",
+      "Report 1: Decision Contexts and Admissibility Judgments"
+    ]
+  },
+  {
+    "objectID": "reports/01_judgments.html#admissibility-judgments",
+    "href": "reports/01_judgments.html#admissibility-judgments",
+    "title": "Report 1: Decision Contexts and Admissibility Judgments",
+    "section": "4 Admissibility judgments",
+    "text": "4 Admissibility judgments\n\nDefinition 4 (Conditional admissibility judgment) Fix a decision context \\Gamma = (X, \\mathcal{E}, A, \\mathcal{M}). A conditional admissibility judgment over \\Gamma is a function \nC : \\mathcal{E} \\times \\mathcal{M} \\longrightarrow \\mathcal{P}(A)\n satisfying:\n\n(Choice from the menu.) C(e, m) \\subseteq m for all e, m.\n(Live/dead dichotomy.) For each event e: either C(e, m) \\neq\n\\emptyset for every menu m, or C(e, m) = \\emptyset for every menu m. In the first case we say C is live at e; in the second, dead at e (equivalently, C treats e as null).\n(Vacuous liveness.) C is live at \\top.\n\nWe read a \\in C(e, m) as: on the supposition that e, the agent judges a admissible from menu m.\nLean: Judgment.lean · CAJ.AdmissibilityJudgment (fields C, choice_subset, live_or_dead, live_univ); liveness and deadness are AdmissibilityJudgment.Live, AdmissibilityJudgment.Dead. In Lean the judgment is a structure bundling the function with the three properties; since the properties are propositions, a judgment is determined by its choice function (AdmissibilityJudgment.ext), and we permit ourselves to identify the two in prose.\n\n\n4.1 The null-supposition policy\nCondition (ii) is a substantive design decision, not bookkeeping. Consider an SEU judgment with prior p (Report 3) at a supposition e with p(e) = 0: conditional expected utility given e is undefined or degenerate, and something must be said about C(e, m). Three policies present themselves:\n\nDefault to the menu: set C(e, m) = m. This is the conventional “anything goes on a null supposition” reading, but it destroys the central identity of this project. Report 3 proves the join identity (M1): the E-admissibility judgment of a credal set P satisfies C_P(e, m) = \\bigcup_{p \\in P} C_{\\{p\\}}(e, m). If a single member p \\in P with p(e) = 0 contributed the whole menu m to the union, every credal judgment would collapse to the top judgment at any supposition some member nulls — and the identity would fail against the intended semantics of E-admissibility.\nPartial choice functions: restrict the domain of C to non-null suppositions, carried as separate domain data. Workable, but every construction of Report 2 (pointwise order, pointwise joins) would then need domain-compatibility side conditions.\nEmpty choice set (adopted): C(e, m) = \\emptyset at null suppositions, with nullity uniform across menus — recorded not as domain data but as the dichotomy (ii). The order theory proceeds without side conditions, deadness composes correctly with joins (a join is dead at e iff every joinand is — Report 2), and the commutation theorem of Report 4 comes out exactly right: members of a credal set that null the conditioning event silently drop out of both sides.\n\nUniformity across menus in (ii) is what makes “null” a property of the supposition relative to the judgment rather than of a supposition–menu pair; it holds in every intended model (an SEU judgment is dead at e exactly when its prior gives e probability zero, whatever the menu — Report 3, seu_dead_iff).\n\n\n4.2 Elementary consequences of the dichotomy\n\nLemma 1 (One witness suffices) Let C be a judgment and e an event. If C(e, m) \\neq \\emptyset for some menu m, then C is live at e.\nLean: Judgment.lean · AdmissibilityJudgment.live_of_nonempty.\n\n\nProof. By the dichotomy, either C is live at e — as desired — or C(e, m') = \\emptyset for every m', contradicting the hypothesis at m' = m. \\square\n\n\nLemma 2 (Liveness and deadness are complementary) For every judgment C and event e: exactly one of “live at e”, “dead at e” holds.\nLean: Judgment.lean · AdmissibilityJudgment.live_iff_not_dead; also not_dead_of_live, dead_of_not_live.\n\n\nProof. At least one holds by the dichotomy. They cannot both hold: since \\mathcal{M} \\neq \\emptyset (Definition 2 (iv)), pick any menu m; then liveness gives C(e, m) \\neq \\emptyset while deadness gives C(e, m) = \\emptyset. (This is the one place the nonemptiness of the menu collection is used in this report.) \\square\n\n\n\n4.3 The pointwise order\n\nDefinition 5 (Pointwise order) For judgments C, D over the same context, define \nC \\le D \\quad :\\Longleftrightarrow \\quad C(e, m) \\subseteq D(e, m)\n\\ \\text{ for all } e \\in \\mathcal{E},\\ m \\in \\mathcal{M}.\n\nLean: Judgment.lean · instPartialOrderAdmissibilityJudgment, AdmissibilityJudgment.le_def.\n\n\nProposition 2 \\le is a partial order on the judgments over a fixed context.\nLean: same instance; antisymmetry uses AdmissibilityJudgment.ext.\n\n\nProof. Reflexivity and transitivity are inherited pointwise from \\subseteq. For antisymmetry, C \\le D \\le C gives C(e, m) = D(e, m) for all e, m, and a judgment is determined by its choice function. \\square\n\nThe order carries the dynamic vocabulary of the project (developed in Report 2): a descent along \\le, from D to some C \\le D, is a contraction of judgment (the class of such moves is denoted \\mathcal{L}); an ascent is an expansion (\\mathcal{R}). Levi’s question — when can a change C \\rightsquigarrow C' be effected without begging the question — becomes a question about zig-zags in this order.\n\nProposition 3 (Liveness is monotone, deadness antitone) Let C \\le D and let e be an event. If C is live at e, so is D; if D is dead at e, so is C.\nLean: Judgment.lean · AdmissibilityJudgment.Live.mono, AdmissibilityJudgment.Dead.anti.\n\n\nProof. For any menu m, \\emptyset \\neq C(e, m) \\subseteq D(e, m) gives the first claim; C(e, m) \\subseteq D(e, m) = \\emptyset gives the second. \\square\n\n\nProposition 4 (The top judgment) The assignment C_\\top(e, m) := m is a judgment, and it is the greatest element of the pointwise order.\nLean: Judgment.lean · AdmissibilityJudgment.top, instOrderTopAdmissibilityJudgment, top_C.\n\n\nProof. Conditions (i) and (iii) of Definition 4 are immediate (menus are nonempty); (ii) holds with the “live” disjunct at every e. Greatestness is condition (i) for the arbitrary judgment: C(e, m) \\subseteq m =\nC_\\top(e, m). \\square\n\nC_\\top is the judgment of complete suspense: everything is admissible, under every supposition. Note there is no bottom element: the everywhere- empty function violates vacuous liveness (iii), and this is by design — a judgment must actually judge at \\top. The order-theoretic consequence (Report 2) is that only nonempty joins exist.",
+    "crumbs": [
+      "Home",
+      "Reports",
+      "Report 1: Decision Contexts and Admissibility Judgments"
+    ]
+  },
+  {
+    "objectID": "reports/01_judgments.html#sec-sen",
+    "href": "reports/01_judgments.html#sec-sen",
+    "title": "Report 1: Decision Contexts and Admissibility Judgments",
+    "section": "5 Sen postulates, per supposition",
+    "text": "5 Sen postulates, per supposition\nChoice-consistency postulates are stated at a supposition e — each is a property of the one-supposition slice C(e, \\cdot) — with uniform versions quantifying over all e. This per-supposition indexing matters: the results of Report 4 hold slice by slice, and the witness of Report 5 violates β already at the vacuous supposition.\nThroughout, C is a judgment over \\Gamma and e an event.\n\nDefinition 6 (Sen’s α (contraction consistency)) C satisfies α at e iff for all menus m, m' with m' \\subseteq m and every act a \\in m': \na \\in C(e, m) \\implies a \\in C(e, m').\n An act admissible from a menu remains admissible from any submenu still offering it.\nLean: Sen.lean · AdmissibilityJudgment.SenAlphaAt; uniform version SenAlpha.\n\n\nDefinition 7 (Sen’s β (expansion of bests)) C satisfies β at e iff for all menus m, m' with m' \\subseteq m and all acts a, a': \na, a' \\in C(e, m') \\implies \\bigl(a \\in C(e, m) \\iff a' \\in C(e, m)\\bigr).\n Acts jointly admissible from a submenu stand or fall together in the larger menu.\nLean: Sen.lean · AdmissibilityJudgment.SenBetaAt; uniform SenBeta.\n\n\nDefinition 8 (Sen’s γ (binary expansion consistency)) C satisfies γ at e iff for all menus m_1, m_2, m_u with m_u = m_1 \\cup m_2 and every act a: \na \\in C(e, m_1) \\text{ and } a \\in C(e, m_2) \\implies a \\in C(e, m_u).\n (The hypothesis m_u \\in \\mathcal{M} is carried by quantifying m_u over menus: the postulate constrains C only when the union is available as a menu.)\nLean: Sen.lean · AdmissibilityJudgment.SenGammaAt; uniform SenGamma.\n\n\nDefinition 9 (WARP) C satisfies WARP at e iff for all menus m, m' and acts a, a' with a, a' \\in m \\cap m': \na \\in C(e, m) \\text{ and } a' \\in C(e, m') \\implies a \\in C(e, m').\n If a beats-or-ties everything in m (witnessed by its admissibility there) and the common act a' is admissible from m', then a must be admissible from m' as well.\nLean: Sen.lean · AdmissibilityJudgment.WARPAt; uniform WARP.\n\nOn formulation: hypotheses derivable from C(e, m) \\subseteq m (e.g. “a \\in m” alongside “a \\in C(e, m)”) are dropped in α–γ; WARP keeps its four membership hypotheses because none is derivable.\n\nTheorem 1 (WARP implies α) If C satisfies WARP at e, then C satisfies α at e.\nLean: Sen.lean · AdmissibilityJudgment.WARPAt.senAlphaAt; uniform WARP.senAlpha.\n\n\nProof. Let m' \\subseteq m, a \\in m', and a \\in C(e, m); we must show a \\in C(e, m').\nSince C(e, m) \\ni a is nonempty, C is live at e by Lemma 1 — this is where the dichotomy earns its keep — so there exists some a' \\in C(e, m'). Now apply WARP at e to the menus m, m' and acts a, a'. The membership hypotheses hold: a \\in m (since C(e, m) \\subseteq m) and a \\in m' by assumption; a' \\in C(e, m') \\subseteq m' \\subseteq m. From a \\in C(e, m) and a' \\in C(e, m'), WARP yields a \\in C(e, m'). \\square\n\nNote the proof is not purely formal manipulation: without liveness there would be no witness a' in the submenu, and indeed WARP is vacuously true of the everywhere-empty slice while α is too — the dichotomy makes the witness available exactly when it is needed.\n\nTheorem 2 (WARP implies β) If C satisfies WARP at e, then C satisfies β at e.\nLean: Sen.lean · AdmissibilityJudgment.WARPAt.senBetaAt; uniform WARP.senBeta.\n\n\nProof. Let m' \\subseteq m and a, a' \\in C(e, m'). By symmetry in a, a' it suffices to prove one direction of the biconditional: assume a \\in C(e, m) and show a' \\in C(e, m).\nApply WARP at e with the roles: menus m' and m, acts a' and a. Memberships: a' \\in m' and a \\in m' (both are chosen from m'), hence a', a \\in m as well since m' \\subseteq m. From a' \\in C(e, m') and a \\in C(e, m), WARP gives a' \\in C(e, m). \\square\n\n\nProposition 5 (The top judgment satisfies everything) C_\\top satisfies WARP (hence α and β) and γ, at every supposition.\nLean: Sen.lean · AdmissibilityJudgment.top_warp, AdmissibilityJudgment.top_senGamma.\n\n\nProof. For WARP, the conclusion a \\in C_\\top(e, m') = m' is among the hypotheses. For γ, if a \\in C_\\top(e, m_1) = m_1 then a \\in m_1 \\cup m_2 = m_u = C_\\top(e, m_u). \\square\n\n\n5.1 Outlook\nThe converse bookkeeping (α ∧ β versus WARP, the role of γ) is not pursued here; what matters for the project is the asymmetry proved in Report 4: joins of judgments preserve α but destroy β — every E-admissibility judgment satisfies α, yet the two-prior witness of Report 5 violates β (hence WARP, by Theorem 2 read contrapositively) at the vacuous supposition. Since Report 2 will identify the join as the canonical commensurating intermediary, this becomes the β-corollary: dynamic rationality entails static WARP-violation.",
+    "crumbs": [
+      "Home",
+      "Reports",
+      "Report 1: Decision Contexts and Admissibility Judgments"
+    ]
+  },
+  {
+    "objectID": "reports/01_judgments.html#sec-formalization",
+    "href": "reports/01_judgments.html#sec-formalization",
+    "title": "Report 1: Decision Contexts and Admissibility Judgments",
+    "section": "6 Formalization notes",
+    "text": "6 Formalization notes\n\n\n\n\n\n\n\nReport item\nLean declaration (file · name)\n\n\n\n\nDefinition 1\nSetAlgebra.lean · CAJ.SetAlgebra\n\n\nProposition 1\nSetAlgebra.lean · SetAlgebra.empty_mem, inter_mem\n\n\nDefinition 2\nDecisionContext.lean · CAJ.DecisionContext, Event, Menu, topEvent\n\n\nDefinition 3\nDecisionContext.lean · instMinEvent, inf_event_val\n\n\nDefinition 4\nJudgment.lean · CAJ.AdmissibilityJudgment, Live, Dead\n\n\nLemma 1\nJudgment.lean · live_of_nonempty\n\n\nLemma 2\nJudgment.lean · live_iff_not_dead\n\n\nDefinition 5, Proposition 2\nJudgment.lean · PartialOrder instance, le_def, ext\n\n\nProposition 3\nJudgment.lean · Live.mono, Dead.anti\n\n\nProposition 4\nJudgment.lean · top, OrderTop instance, top_C\n\n\nDefinition 6 – Definition 9\nSen.lean · SenAlphaAt, SenBetaAt, SenGammaAt, WARPAt (+ uniform)\n\n\nTheorem 1\nSen.lean · WARPAt.senAlphaAt, WARP.senAlpha\n\n\nTheorem 2\nSen.lean · WARPAt.senBetaAt, WARP.senBeta\n\n\nProposition 5\nSen.lean · top_warp, top_senGamma\n\n\n\nEncoding remarks:\n\nTypes, not sets. X and A are Lean types (State, Act); events and menus are subtypes of Set State, Set Act respectively, so an event carries its membership proof. The algebra \\mathcal{E} is a bespoke structure (CAJ.SetAlgebra) rather than Mathlib’s MeasurableSpace, since only finite operations are wanted.\nUniverses. DecisionContext is universe-polymorphic in State and Act; all reports may be read at universe 0.\nThe dichotomy as a field. live_or_dead is data-free (a proposition), so judgments with equal choice functions are equal (ext) — the prose identification of a judgment with its choice function is faithful.\nConjunction as Min. e \\sqcap f is implemented as a Min instance on the event subtype so that Lean’s lattice notation ⊓ applies; inf_event_val unfolds it to intersection.",
+    "crumbs": [
+      "Home",
+      "Reports",
+      "Report 1: Decision Contexts and Admissibility Judgments"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Conditional Admissibility Judgments",
+    "section": "",
+    "text": "This project formalizes, in Lean 4 with Mathlib, an argument due to Isaac Levi: his indeterminate-probability generalization of subjective expected utility (SEU) theory is exactly what is needed to permit non-question-begging change of confirmational commitment. The core formal claim is order-theoretic:\n\nCommensurability is a closure property on classes of admissibility judgments. The SEU-representable class lacks it, and the E-admissibility class is its minimal closure.\n\nAlong the way the development yields a comparative universal property that singles out E-admissibility among rivals (it is the unique join-preserving extension of SEU maximization to credal sets), a convexity wedge (commensuration never forces convex closure — a formal datum in the Levi–Seidenfeld dispute), a β-corollary (dynamic rationality entails static WARP-violation), and a commutation theorem tying suppositional conditioning to Levi’s confirmational conditionalization.\nAll definitions and results below are verified: the Lean library builds with no sorrys against Mathlib, and every claim in the reports cites the corresponding Lean declaration. See the GitHub repository for the sources.",
+    "crumbs": [
+      "Home",
+      "Conditional Admissibility Judgments"
+    ]
+  },
+  {
+    "objectID": "index.html#introduction",
+    "href": "index.html#introduction",
+    "title": "Conditional Admissibility Judgments",
+    "section": "",
+    "text": "This project formalizes, in Lean 4 with Mathlib, an argument due to Isaac Levi: his indeterminate-probability generalization of subjective expected utility (SEU) theory is exactly what is needed to permit non-question-begging change of confirmational commitment. The core formal claim is order-theoretic:\n\nCommensurability is a closure property on classes of admissibility judgments. The SEU-representable class lacks it, and the E-admissibility class is its minimal closure.\n\nAlong the way the development yields a comparative universal property that singles out E-admissibility among rivals (it is the unique join-preserving extension of SEU maximization to credal sets), a convexity wedge (commensuration never forces convex closure — a formal datum in the Levi–Seidenfeld dispute), a β-corollary (dynamic rationality entails static WARP-violation), and a commutation theorem tying suppositional conditioning to Levi’s confirmational conditionalization.\nAll definitions and results below are verified: the Lean library builds with no sorrys against Mathlib, and every claim in the reports cites the corresponding Lean declaration. See the GitHub repository for the sources.",
+    "crumbs": [
+      "Home",
+      "Conditional Admissibility Judgments"
+    ]
+  },
+  {
+    "objectID": "index.html#report-series",
+    "href": "index.html#report-series",
+    "title": "Conditional Admissibility Judgments",
+    "section": "2 Report Series",
+    "text": "2 Report Series\nThe technical reports are the detailed, human-readable record of the development. They follow the architecture of the Lean library and carry full proofs in mathematical English; they may include material that a journal presentation would suppress.\n\nDecision Contexts and Admissibility Judgments — set algebras, decision contexts, conditional admissibility judgments, the null-supposition policy, the pointwise order, and Sen’s choice-consistency postulates per supposition.\nCommensuration and the Closure Operator (forthcoming) — pointwise joins, suspension and fair hearing, commensurability relative to a class, the commensuration closure operator, and the zig-zag analysis of change.\nThe Credal Layer: Probabilities, Mixtures, and E-admissibility (forthcoming) — finitely additive probabilities, mixtures and convex hulls, SEU judgments, and the join identity for E-admissibility.\nThe Headline Package: Minimal Closure, β-Corollary, Commutation (forthcoming) — the minimal-closure theorem, the uniqueness/universal property, the commensurating intermediary, the cospan normal form, the β-corollary, and the commutation of suppositional conditioning with credal joins.\nThe Two-Prior Witness and the M5 Negatives (forthcoming) — one small designed context witnessing all the negative results: no SEU intermediary, the convexity wedge, and the β-violation.",
+    "crumbs": [
+      "Home",
+      "Conditional Admissibility Judgments"
+    ]
+  },
+  {
+    "objectID": "index.html#status",
+    "href": "index.html#status",
+    "title": "Conditional Admissibility Judgments",
+    "section": "3 Status",
+    "text": "3 Status\nThe formal foundations (Phases 0–4 of the project plan) are complete and build cleanly. The reports are internal working documents under active revision; where a report and the Lean sources differ, the Lean sources are authoritative.",
+    "crumbs": [
+      "Home",
+      "Conditional Admissibility Judgments"
+    ]
+  },
+  {
+    "objectID": "index.html#citation",
+    "href": "index.html#citation",
+    "title": "Conditional Admissibility Judgments",
+    "section": "4 Citation",
+    "text": "4 Citation\nHelzner, J. (2026). Conditional Admissibility Judgments: Commensuration\nClosure and E-admissibility, Formally Verified.\nhttps://github.com/jeffhelzner/conditional-admissibility-judgments",
+    "crumbs": [
+      "Home",
+      "Conditional Admissibility Judgments"
+    ]
+  }
+]

@@ -3,7 +3,9 @@
 .lake/config/
 .lake/packages/
 
-# Quarto output
+# Quarto artifacts
+/.quarto/
 reports/_output/
 
 prompts/
+**/*.quarto_ipynb

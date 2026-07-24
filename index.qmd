@@ -1,0 +1,74 @@
+---
+title: "Conditional Admissibility Judgments"
+subtitle: "Commensuration closure and E-admissibility, formally verified"
+author: "Jeff Helzner"
+date: last-modified
+---
+
+## Introduction
+
+This project formalizes, in Lean 4 with Mathlib, an argument due to Isaac
+Levi: his indeterminate-probability generalization of subjective expected
+utility (SEU) theory is exactly what is needed to permit
+*non-question-begging* change of confirmational commitment. The core formal
+claim is order-theoretic:
+
+> Commensurability is a closure property on classes of admissibility
+> judgments. The SEU-representable class lacks it, and the E-admissibility
+> class is its **minimal closure**.
+
+Along the way the development yields a comparative universal property that
+singles out E-admissibility among rivals (it is the unique join-preserving
+extension of SEU maximization to credal sets), a *convexity wedge*
+(commensuration never forces convex closure — a formal datum in the
+Levi–Seidenfeld dispute), a *β-corollary* (dynamic rationality entails
+static WARP-violation), and a commutation theorem tying suppositional
+conditioning to Levi's confirmational conditionalization.
+
+All definitions and results below are verified: the Lean library builds
+with no `sorry`s against Mathlib, and every claim in the reports cites the
+corresponding Lean declaration. See the
+[GitHub repository](https://github.com/jeffhelzner/conditional-admissibility-judgments)
+for the sources.
+
+## Report Series
+
+The technical reports are the detailed, human-readable record of the
+development. They follow the architecture of the Lean library and carry
+full proofs in mathematical English; they may include material that a
+journal presentation would suppress.
+
+1. [Decision Contexts and Admissibility Judgments](reports/01_judgments.qmd)
+   — set algebras, decision contexts, conditional admissibility judgments,
+   the null-supposition policy, the pointwise order, and Sen's
+   choice-consistency postulates per supposition.
+2. *Commensuration and the Closure Operator* (forthcoming) — pointwise
+   joins, suspension and fair hearing, commensurability relative to a
+   class, the commensuration closure operator, and the zig-zag analysis of
+   change.
+3. *The Credal Layer: Probabilities, Mixtures, and E-admissibility*
+   (forthcoming) — finitely additive probabilities, mixtures and convex
+   hulls, SEU judgments, and the join identity for E-admissibility.
+4. *The Headline Package: Minimal Closure, β-Corollary, Commutation*
+   (forthcoming) — the minimal-closure theorem, the uniqueness/universal
+   property, the commensurating intermediary, the cospan normal form, the
+   β-corollary, and the commutation of suppositional conditioning with
+   credal joins.
+5. *The Two-Prior Witness and the M5 Negatives* (forthcoming) — one small
+   designed context witnessing all the negative results: no SEU
+   intermediary, the convexity wedge, and the β-violation.
+
+## Status
+
+The formal foundations (Phases 0–4 of the project plan) are complete and
+build cleanly. The reports are internal working documents under active
+revision; where a report and the Lean sources differ, the Lean sources are
+authoritative.
+
+## Citation
+
+```
+Helzner, J. (2026). Conditional Admissibility Judgments: Commensuration
+Closure and E-admissibility, Formally Verified.
+https://github.com/jeffhelzner/conditional-admissibility-judgments
+```

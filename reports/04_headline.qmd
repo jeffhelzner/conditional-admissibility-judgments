@@ -1,0 +1,705 @@
+---
+title: "Report 4: The Headline Package — Minimal Closure, β-Corollary, Commutation"
+subtitle: "Conditional Admissibility Judgments, Technical Report Series"
+author: "Jeff Helzner"
+date: last-modified
+---
+
+::: {.callout-note}
+## Status and provenance
+
+Internal working document. Every definition and result below is verified in
+Lean 4 against Mathlib; each environment cites the corresponding Lean
+declaration in the form `File.lean · Name`. The Lean sources are
+authoritative where this report and the code differ. Library namespace:
+`CAJ` (mostly `CAJ.CredalContext`; abstract material in
+`CAJ.AdmissibilityJudgment`, conditioning of probabilities in `CAJ.Fap`).
+:::
+
+## Introduction
+
+This report assembles the project's principal results from the material of
+Reports 1–3. Fix throughout a decision context $\Gamma$ and a credal
+context over it; all judgments, faps, and choice sets are relative to
+these. Two classes of judgments are in play:
+$$
+K_{\mathrm{SEU}} := \{\, C_{\{p\}} \mid p \text{ a fap on } \mathcal{E}
+\,\}, \qquad
+K_{\mathrm{Eadm}} := \{\, C_P \mid P \text{ a nonempty set of faps} \,\},
+$$
+the judgments representable by a single prior and by a credal state,
+respectively.
+
+The results:
+
+- **Minimal closure (M2, headline instance;** @thm-headline**):**
+  $\mathrm{cc}(K_{\mathrm{SEU}}) = K_{\mathrm{Eadm}}$. The commensuration
+  closure of the SEU judgments is *exactly* the class of E-admissibility
+  judgments — with minimality
+  (@cor-minimal): $K_{\mathrm{Eadm}}$ is the *least* join-closed extension
+  of $K_{\mathrm{SEU}}$. E-admissibility is what the commensuration thesis
+  costs an SEU theorist, and it is the cheapest adequate repair.
+- **The concrete intermediary (M3;** @thm-m3**):** the commensurating
+  intermediary between two credal judgments $C_P$ and $C_Q$ is the
+  E-admissibility judgment of the *union* credal set, $C_{P \cup Q}$, and
+  it is the least judgment suspending between them. The cospan normal form
+  of Report 2 instantiates: within $K_{\mathrm{Eadm}}$, every zig-zag
+  reduces to the two-step cospan through $C_{P \cup Q}$.
+- **Uniqueness (**@thm-unique**):** E-admissibility is the unique
+  assignment of judgments to credal states that agrees with SEU on
+  singletons and is determined by its singleton values via joins.
+- **The β-corollary (**@thm-beta-corollary**):** joins preserve Sen's α
+  but destroy β. Every E-admissibility judgment satisfies α; but whenever
+  the suspension of two members of a join-closed class exhibits a simple
+  witness pattern, the class contains a commensurating intermediary
+  violating β — hence WARP. *Dynamic rationality entails static
+  WARP-violation.*
+- **Commutation (**@thm-commutation**):** suppositional conditioning
+  commutes with the credal join. Conditioning the credal state memberwise
+  (generalized Bayes) and judging at supposition $f$ agrees with judging
+  with the original state at the conjoined supposition $e \sqcap f$.
+- **The convexity wedge (M4, statement;** @def-convex-equivalent**):**
+  convexifying the credal state can only coarsen choice, and a credal
+  state may or may not be choice-equivalent to its convex hull. That the
+  equivalence can *fail* — commensuration closure never forces convex
+  closure — is witnessed in Report 5.
+
+## The two classes
+
+::: {#def-classes}
+## $K_{\mathrm{SEU}}$ and $K_{\mathrm{Eadm}}$
+
+$K_{\mathrm{SEU}}$ is the class of judgments of the form $C_{\{p\}}$
+([the SEU judgment](03_credal.qmd#def-seu), Report 3) for some fap $p$;
+$K_{\mathrm{Eadm}}$ the class of judgments of the form $C_P$
+([the E-admissibility judgment](03_credal.qmd#def-eadm), Report 3) for
+some nonempty set $P$ of faps.
+
+*Lean:* `MinimalClosure.lean · CredalContext.KSEU` (as `Set.range seu`),
+`KEadm`; membership witnesses `seu_mem_KSEU`, `eAdm_mem_KEadm`.
+:::
+
+::: {#prp-kseu-sub}
+## SEU embeds
+
+$K_{\mathrm{SEU}} \subseteq K_{\mathrm{Eadm}}$.
+
+*Lean:* `MinimalClosure.lean · KSEU_subset_KEadm`.
+:::
+
+::: {.proof}
+$C_{\{p\}} = C_P$ for the singleton credal state $P = \{p\}$, by the
+singleton clause of Report 3's E-admissibility calculus. $\square$
+:::
+
+Note that the representation of a judgment is not unique in either class:
+distinct priors can induce the same SEU judgment, and distinct credal
+states the same E-admissibility judgment. The classes are classes of
+*judgments*, and the proofs below must — and do — respect that.
+
+## Minimal closure (M2, headline instance)
+
+::: {#thm-headline}
+## M2: $\mathrm{cc}(K_{\mathrm{SEU}}) = K_{\mathrm{Eadm}}$
+
+The commensuration closure (Report 2) of the SEU-representable class is
+exactly the E-admissibility-representable class.
+
+*Lean:* `MinimalClosure.lean · commensurationClosure_KSEU`.
+:::
+
+::: {.proof}
+*$\supseteq$.* Let $C_P \in K_{\mathrm{Eadm}}$ with $P$ nonempty. By
+definition (Report 3), $C_P = \bigvee \{C_{\{p\}} \mid p \in P\}$, a join
+of a nonempty subclass of $K_{\mathrm{SEU}}$ — which is membership in
+$\mathrm{cc}(K_{\mathrm{SEU}})$ by its very description as the class of
+such joins.
+
+*$\subseteq$.* Let $J \in \mathrm{cc}(K_{\mathrm{SEU}})$, say
+$J = \bigvee S$ with $S \subseteq K_{\mathrm{SEU}}$ nonempty. We must
+produce a credal state; take the full preimage
+$$
+P := \{\, p \mid C_{\{p\}} \in S \,\}.
+$$
+Two observations. First,
+$\{C_{\{p\}} \mid p \in P\} = S$: the inclusion $\subseteq$ is the
+definition of $P$, and for $\supseteq$, any $J' \in S$ lies in
+$K_{\mathrm{SEU}}$, so $J' = C_{\{p\}}$ for some $p$; that $p$ belongs to
+$P$, and $J'$ is its image. Second, $P$ is nonempty: $S$ is nonempty and
+each of its members is represented by at least one prior. Hence
+$$
+C_P = \bigvee \{\, C_{\{p\}} \mid p \in P \,\} = \bigvee S = J,
+$$
+so $J \in K_{\mathrm{Eadm}}$. $\square$
+:::
+
+The one point of care in the $\subseteq$ direction is non-uniqueness of
+representation: a member of $S$ may be the SEU judgment of many priors.
+Taking $P$ to be the *full* preimage — every prior representing some
+member — makes the image identity exact without choosing representatives.
+(In the Lean text this is where `sJoin_congr` transports the join across
+the proved identity of index classes.)
+
+::: {#cor-join-closed}
+## $K_{\mathrm{Eadm}}$ is join-closed
+
+*Lean:* `MinimalClosure.lean · joinClosed_KEadm`.
+:::
+
+::: {.proof}
+$K_{\mathrm{Eadm}} = \mathrm{cc}(K_{\mathrm{SEU}})$, and closures are
+join-closed (Report 2). $\square$
+:::
+
+::: {#cor-minimal}
+## Minimality
+
+If $L$ is a join-closed class of judgments with
+$K_{\mathrm{SEU}} \subseteq L$, then $K_{\mathrm{Eadm}} \subseteq L$.
+Thus $K_{\mathrm{Eadm}}$ is the least join-closed extension of
+$K_{\mathrm{SEU}}$.
+
+*Lean:* `MinimalClosure.lean · KEadm_minimal`.
+:::
+
+::: {.proof}
+$K_{\mathrm{Eadm}} = \mathrm{cc}(K_{\mathrm{SEU}})$, and the closure is
+contained in every join-closed extension of its base (Report 2,
+minimality). $\square$
+:::
+
+This pair of corollaries is the precise form of the informal claim the
+project is named for. An SEU theorist who accepts the commensuration
+thesis — every change of judgment requires a suspending intermediary
+drawn from the recognized class — and who finds (Report 5) that
+$K_{\mathrm{SEU}}$ does not contain the intermediaries its own changes
+demand, must extend the class. Any adequate (join-closed) extension
+contains $K_{\mathrm{Eadm}}$; and $K_{\mathrm{Eadm}}$ itself is adequate.
+The doctrine of E-admissibility is thereby *derived* rather than posited:
+it is the unique minimal solution to a demand of dynamic rationality.
+
+## The concrete intermediary (M3)
+
+The abstract theory says the intermediary between $C_P$ and $C_Q$ is
+their join. The credal representation computes it.
+
+::: {#thm-union-join}
+## Unions of credal states realize joins
+
+For nonempty $P, Q$:
+$$
+C_{P \cup Q} = C_P \vee C_Q.
+$$
+
+*Lean:* `MinimalClosure.lean · eAdm_union`.
+:::
+
+::: {.proof}
+Judgments are determined by their choice functions, so compute pointwise.
+By M1 (Report 3) and the definition of binary joins:
+$$
+C_{P \cup Q}(e, m) = \bigcup_{p \in P \cup Q} C_{\{p\}}(e, m)
+= \bigcup_{p \in P} C_{\{p\}}(e, m) \;\cup\; \bigcup_{p \in Q}
+C_{\{p\}}(e, m) = (C_P \vee C_Q)(e, m). \qquad \square
+$$
+:::
+
+::: {#thm-m3}
+## M3: the intermediary and its minimality
+
+For nonempty $P, Q$: the judgment $C_{P \cup Q}$ suspends the issue
+between $C_P$ and $C_Q$; and it is the least judgment doing so — if
+$C_P \le D$ and $C_Q \le D$ then $C_{P \cup Q} \le D$.
+
+*Lean:* `MinimalClosure.lean · suspends_eAdm_union`, `eAdm_union_le`.
+:::
+
+::: {.proof}
+By @thm-union-join, $C_{P \cup Q}$ is the join $C_P \vee C_Q$, which
+suspends (both components are below it) and is least among upper bounds
+(Report 2). $\square$
+:::
+
+M3 gives the commensuration thesis a concrete operational reading for
+credal agents: to commensurate a change from $C_P$ to $C_Q$, *pool the
+credal states*. The pooled state $P \cup Q$ is not the convex mixture of
+the two states — it is their mere union — and the wedge results below and
+in Report 5 show the difference matters.
+
+::: {#cor-cospan-eadm}
+## Cospan normal form, instantiated
+
+Any two E-admissibility judgments are commensurable within
+$K_{\mathrm{Eadm}}$; and for $J, J' \in K_{\mathrm{Eadm}}$, zig-zag
+connectedness within $K_{\mathrm{Eadm}}$ coincides with commensurability
+within it. Every zig-zag of contractions and expansions through credal
+judgments reduces to the two-step cospan
+$C_P \nearrow C_{P \cup Q} \searrow C_Q$.
+
+*Lean:* `MinimalClosure.lean · eAdm_commensurable`, `zigZagIn_KEadm_iff`.
+:::
+
+::: {.proof}
+$K_{\mathrm{Eadm}}$ is join-closed (@cor-join-closed); apply Report 2's
+internal-commensurability theorem and cospan normal form, with
+@thm-union-join identifying the abstract join as $C_{P \cup Q}$.
+$\square$
+:::
+
+## Uniqueness: the universal property
+
+The minimal-closure theorem identifies the *class* $K_{\mathrm{Eadm}}$;
+the following pins down the *assignment* $P \mapsto C_P$.
+
+::: {#lem-singleton-determined}
+## E-admissibility is determined by its singletons
+
+For nonempty $P$:
+$$
+C_P = \bigvee \,\bigl\{\, C_{\{p\}} \;\big|\; p \in P \,\bigr\},
+$$
+where the singleton judgments are themselves taken in the sense of the
+assignment ($C_{\{p\}} = C_P$ at $P = \{p\}$).
+
+*Lean:* `MinimalClosure.lean · eAdm_eq_sJoin_singletons`.
+:::
+
+::: {.proof}
+By definition $C_P$ is the join of the SEU judgments of members, and on
+singletons the assignment agrees with SEU (Report 3). $\square$
+:::
+
+::: {#thm-unique}
+## Uniqueness
+
+Let $F$ be any assignment of a judgment to each nonempty credal state
+such that
+
+i. (*Singletons.*) $F(\{p\}) = C_{\{p\}}$ for every fap $p$;
+ii. (*Join determination.*) $F(P) = \bigvee \{\, F(\{p\}) \mid p \in P
+    \,\}$ for every nonempty $P$.
+
+Then $F(P) = C_P$ for every nonempty $P$.
+
+*Lean:* `MinimalClosure.lean · eAdm_unique`.
+:::
+
+::: {.proof}
+By (ii), (i), and @lem-singleton-determined in turn:
+$F(P) = \bigvee \{F(\{p\}) \mid p \in P\}
+= \bigvee \{C_{\{p\}} \mid p \in P\} = C_P$. $\square$
+:::
+
+The proof is one line, but the statement carries the argumentative load:
+*any* theory of credal admissibility that (i) reduces to expected-utility
+maximization for an agent with a single prior and (ii) is determined by
+its verdicts on single priors via the suspension operation is
+E-admissibility. Rival credal decision rules (maximality, Γ-maximin,
+convexity-based rules) must therefore reject (ii) — they are not
+join-determined — and the β-corollary below shows that rejecting (ii) in
+favor of better static behavior has a dynamic price. Condition (ii) is
+the `sSupHom` reading of M2: the assignment intertwines unions of credal
+states with joins of judgments (@thm-union-join is its binary shadow).
+
+## The β-corollary
+
+The static side of the package. Recall Sen's postulates per supposition
+from Report 1: α (contraction consistency), β (expansion of bests), WARP;
+and that WARP implies both α and β at each supposition.
+
+### Joins preserve α
+
+::: {#prp-sup-alpha}
+## α is preserved by joins
+
+Let $e$ be an event. If $J$ and $K$ satisfy α at $e$, so does
+$J \vee K$; if every member of a nonempty class $S$ satisfies α at $e$,
+so does $\bigvee S$.
+
+*Lean:* `BetaCorollary.lean · AdmissibilityJudgment.sup_senAlphaAt`,
+`sJoin_senAlphaAt`.
+:::
+
+::: {.proof}
+For the general case: let $m' \subseteq m$, $a \in m'$, and
+$a \in \bigl(\bigvee S\bigr)(e, m)$. By the pointwise description of
+joins, $a \in J(e, m)$ for some $J \in S$. That $J$ satisfies α at $e$,
+so $a \in J(e, m') \subseteq \bigl(\bigvee S\bigr)(e, m')$. The binary
+case is the same argument with two disjuncts. $\square$
+:::
+
+α survives because it has a *positive* conclusion about a *smaller* menu:
+a single witnessing joinand carries the act down to the submenu, and the
+union can only help. β, by contrast, couples two acts across menus, and
+different joinands can vouch for the two acts — the union destroys the
+coupling. That is the entire mechanism of the corollary below.
+
+::: {#thm-seu-warp}
+## SEU judgments satisfy WARP
+
+For every fap $p$ and event $e$, the judgment $C_{\{p\}}$ satisfies WARP
+at $e$ (hence α and β at $e$, by Report 1).
+
+*Lean:* `BetaCorollary.lean · CredalContext.seu_warpAt`, uniform
+`seu_warp`.
+:::
+
+::: {.proof}
+Let $a, a' \in m \cap m'$ with $a \in C_{\{p\}}(e, m)$ and
+$a' \in C_{\{p\}}(e, m')$; we must show $a \in C_{\{p\}}(e, m')$.
+
+From $a$'s membership, $p(e) \neq 0$ and $a$ maximizes
+$\mathrm{wEU}_p(e, \cdot)$ on $m$; from $a'$'s, $a'$ maximizes on $m'$.
+Then $a \in m'$ by hypothesis, and for any $b \in m'$:
+$$
+\mathrm{wEU}_p(e, b) \;\le\; \mathrm{wEU}_p(e, a')
+\;\le\; \mathrm{wEU}_p(e, a),
+$$
+the first inequality because $a'$ is maximal on $m' \ni b$, the second
+because $a$ is maximal on $m \ni a'$. So $a$ maximizes on $m'$, and with
+$p(e) \neq 0$ this is membership in $C_{\{p\}}(e, m')$. $\square$
+:::
+
+::: {#cor-eadm-alpha}
+## E-admissibility satisfies α
+
+Every E-admissibility judgment satisfies α at every supposition.
+
+*Lean:* `BetaCorollary.lean · eAdm_senAlphaAt`, uniform `eAdm_senAlpha`.
+:::
+
+::: {.proof}
+$C_P$ is a join of SEU judgments (M1); each satisfies WARP at $e$
+(@thm-seu-warp), hence α at $e$ (Report 1); and α is preserved by joins
+(@prp-sup-alpha). $\square$
+:::
+
+### Joins destroy β
+
+::: {#lem-beta-witness}
+## The β-violation witness pattern
+
+Let $D$ be a judgment, $e$ an event, and $m' \subseteq m$ menus. If there
+are acts $a, a'$ with
+$$
+a, a' \in D(e, m'), \qquad a \notin D(e, m), \qquad a' \in D(e, m),
+$$
+then $D$ violates β at $e$ — and therefore violates WARP at $e$.
+
+*Lean:* `BetaCorollary.lean · not_senBetaAt_of_witness`,
+`not_warpAt_of_not_senBetaAt`.
+:::
+
+::: {.proof}
+β at $e$ applied to $a, a' \in D(e, m')$ says $a$ and $a'$ stand or fall
+together in $m$; but $a'$ stands and $a$ falls. WARP at $e$ implies β at
+$e$ (Report 1), so WARP fails too. $\square$
+:::
+
+::: {#thm-beta-corollary}
+## β-corollary (abstract form)
+
+Let $K$ be a join-closed class and $J, J' \in K$. Suppose the suspension
+$J \vee J'$ exhibits the witness pattern of @lem-beta-witness at some
+event $e$: for some menus $m' \subseteq m$ and acts $a, a'$,
+$$
+a, a' \in (J \vee J')(e, m'), \quad a \notin (J \vee J')(e, m), \quad
+a' \in (J \vee J')(e, m).
+$$
+Then there is a $D \in K$ that suspends the issue between $J$ and $J'$
+and violates Sen's β (hence WARP) at $e$.
+
+*Lean:* `BetaCorollary.lean ·
+JoinClosed.exists_suspends_not_senBetaAt`.
+:::
+
+::: {.proof}
+Take $D := J \vee J'$. It lies in $K$ (join-closedness, binary case), it
+suspends between $J$ and $J'$ (Report 2), and it violates β at $e$ by
+@lem-beta-witness applied to the exhibited pattern. $\square$
+:::
+
+The corollary should be read contrapositively as a *dilemma for the
+static theorist*. Suppose one holds that rational judgments satisfy WARP
+(as the SEU judgments do, @thm-seu-warp) and accepts the commensuration
+thesis. Commensurating a change whose suspension exhibits the pattern
+requires occupying a judgment that violates β — a static canon — at a
+specific supposition and menu pair. One can keep WARP as a static
+requirement, or keep commensurability of one's changes, but not both.
+Report 5 shows the pattern is *realized* in $K_{\mathrm{Eadm}}$ by an
+utterly ordinary two-prior credal state at the vacuous supposition:
+the dilemma is not hypothetical.
+
+## The convexity wedge (M4): statement and the easy half
+
+::: {#prp-hull-coarsens}
+## Convexification only coarsens
+
+For nonempty $P$:
+$C_P \le C_{\mathrm{conv}(P)}$.
+
+*Lean:* `MinimalClosure.lean · eAdm_le_eAdm_convexHull`.
+:::
+
+::: {.proof}
+$P \subseteq \mathrm{conv}(P)$ (Report 3, extensivity), and
+E-admissibility is monotone in the credal state (Report 3). $\square$
+:::
+
+::: {#def-convex-equivalent}
+## Convex equivalence (M4, statement)
+
+A nonempty credal state $P$ is **convex-equivalent** iff
+$C_P = C_{\mathrm{conv}(P)}$.
+
+*Lean:* `MinimalClosure.lean · ConvexEquivalent`.
+:::
+
+M4 is deliberately a *definition*, not a theorem: whether a credal state
+is convex-equivalent is a substantive property that can go either way.
+The project's claim — the **convexity wedge** — is that the
+commensuration apparatus is silent on it. Everything above (minimal
+closure, M3, uniqueness, β-corollary, commutation) was proved without
+convexity appearing anywhere: joins realize unions of credal states, not
+mixtures; the closure $\mathrm{cc}$ acts on classes of judgments, not
+credal states, and never manufactures a mixture. Report 5 completes the
+wedge by exhibiting a two-prior state $P$ that is *not*
+convex-equivalent: $C_{\mathrm{conv}(P)}$ strictly coarsens $C_P$ (a
+mixture prior admits an act no extreme prior admits). Hence a credal
+theorist moved by the commensuration thesis to accept
+$K_{\mathrm{Eadm}}$ has been given *no* reason to convexify — convexity
+is a further, independent commitment.
+
+## Commutation: conditioning and the credal join
+
+Conditioning is *internal* — it lives in the supposition slot of a
+judgment — while change of credal state is *external* (Report 1). The
+commutation theorem makes the two interact correctly.
+
+::: {#def-condition}
+## Bayes conditioning of a fap
+
+Let $p$ be a fap on $\mathcal{E}$ and $e \in \mathcal{E}$ with
+$p(e) \neq 0$. The **conditional fap** $p|_e$ is defined by
+$$
+p|_e(s) := \frac{p(s \cap e)}{p(e)}, \qquad s \in \mathcal{E}.
+$$
+It is a fap: nonnegativity is a quotient of nonnegatives; normalization
+is $p(X \cap e)/p(e) = p(e)/p(e) = 1$; and additivity follows from
+$(s \cup t) \cap e = (s \cap e) \cup (t \cap e)$, additivity of $p$ on
+the disjoint pieces, and linearity of division.
+
+*Lean:* `Conditioning.lean · Fap.condition` (defining equation
+`condition_p`).
+:::
+
+::: {#def-condition-on}
+## Memberwise conditioning (generalized Bayes)
+
+For a set $P$ of faps and $e \in \mathcal{E}$, the **conditioned credal
+state** is
+$$
+P|_e := \{\, p|_e \;\mid\; p \in P,\ p(e) \neq 0 \,\},
+$$
+the conditionals of those members that do not treat $e$ as null. Members
+with $p(e) = 0$ are silently discarded.
+
+*Lean:* `Conditioning.lean · Fap.conditionOn`.
+:::
+
+::: {#lem-condition-null}
+## Nullity transfer
+
+Let $p(e) \neq 0$ and $f \in \mathcal{E}$. Then $p|_e(f) \neq 0$ iff
+$p(e \sqcap f) \neq 0$.
+
+*Lean:* `Conditioning.lean · Fap.condition_p_ne_zero_iff`.
+:::
+
+::: {.proof}
+$p|_e(f) = p(f \cap e)/p(e) = p(e \sqcap f)/p(e)$, and a quotient is
+nonzero iff its numerator is (the denominator being nonzero by
+hypothesis). $\square$
+:::
+
+::: {#lem-weu-condition}
+## Expected utility under conditioning
+
+Let $p(e) \neq 0$. For every supposition $f$ and act $a$:
+$$
+\mathrm{wEU}_{p|_e}(f, a) \;=\;
+\frac{\mathrm{wEU}_{p}(e \sqcap f,\, a)}{p(e)}.
+$$
+
+*Lean:* `Conditioning.lean · CredalContext.wEU_condition`.
+:::
+
+::: {.proof}
+Write $\ell_r := \{x \mid U(a, x) = r\}$ for the level sets of $a$. By
+definition,
+$$
+\mathrm{wEU}_{p|_e}(f, a)
+= \sum_{r \in U(a,\cdot)[f]} r \cdot p|_e(\ell_r \cap f)
+= \sum_{r \in U(a,\cdot)[f]} r \cdot
+\frac{p\bigl(\ell_r \cap f \cap e\bigr)}{p(e)},
+$$
+and $\ell_r \cap f \cap e = \ell_r \cap (e \sqcap f)$ as sets, so each
+term is $r \cdot p(\ell_r \cap (e \sqcap f)) / p(e)$.
+
+The target sum, by contrast, ranges over the utility range of $a$ on
+$e \sqcap f$, which is a subset of the range on $f$ (since
+$e \sqcap f \subseteq f$). The two index sets may differ, but only
+harmlessly: if $r$ is in the range on $f$ but not in the range on
+$e \sqcap f$, then no state of $e \sqcap f$ has utility $r$, i.e.
+$\ell_r \cap (e \sqcap f) = \emptyset$, and the term vanishes
+($p(\emptyset) = 0$, Report 3). Discarding the vanishing terms and
+pulling the constant $1/p(e)$ out of the finite sum gives the claim.
+$\square$
+:::
+
+::: {#thm-seu-condition}
+## Generalized Bayes for SEU
+
+Let $p(e) \neq 0$. For every supposition $f$ and menu $m$:
+$$
+C_{\{p|_e\}}(f, m) \;=\; C_{\{p\}}(e \sqcap f,\, m).
+$$
+
+*Lean:* `Conditioning.lean · CredalContext.seu_condition_C`.
+:::
+
+::: {.proof}
+Membership on the left requires $p|_e(f) \neq 0$ and maximality of
+$\mathrm{wEU}_{p|_e}(f, \cdot)$ on $m$; on the right, $p(e \sqcap f)
+\neq 0$ and maximality of $\mathrm{wEU}_p(e \sqcap f, \cdot)$ on $m$. The
+nullity conjuncts agree by @lem-condition-null. For the maximality
+conjuncts: by @lem-weu-condition the two utility scales differ by the
+factor $1/p(e)$, which is *positive* ($p(e) \ge 0$ and $p(e) \neq 0$),
+and positive rescaling preserves all comparisons — $b \le a$ on one scale
+iff on the other. The membership conditions are therefore equivalent act
+by act. $\square$
+:::
+
+This is where the unnormalized-$\mathrm{wEU}$ design of Report 3 pays
+off: the rescaling factor appears once, in @lem-weu-condition, and is
+immediately absorbed by the invariance of maximization. No division ever
+reaches the judgment layer.
+
+::: {#thm-commutation}
+## Commutation (headline)
+
+Let $P$ be a nonempty credal state and $e$ a supposition with
+$P|_e \neq \emptyset$ (some member does not treat $e$ as null). Then for
+every supposition $f$ and menu $m$:
+$$
+C_{P|_e}(f, m) \;=\; C_{P}(e \sqcap f,\, m).
+$$
+Conditioning the credal state memberwise and then judging on the
+supposition $f$ is the same as judging with the original credal state on
+the conjoined supposition — *E-admissibility conditions memberwise.*
+
+*Lean:* `Conditioning.lean · CredalContext.eAdm_conditionOn_C`; the
+discarded-member computation is `seu_C_null`.
+:::
+
+::: {.proof}
+By M1, both sides are unions over their credal states; we show mutual
+inclusion.
+
+*Left $\subseteq$ right.* A member of $P|_e$ has the form $p|_e$ with
+$p \in P$, $p(e) \neq 0$. Its contribution is
+$C_{\{p|_e\}}(f, m) = C_{\{p\}}(e \sqcap f, m)$ by @thm-seu-condition,
+which is one of the terms of the union on the right (indexed by
+$p \in P$).
+
+*Right $\subseteq$ left.* Fix $p \in P$; its contribution to the right
+side is $C_{\{p\}}(e \sqcap f, m)$. Two cases.
+
+If $p(e) = 0$: then $p(e \sqcap f) = 0$ as well, since
+$e \sqcap f \subseteq e$ gives $p(e \sqcap f) \le p(e) = 0$ by
+monotonicity, and $\ge 0$ by nonnegativity. So $C_{\{p\}}$ is dead at
+$e \sqcap f$ (Report 3, nullity instantiation), the contribution is
+$\emptyset$, and there is nothing to include.
+
+If $p(e) \neq 0$: then $p|_e \in P|_e$, and by @thm-seu-condition the
+contribution $C_{\{p\}}(e \sqcap f, m) = C_{\{p|_e\}}(f, m)$ is one of
+the terms of the union on the left. $\square$
+:::
+
+The null members are the delicate point, and the null-supposition policy
+of Report 1 is what makes them harmless. Generalized Bayes *discards*
+members with $p(e) = 0$ — they have no conditional — so the left side
+never hears from them. On the right side they are still present in $P$,
+but the policy silences them pointwise: dead at $e$, hence dead at every
+conjunction $e \sqcap f$, they contribute empty sets to the union. The
+two sides agree because discarding and silencing are extensionally the
+same. Under the default-to-the-menu policy the right side would instead
+receive the *whole menu* from each null member, and commutation would
+fail catastrophically.
+
+::: {.callout-important}
+## Why the statement is pointwise
+
+The commutation theorem equates *choice sets*, not judgments. The reason
+is that the would-be "conditioned judgment"
+$f \mapsto C_P(e \sqcap f, \cdot)$
+need not be an admissibility judgment at all: at the vacuous supposition
+it evaluates to $C_P(e \sqcap \top, \cdot) = C_P(e, \cdot)$, which is
+empty whenever every member of $P$ nulls $e$ — violating vacuous
+liveness. (The hypothesis $P|_e \neq \emptyset$ excludes this on the left
+side, but the failure explains why conditioning is kept internal to the
+supposition slot rather than promoted to an operation on judgments.)
+Formally: precomposition with $e \sqcap (\cdot)$ is not an endo-operation
+on judgments, and the commutation theorem is exactly as strong as it can
+be.
+:::
+
+## Formalization notes {#sec-formalization}
+
+| Report item | Lean declaration (file · name) |
+|---|---|
+| @def-classes, @prp-kseu-sub | `MinimalClosure.lean · KSEU`, `KEadm`, `seu_mem_KSEU`, `eAdm_mem_KEadm`, `KSEU_subset_KEadm` |
+| @thm-headline | `MinimalClosure.lean · commensurationClosure_KSEU` |
+| @cor-join-closed, @cor-minimal | `MinimalClosure.lean · joinClosed_KEadm`, `KEadm_minimal` |
+| @thm-union-join, @thm-m3 | `MinimalClosure.lean · eAdm_union`, `suspends_eAdm_union`, `eAdm_union_le` |
+| @cor-cospan-eadm | `MinimalClosure.lean · eAdm_commensurable`, `zigZagIn_KEadm_iff` |
+| @lem-singleton-determined, @thm-unique | `MinimalClosure.lean · eAdm_eq_sJoin_singletons`, `eAdm_unique` |
+| @prp-sup-alpha | `BetaCorollary.lean · sup_senAlphaAt`, `sJoin_senAlphaAt` |
+| @thm-seu-warp | `BetaCorollary.lean · seu_warpAt`, `seu_warp` |
+| @cor-eadm-alpha | `BetaCorollary.lean · eAdm_senAlphaAt`, `eAdm_senAlpha` |
+| @lem-beta-witness | `BetaCorollary.lean · not_senBetaAt_of_witness`, `not_warpAt_of_not_senBetaAt` |
+| @thm-beta-corollary | `BetaCorollary.lean · JoinClosed.exists_suspends_not_senBetaAt` |
+| @prp-hull-coarsens, @def-convex-equivalent | `MinimalClosure.lean · eAdm_le_eAdm_convexHull`, `ConvexEquivalent` |
+| @def-condition, @def-condition-on | `Conditioning.lean · Fap.condition`, `condition_p`, `conditionOn` |
+| @lem-condition-null | `Conditioning.lean · condition_p_ne_zero_iff` |
+| @lem-weu-condition | `Conditioning.lean · wEU_condition` |
+| @thm-seu-condition | `Conditioning.lean · seu_condition_C` (null case `seu_C_null`) |
+| @thm-commutation | `Conditioning.lean · eAdm_conditionOn_C` |
+
+Encoding remarks:
+
+- **`KSEU` as a range.** $K_{\mathrm{SEU}}$ is `Set.range cc.seu`, so
+  membership is existence of a representing prior; the full-preimage move
+  in @thm-headline is the set `{p | cc.seu p ∈ S}`, and the identity of
+  index classes is transported across the join by `sJoin_congr`
+  (Report 2's proof-irrelevance lemma) — this is one of the places that
+  lemma was made for.
+- **Uniqueness without extensionality worries.** In @thm-unique the
+  assignment `F` takes the nonemptiness proof as a second argument
+  (matching `eAdm`); the hypotheses and conclusion are stated at every
+  proof, and proof irrelevance keeps this invisible in prose.
+- **The witness pattern as a lemma.** @lem-beta-witness is factored out
+  of the corollary so that Report 5 can apply it directly to concrete
+  membership facts computed by `decide`/`norm_num` in the two-prior
+  model.
+- **Division discipline.** `Fap.condition` is `noncomputable` (real
+  division); all division facts are isolated in @lem-condition-null and
+  @lem-weu-condition, and reach the judgment layer only through the
+  order-invariance of positive rescaling
+  (`div_le_div_iff_of_pos_right`). Rewriting under the subtype
+  constructors uses `Fap.p_congr` (Report 3) to avoid motive issues.
+- **`conditionOn` needs no proofs.** $P|_e$ is defined by an existential
+  formula (`∃ p ∈ P, ∃ hpe, q = p.condition e hpe`), so it exists for
+  arbitrary $P, e$; only the *judgment* $C_{P|_e}$ needs the
+  nonemptiness hypothesis, exactly as in the statement of
+  @thm-commutation.

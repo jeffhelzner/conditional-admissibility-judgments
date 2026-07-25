@@ -49,8 +49,8 @@ journal presentation would suppress.
 3. [The Credal Layer: Probabilities, Mixtures, and E-admissibility](reports/03_credal.qmd)
    — finitely additive probabilities, mixtures and convex
    hulls, SEU judgments, and the join identity for E-admissibility.
-4. *The Headline Package: Minimal Closure, β-Corollary, Commutation*
-   (forthcoming) — the minimal-closure theorem, the uniqueness/universal
+4. [The Headline Package: Minimal Closure, β-Corollary, Commutation](reports/04_headline.qmd)
+   — the minimal-closure theorem, the uniqueness/universal
    property, the commensurating intermediary, the cospan normal form, the
    β-corollary, and the commutation of suppositional conditioning with
    credal joins.

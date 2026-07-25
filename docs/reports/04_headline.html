@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jeff Helzner">
+<meta name="dcterms.date" content="2026-07-24">
+
+<title>Report 4: The Headline Package — Minimal Closure, β-Corollary, Commutation – Conditional Admissibility Judgments</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-629c56ba100745318e9dcb35146191d0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Conditional Admissibility Judgments</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jeffhelzner/conditional-admissibility-judgments"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reports/01_judgments.html">Reports</a></li><li class="breadcrumb-item"><a href="../reports/04_headline.html">Report 4: The Headline Package — Minimal Closure, β-Corollary, Commutation</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conditional Admissibility Judgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Reports</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reports/01_judgments.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Report 1: Decision Contexts and Admissibility Judgments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reports/02_commensuration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Report 2: Commensuration and the Closure Operator</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reports/03_credal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Report 3: The Credal Layer — Probabilities, Mixtures, and E-admissibility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reports/04_headline.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Report 4: The Headline Package — Minimal Closure, β-Corollary, Commutation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#the-two-classes" id="toc-the-two-classes" class="nav-link" data-scroll-target="#the-two-classes"><span class="header-section-number">2</span> The two classes</a></li>
+  <li><a href="#minimal-closure-m2-headline-instance" id="toc-minimal-closure-m2-headline-instance" class="nav-link" data-scroll-target="#minimal-closure-m2-headline-instance"><span class="header-section-number">3</span> Minimal closure (M2, headline instance)</a></li>
+  <li><a href="#the-concrete-intermediary-m3" id="toc-the-concrete-intermediary-m3" class="nav-link" data-scroll-target="#the-concrete-intermediary-m3"><span class="header-section-number">4</span> The concrete intermediary (M3)</a></li>
+  <li><a href="#uniqueness-the-universal-property" id="toc-uniqueness-the-universal-property" class="nav-link" data-scroll-target="#uniqueness-the-universal-property"><span class="header-section-number">5</span> Uniqueness: the universal property</a></li>
+  <li><a href="#the-β-corollary" id="toc-the-β-corollary" class="nav-link" data-scroll-target="#the-β-corollary"><span class="header-section-number">6</span> The β-corollary</a>
+  <ul class="collapse">
+  <li><a href="#joins-preserve-α" id="toc-joins-preserve-α" class="nav-link" data-scroll-target="#joins-preserve-α"><span class="header-section-number">6.1</span> Joins preserve α</a></li>
+  <li><a href="#joins-destroy-β" id="toc-joins-destroy-β" class="nav-link" data-scroll-target="#joins-destroy-β"><span class="header-section-number">6.2</span> Joins destroy β</a></li>
+  </ul></li>
+  <li><a href="#the-convexity-wedge-m4-statement-and-the-easy-half" id="toc-the-convexity-wedge-m4-statement-and-the-easy-half" class="nav-link" data-scroll-target="#the-convexity-wedge-m4-statement-and-the-easy-half"><span class="header-section-number">7</span> The convexity wedge (M4): statement and the easy half</a></li>
+  <li><a href="#commutation-conditioning-and-the-credal-join" id="toc-commutation-conditioning-and-the-credal-join" class="nav-link" data-scroll-target="#commutation-conditioning-and-the-credal-join"><span class="header-section-number">8</span> Commutation: conditioning and the credal join</a></li>
+  <li><a href="#sec-formalization" id="toc-sec-formalization" class="nav-link" data-scroll-target="#sec-formalization"><span class="header-section-number">9</span> Formalization notes</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reports/01_judgments.html">Reports</a></li><li class="breadcrumb-item"><a href="../reports/04_headline.html">Report 4: The Headline Package — Minimal Closure, β-Corollary, Commutation</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Report 4: The Headline Package — Minimal Closure, β-Corollary, Commutation</h1>
+<p class="subtitle lead">Conditional Admissibility Judgments, Technical Report Series</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jeff Helzner </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 24, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Status and provenance
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Internal working document. Every definition and result below is verified in Lean 4 against Mathlib; each environment cites the corresponding Lean declaration in the form <code>File.lean · Name</code>. The Lean sources are authoritative where this report and the code differ. Library namespace: <code>CAJ</code> (mostly <code>CAJ.CredalContext</code>; abstract material in <code>CAJ.AdmissibilityJudgment</code>, conditioning of probabilities in <code>CAJ.Fap</code>).</p>
+</div>
+</div>
+<section id="introduction" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
+<p>This report assembles the project’s principal results from the material of Reports 1–3. Fix throughout a decision context <span class="math inline">\Gamma</span> and a credal context over it; all judgments, faps, and choice sets are relative to these. Two classes of judgments are in play: <span class="math display">
+K_{\mathrm{SEU}} := \{\, C_{\{p\}} \mid p \text{ a fap on } \mathcal{E}
+\,\}, \qquad
+K_{\mathrm{Eadm}} := \{\, C_P \mid P \text{ a nonempty set of faps} \,\},
+</span> the judgments representable by a single prior and by a credal state, respectively.</p>
+<p>The results:</p>
+<ul>
+<li><strong>Minimal closure (M2, headline instance;</strong> <a href="#thm-headline" class="quarto-xref">Theorem&nbsp;1</a><strong>):</strong> <span class="math inline">\mathrm{cc}(K_{\mathrm{SEU}}) = K_{\mathrm{Eadm}}</span>. The commensuration closure of the SEU judgments is <em>exactly</em> the class of E-admissibility judgments — with minimality (<a href="#cor-minimal" class="quarto-xref">Corollary&nbsp;2</a>): <span class="math inline">K_{\mathrm{Eadm}}</span> is the <em>least</em> join-closed extension of <span class="math inline">K_{\mathrm{SEU}}</span>. E-admissibility is what the commensuration thesis costs an SEU theorist, and it is the cheapest adequate repair.</li>
+<li><strong>The concrete intermediary (M3;</strong> <a href="#thm-m3" class="quarto-xref">Theorem&nbsp;3</a><strong>):</strong> the commensurating intermediary between two credal judgments <span class="math inline">C_P</span> and <span class="math inline">C_Q</span> is the E-admissibility judgment of the <em>union</em> credal set, <span class="math inline">C_{P \cup Q}</span>, and it is the least judgment suspending between them. The cospan normal form of Report 2 instantiates: within <span class="math inline">K_{\mathrm{Eadm}}</span>, every zig-zag reduces to the two-step cospan through <span class="math inline">C_{P \cup Q}</span>.</li>
+<li><strong>Uniqueness (</strong>@thm-unique<strong>):</strong> E-admissibility is the unique assignment of judgments to credal states that agrees with SEU on singletons and is determined by its singleton values via joins.</li>
+<li><strong>The β-corollary (</strong>@thm-beta-corollary<strong>):</strong> joins preserve Sen’s α but destroy β. Every E-admissibility judgment satisfies α; but whenever the suspension of two members of a join-closed class exhibits a simple witness pattern, the class contains a commensurating intermediary violating β — hence WARP. <em>Dynamic rationality entails static WARP-violation.</em></li>
+<li><strong>Commutation (</strong>1<strong>):</strong> suppositional conditioning commutes with the credal join. Conditioning the credal state memberwise (generalized Bayes) and judging at supposition <span class="math inline">f</span> agrees with judging with the original state at the conjoined supposition <span class="math inline">e \sqcap f</span>.</li>
+<li><strong>The convexity wedge (M4, statement;</strong> <a href="#def-convex-equivalent" class="quarto-xref">Definition&nbsp;2</a><strong>):</strong> convexifying the credal state can only coarsen choice, and a credal state may or may not be choice-equivalent to its convex hull. That the equivalence can <em>fail</em> — commensuration closure never forces convex closure — is witnessed in Report 5.</li>
+</ul>
+</section>
+<section id="the-two-classes" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="the-two-classes"><span class="header-section-number">2</span> The two classes</h2>
+<div id="def-classes" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1 (<span class="math inline">K_{\mathrm{SEU}}</span> and <span class="math inline">K_{\mathrm{Eadm}}</span>)</strong></span> <span class="math inline">K_{\mathrm{SEU}}</span> is the class of judgments of the form <span class="math inline">C_{\{p\}}</span> (<a href="../reports/03_credal.html#def-seu">the SEU judgment</a>, Report 3) for some fap <span class="math inline">p</span>; <span class="math inline">K_{\mathrm{Eadm}}</span> the class of judgments of the form <span class="math inline">C_P</span> (<a href="../reports/03_credal.html#def-eadm">the E-admissibility judgment</a>, Report 3) for some nonempty set <span class="math inline">P</span> of faps.</p>
+<p><em>Lean:</em> <code>MinimalClosure.lean · CredalContext.KSEU</code> (as <code>Set.range seu</code>), <code>KEadm</code>; membership witnesses <code>seu_mem_KSEU</code>, <code>eAdm_mem_KEadm</code>.</p>
+</div>
+<div id="prp-kseu-sub" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 1 (SEU embeds)</strong></span> <span class="math inline">K_{\mathrm{SEU}} \subseteq K_{\mathrm{Eadm}}</span>.</p>
+<p><em>Lean:</em> <code>MinimalClosure.lean · KSEU_subset_KEadm</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span><span class="math inline">C_{\{p\}} = C_P</span> for the singleton credal state <span class="math inline">P = \{p\}</span>, by the singleton clause of Report 3’s E-admissibility calculus. <span class="math inline">\square</span></p>
+</div>
+<p>Note that the representation of a judgment is not unique in either class: distinct priors can induce the same SEU judgment, and distinct credal states the same E-admissibility judgment. The classes are classes of <em>judgments</em>, and the proofs below must — and do — respect that.</p>
+</section>
+<section id="minimal-closure-m2-headline-instance" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="minimal-closure-m2-headline-instance"><span class="header-section-number">3</span> Minimal closure (M2, headline instance)</h2>
+<div id="thm-headline" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 1 (M2: <span class="math inline">\mathrm{cc}(K_{\mathrm{SEU}}) = K_{\mathrm{Eadm}}</span>)</strong></span> The commensuration closure (Report 2) of the SEU-representable class is exactly the E-admissibility-representable class.</p>
+<p><em>Lean:</em> <code>MinimalClosure.lean · commensurationClosure_KSEU</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span><em><span class="math inline">\supseteq</span>.</em> Let <span class="math inline">C_P \in K_{\mathrm{Eadm}}</span> with <span class="math inline">P</span> nonempty. By definition (Report 3), <span class="math inline">C_P = \bigvee \{C_{\{p\}} \mid p \in P\}</span>, a join of a nonempty subclass of <span class="math inline">K_{\mathrm{SEU}}</span> — which is membership in <span class="math inline">\mathrm{cc}(K_{\mathrm{SEU}})</span> by its very description as the class of such joins.</p>
+<p><em><span class="math inline">\subseteq</span>.</em> Let <span class="math inline">J \in \mathrm{cc}(K_{\mathrm{SEU}})</span>, say <span class="math inline">J = \bigvee S</span> with <span class="math inline">S \subseteq K_{\mathrm{SEU}}</span> nonempty. We must produce a credal state; take the full preimage <span class="math display">
+P := \{\, p \mid C_{\{p\}} \in S \,\}.
+</span> Two observations. First, <span class="math inline">\{C_{\{p\}} \mid p \in P\} = S</span>: the inclusion <span class="math inline">\subseteq</span> is the definition of <span class="math inline">P</span>, and for <span class="math inline">\supseteq</span>, any <span class="math inline">J' \in S</span> lies in <span class="math inline">K_{\mathrm{SEU}}</span>, so <span class="math inline">J' = C_{\{p\}}</span> for some <span class="math inline">p</span>; that <span class="math inline">p</span> belongs to <span class="math inline">P</span>, and <span class="math inline">J'</span> is its image. Second, <span class="math inline">P</span> is nonempty: <span class="math inline">S</span> is nonempty and each of its members is represented by at least one prior. Hence <span class="math display">
+C_P = \bigvee \{\, C_{\{p\}} \mid p \in P \,\} = \bigvee S = J,
+</span> so <span class="math inline">J \in K_{\mathrm{Eadm}}</span>. <span class="math inline">\square</span></p>
+</div>
+<p>The one point of care in the <span class="math inline">\subseteq</span> direction is non-uniqueness of representation: a member of <span class="math inline">S</span> may be the SEU judgment of many priors. Taking <span class="math inline">P</span> to be the <em>full</em> preimage — every prior representing some member — makes the image identity exact without choosing representatives. (In the Lean text this is where <code>sJoin_congr</code> transports the join across the proved identity of index classes.)</p>
+<div id="cor-join-closed" class="theorem corollary">
+<p><span class="theorem-title"><strong>Corollary 1 (<span class="math inline">K_{\mathrm{Eadm}}</span> is join-closed)</strong></span> <em>Lean:</em> <code>MinimalClosure.lean · joinClosed_KEadm</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span><span class="math inline">K_{\mathrm{Eadm}} = \mathrm{cc}(K_{\mathrm{SEU}})</span>, and closures are join-closed (Report 2). <span class="math inline">\square</span></p>
+</div>
+<div id="cor-minimal" class="theorem corollary">
+<p><span class="theorem-title"><strong>Corollary 2 (Minimality)</strong></span> If <span class="math inline">L</span> is a join-closed class of judgments with <span class="math inline">K_{\mathrm{SEU}} \subseteq L</span>, then <span class="math inline">K_{\mathrm{Eadm}} \subseteq L</span>. Thus <span class="math inline">K_{\mathrm{Eadm}}</span> is the least join-closed extension of <span class="math inline">K_{\mathrm{SEU}}</span>.</p>
+<p><em>Lean:</em> <code>MinimalClosure.lean · KEadm_minimal</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span><span class="math inline">K_{\mathrm{Eadm}} = \mathrm{cc}(K_{\mathrm{SEU}})</span>, and the closure is contained in every join-closed extension of its base (Report 2, minimality). <span class="math inline">\square</span></p>
+</div>
+<p>This pair of corollaries is the precise form of the informal claim the project is named for. An SEU theorist who accepts the commensuration thesis — every change of judgment requires a suspending intermediary drawn from the recognized class — and who finds (Report 5) that <span class="math inline">K_{\mathrm{SEU}}</span> does not contain the intermediaries its own changes demand, must extend the class. Any adequate (join-closed) extension contains <span class="math inline">K_{\mathrm{Eadm}}</span>; and <span class="math inline">K_{\mathrm{Eadm}}</span> itself is adequate. The doctrine of E-admissibility is thereby <em>derived</em> rather than posited: it is the unique minimal solution to a demand of dynamic rationality.</p>
+</section>
+<section id="the-concrete-intermediary-m3" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="the-concrete-intermediary-m3"><span class="header-section-number">4</span> The concrete intermediary (M3)</h2>
+<p>The abstract theory says the intermediary between <span class="math inline">C_P</span> and <span class="math inline">C_Q</span> is their join. The credal representation computes it.</p>
+<div id="thm-union-join" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 2 (Unions of credal states realize joins)</strong></span> For nonempty <span class="math inline">P, Q</span>: <span class="math display">
+C_{P \cup Q} = C_P \vee C_Q.
+</span></p>
+<p><em>Lean:</em> <code>MinimalClosure.lean · eAdm_union</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Judgments are determined by their choice functions, so compute pointwise. By M1 (Report 3) and the definition of binary joins: <span class="math display">
+C_{P \cup Q}(e, m) = \bigcup_{p \in P \cup Q} C_{\{p\}}(e, m)
+= \bigcup_{p \in P} C_{\{p\}}(e, m) \;\cup\; \bigcup_{p \in Q}
+C_{\{p\}}(e, m) = (C_P \vee C_Q)(e, m). \qquad \square
+</span></p>
+</div>
+<div id="thm-m3" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 3 (M3: the intermediary and its minimality)</strong></span> For nonempty <span class="math inline">P, Q</span>: the judgment <span class="math inline">C_{P \cup Q}</span> suspends the issue between <span class="math inline">C_P</span> and <span class="math inline">C_Q</span>; and it is the least judgment doing so — if <span class="math inline">C_P \le D</span> and <span class="math inline">C_Q \le D</span> then <span class="math inline">C_{P \cup Q} \le D</span>.</p>
+<p><em>Lean:</em> <code>MinimalClosure.lean · suspends_eAdm_union</code>, <code>eAdm_union_le</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>By <a href="#thm-union-join" class="quarto-xref">Theorem&nbsp;2</a>, <span class="math inline">C_{P \cup Q}</span> is the join <span class="math inline">C_P \vee C_Q</span>, which suspends (both components are below it) and is least among upper bounds (Report 2). <span class="math inline">\square</span></p>
+</div>
+<p>M3 gives the commensuration thesis a concrete operational reading for credal agents: to commensurate a change from <span class="math inline">C_P</span> to <span class="math inline">C_Q</span>, <em>pool the credal states</em>. The pooled state <span class="math inline">P \cup Q</span> is not the convex mixture of the two states — it is their mere union — and the wedge results below and in Report 5 show the difference matters.</p>
+<div id="cor-cospan-eadm" class="theorem corollary">
+<p><span class="theorem-title"><strong>Corollary 3 (Cospan normal form, instantiated)</strong></span> Any two E-admissibility judgments are commensurable within <span class="math inline">K_{\mathrm{Eadm}}</span>; and for <span class="math inline">J, J' \in K_{\mathrm{Eadm}}</span>, zig-zag connectedness within <span class="math inline">K_{\mathrm{Eadm}}</span> coincides with commensurability within it. Every zig-zag of contractions and expansions through credal judgments reduces to the two-step cospan <span class="math inline">C_P \nearrow C_{P \cup Q} \searrow C_Q</span>.</p>
+<p><em>Lean:</em> <code>MinimalClosure.lean · eAdm_commensurable</code>, <code>zigZagIn_KEadm_iff</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span><span class="math inline">K_{\mathrm{Eadm}}</span> is join-closed (<a href="#cor-join-closed" class="quarto-xref">Corollary&nbsp;1</a>); apply Report 2’s internal-commensurability theorem and cospan normal form, with <a href="#thm-union-join" class="quarto-xref">Theorem&nbsp;2</a> identifying the abstract join as <span class="math inline">C_{P \cup Q}</span>. <span class="math inline">\square</span></p>
+</div>
+</section>
+<section id="uniqueness-the-universal-property" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="uniqueness-the-universal-property"><span class="header-section-number">5</span> Uniqueness: the universal property</h2>
+<p>The minimal-closure theorem identifies the <em>class</em> <span class="math inline">K_{\mathrm{Eadm}}</span>; the following pins down the <em>assignment</em> <span class="math inline">P \mapsto C_P</span>.</p>
+<div id="lem-singleton-determined" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lemma 1 (E-admissibility is determined by its singletons)</strong></span> For nonempty <span class="math inline">P</span>: <span class="math display">
+C_P = \bigvee \,\bigl\{\, C_{\{p\}} \;\big|\; p \in P \,\bigr\},
+</span> where the singleton judgments are themselves taken in the sense of the assignment (<span class="math inline">C_{\{p\}} = C_P</span> at <span class="math inline">P = \{p\}</span>).</p>
+<p><em>Lean:</em> <code>MinimalClosure.lean · eAdm_eq_sJoin_singletons</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>By definition <span class="math inline">C_P</span> is the join of the SEU judgments of members, and on singletons the assignment agrees with SEU (Report 3). <span class="math inline">\square</span></p>
+</div>
+<div id="thm-unique" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4 (Uniqueness)</strong></span> Let <span class="math inline">F</span> be any assignment of a judgment to each nonempty credal state such that</p>
+<ol type="i">
+<li>(<em>Singletons.</em>) <span class="math inline">F(\{p\}) = C_{\{p\}}</span> for every fap <span class="math inline">p</span>;</li>
+<li>(<em>Join determination.</em>) <span class="math inline">F(P) = \bigvee \{\, F(\{p\}) \mid p \in P
+\,\}</span> for every nonempty <span class="math inline">P</span>.</li>
+</ol>
+<p>Then <span class="math inline">F(P) = C_P</span> for every nonempty <span class="math inline">P</span>.</p>
+<p><em>Lean:</em> <code>MinimalClosure.lean · eAdm_unique</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>By (ii), (i), and <a href="#lem-singleton-determined" class="quarto-xref">Lemma&nbsp;1</a> in turn: <span class="math inline">F(P) = \bigvee \{F(\{p\}) \mid p \in P\}
+= \bigvee \{C_{\{p\}} \mid p \in P\} = C_P</span>. <span class="math inline">\square</span></p>
+</div>
+<p>The proof is one line, but the statement carries the argumentative load: <em>any</em> theory of credal admissibility that (i) reduces to expected-utility maximization for an agent with a single prior and (ii) is determined by its verdicts on single priors via the suspension operation is E-admissibility. Rival credal decision rules (maximality, Γ-maximin, convexity-based rules) must therefore reject (ii) — they are not join-determined — and the β-corollary below shows that rejecting (ii) in favor of better static behavior has a dynamic price. Condition (ii) is the <code>sSupHom</code> reading of M2: the assignment intertwines unions of credal states with joins of judgments (<a href="#thm-union-join" class="quarto-xref">Theorem&nbsp;2</a> is its binary shadow).</p>
+</section>
+<section id="the-β-corollary" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="the-β-corollary"><span class="header-section-number">6</span> The β-corollary</h2>
+<p>The static side of the package. Recall Sen’s postulates per supposition from Report 1: α (contraction consistency), β (expansion of bests), WARP; and that WARP implies both α and β at each supposition.</p>
+<section id="joins-preserve-α" class="level3" data-number="6.1">
+<h3 data-number="6.1" class="anchored" data-anchor-id="joins-preserve-α"><span class="header-section-number">6.1</span> Joins preserve α</h3>
+<div id="prp-sup-alpha" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 2 (α is preserved by joins)</strong></span> Let <span class="math inline">e</span> be an event. If <span class="math inline">J</span> and <span class="math inline">K</span> satisfy α at <span class="math inline">e</span>, so does <span class="math inline">J \vee K</span>; if every member of a nonempty class <span class="math inline">S</span> satisfies α at <span class="math inline">e</span>, so does <span class="math inline">\bigvee S</span>.</p>
+<p><em>Lean:</em> <code>BetaCorollary.lean · AdmissibilityJudgment.sup_senAlphaAt</code>, <code>sJoin_senAlphaAt</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>For the general case: let <span class="math inline">m' \subseteq m</span>, <span class="math inline">a \in m'</span>, and <span class="math inline">a \in \bigl(\bigvee S\bigr)(e, m)</span>. By the pointwise description of joins, <span class="math inline">a \in J(e, m)</span> for some <span class="math inline">J \in S</span>. That <span class="math inline">J</span> satisfies α at <span class="math inline">e</span>, so <span class="math inline">a \in J(e, m') \subseteq \bigl(\bigvee S\bigr)(e, m')</span>. The binary case is the same argument with two disjuncts. <span class="math inline">\square</span></p>
+</div>
+<p>α survives because it has a <em>positive</em> conclusion about a <em>smaller</em> menu: a single witnessing joinand carries the act down to the submenu, and the union can only help. β, by contrast, couples two acts across menus, and different joinands can vouch for the two acts — the union destroys the coupling. That is the entire mechanism of the corollary below.</p>
+<div id="thm-seu-warp" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 5 (SEU judgments satisfy WARP)</strong></span> For every fap <span class="math inline">p</span> and event <span class="math inline">e</span>, the judgment <span class="math inline">C_{\{p\}}</span> satisfies WARP at <span class="math inline">e</span> (hence α and β at <span class="math inline">e</span>, by Report 1).</p>
+<p><em>Lean:</em> <code>BetaCorollary.lean · CredalContext.seu_warpAt</code>, uniform <code>seu_warp</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Let <span class="math inline">a, a' \in m \cap m'</span> with <span class="math inline">a \in C_{\{p\}}(e, m)</span> and <span class="math inline">a' \in C_{\{p\}}(e, m')</span>; we must show <span class="math inline">a \in C_{\{p\}}(e, m')</span>.</p>
+<p>From <span class="math inline">a</span>’s membership, <span class="math inline">p(e) \neq 0</span> and <span class="math inline">a</span> maximizes <span class="math inline">\mathrm{wEU}_p(e, \cdot)</span> on <span class="math inline">m</span>; from <span class="math inline">a'</span>’s, <span class="math inline">a'</span> maximizes on <span class="math inline">m'</span>. Then <span class="math inline">a \in m'</span> by hypothesis, and for any <span class="math inline">b \in m'</span>: <span class="math display">
+\mathrm{wEU}_p(e, b) \;\le\; \mathrm{wEU}_p(e, a')
+\;\le\; \mathrm{wEU}_p(e, a),
+</span> the first inequality because <span class="math inline">a'</span> is maximal on <span class="math inline">m' \ni b</span>, the second because <span class="math inline">a</span> is maximal on <span class="math inline">m \ni a'</span>. So <span class="math inline">a</span> maximizes on <span class="math inline">m'</span>, and with <span class="math inline">p(e) \neq 0</span> this is membership in <span class="math inline">C_{\{p\}}(e, m')</span>. <span class="math inline">\square</span></p>
+</div>
+<div id="cor-eadm-alpha" class="theorem corollary">
+<p><span class="theorem-title"><strong>Corollary 4 (E-admissibility satisfies α)</strong></span> Every E-admissibility judgment satisfies α at every supposition.</p>
+<p><em>Lean:</em> <code>BetaCorollary.lean · eAdm_senAlphaAt</code>, uniform <code>eAdm_senAlpha</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span><span class="math inline">C_P</span> is a join of SEU judgments (M1); each satisfies WARP at <span class="math inline">e</span> (<a href="#thm-seu-warp" class="quarto-xref">Theorem&nbsp;5</a>), hence α at <span class="math inline">e</span> (Report 1); and α is preserved by joins (<a href="#prp-sup-alpha" class="quarto-xref">Proposition&nbsp;2</a>). <span class="math inline">\square</span></p>
+</div>
+</section>
+<section id="joins-destroy-β" class="level3" data-number="6.2">
+<h3 data-number="6.2" class="anchored" data-anchor-id="joins-destroy-β"><span class="header-section-number">6.2</span> Joins destroy β</h3>
+<div id="lem-beta-witness" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lemma 2 (The β-violation witness pattern)</strong></span> Let <span class="math inline">D</span> be a judgment, <span class="math inline">e</span> an event, and <span class="math inline">m' \subseteq m</span> menus. If there are acts <span class="math inline">a, a'</span> with <span class="math display">
+a, a' \in D(e, m'), \qquad a \notin D(e, m), \qquad a' \in D(e, m),
+</span> then <span class="math inline">D</span> violates β at <span class="math inline">e</span> — and therefore violates WARP at <span class="math inline">e</span>.</p>
+<p><em>Lean:</em> <code>BetaCorollary.lean · not_senBetaAt_of_witness</code>, <code>not_warpAt_of_not_senBetaAt</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>β at <span class="math inline">e</span> applied to <span class="math inline">a, a' \in D(e, m')</span> says <span class="math inline">a</span> and <span class="math inline">a'</span> stand or fall together in <span class="math inline">m</span>; but <span class="math inline">a'</span> stands and <span class="math inline">a</span> falls. WARP at <span class="math inline">e</span> implies β at <span class="math inline">e</span> (Report 1), so WARP fails too. <span class="math inline">\square</span></p>
+</div>
+<div id="thm-beta-corollary" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 6 (β-corollary (abstract form))</strong></span> Let <span class="math inline">K</span> be a join-closed class and <span class="math inline">J, J' \in K</span>. Suppose the suspension <span class="math inline">J \vee J'</span> exhibits the witness pattern of <a href="#lem-beta-witness" class="quarto-xref">Lemma&nbsp;2</a> at some event <span class="math inline">e</span>: for some menus <span class="math inline">m' \subseteq m</span> and acts <span class="math inline">a, a'</span>, <span class="math display">
+a, a' \in (J \vee J')(e, m'), \quad a \notin (J \vee J')(e, m), \quad
+a' \in (J \vee J')(e, m).
+</span> Then there is a <span class="math inline">D \in K</span> that suspends the issue between <span class="math inline">J</span> and <span class="math inline">J'</span> and violates Sen’s β (hence WARP) at <span class="math inline">e</span>.</p>
+<p><em>Lean:</em> <code>BetaCorollary.lean · JoinClosed.exists_suspends_not_senBetaAt</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Take <span class="math inline">D := J \vee J'</span>. It lies in <span class="math inline">K</span> (join-closedness, binary case), it suspends between <span class="math inline">J</span> and <span class="math inline">J'</span> (Report 2), and it violates β at <span class="math inline">e</span> by <a href="#lem-beta-witness" class="quarto-xref">Lemma&nbsp;2</a> applied to the exhibited pattern. <span class="math inline">\square</span></p>
+</div>
+<p>The corollary should be read contrapositively as a <em>dilemma for the static theorist</em>. Suppose one holds that rational judgments satisfy WARP (as the SEU judgments do, <a href="#thm-seu-warp" class="quarto-xref">Theorem&nbsp;5</a>) and accepts the commensuration thesis. Commensurating a change whose suspension exhibits the pattern requires occupying a judgment that violates β — a static canon — at a specific supposition and menu pair. One can keep WARP as a static requirement, or keep commensurability of one’s changes, but not both. Report 5 shows the pattern is <em>realized</em> in <span class="math inline">K_{\mathrm{Eadm}}</span> by an utterly ordinary two-prior credal state at the vacuous supposition: the dilemma is not hypothetical.</p>
+</section>
+</section>
+<section id="the-convexity-wedge-m4-statement-and-the-easy-half" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="the-convexity-wedge-m4-statement-and-the-easy-half"><span class="header-section-number">7</span> The convexity wedge (M4): statement and the easy half</h2>
+<div id="prp-hull-coarsens" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 3 (Convexification only coarsens)</strong></span> For nonempty <span class="math inline">P</span>: <span class="math inline">C_P \le C_{\mathrm{conv}(P)}</span>.</p>
+<p><em>Lean:</em> <code>MinimalClosure.lean · eAdm_le_eAdm_convexHull</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span><span class="math inline">P \subseteq \mathrm{conv}(P)</span> (Report 3, extensivity), and E-admissibility is monotone in the credal state (Report 3). <span class="math inline">\square</span></p>
+</div>
+<div id="def-convex-equivalent" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2 (Convex equivalence (M4, statement))</strong></span> A nonempty credal state <span class="math inline">P</span> is <strong>convex-equivalent</strong> iff <span class="math inline">C_P = C_{\mathrm{conv}(P)}</span>.</p>
+<p><em>Lean:</em> <code>MinimalClosure.lean · ConvexEquivalent</code>.</p>
+</div>
+<p>M4 is deliberately a <em>definition</em>, not a theorem: whether a credal state is convex-equivalent is a substantive property that can go either way. The project’s claim — the <strong>convexity wedge</strong> — is that the commensuration apparatus is silent on it. Everything above (minimal closure, M3, uniqueness, β-corollary, commutation) was proved without convexity appearing anywhere: joins realize unions of credal states, not mixtures; the closure <span class="math inline">\mathrm{cc}</span> acts on classes of judgments, not credal states, and never manufactures a mixture. Report 5 completes the wedge by exhibiting a two-prior state <span class="math inline">P</span> that is <em>not</em> convex-equivalent: <span class="math inline">C_{\mathrm{conv}(P)}</span> strictly coarsens <span class="math inline">C_P</span> (a mixture prior admits an act no extreme prior admits). Hence a credal theorist moved by the commensuration thesis to accept <span class="math inline">K_{\mathrm{Eadm}}</span> has been given <em>no</em> reason to convexify — convexity is a further, independent commitment.</p>
+</section>
+<section id="commutation-conditioning-and-the-credal-join" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="commutation-conditioning-and-the-credal-join"><span class="header-section-number">8</span> Commutation: conditioning and the credal join</h2>
+<p>Conditioning is <em>internal</em> — it lives in the supposition slot of a judgment — while change of credal state is <em>external</em> (Report 1). The commutation theorem makes the two interact correctly.</p>
+<div id="def-condition" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3 (Bayes conditioning of a fap)</strong></span> Let <span class="math inline">p</span> be a fap on <span class="math inline">\mathcal{E}</span> and <span class="math inline">e \in \mathcal{E}</span> with <span class="math inline">p(e) \neq 0</span>. The <strong>conditional fap</strong> <span class="math inline">p|_e</span> is defined by <span class="math display">
+p|_e(s) := \frac{p(s \cap e)}{p(e)}, \qquad s \in \mathcal{E}.
+</span> It is a fap: nonnegativity is a quotient of nonnegatives; normalization is <span class="math inline">p(X \cap e)/p(e) = p(e)/p(e) = 1</span>; and additivity follows from <span class="math inline">(s \cup t) \cap e = (s \cap e) \cup (t \cap e)</span>, additivity of <span class="math inline">p</span> on the disjoint pieces, and linearity of division.</p>
+<p><em>Lean:</em> <code>Conditioning.lean · Fap.condition</code> (defining equation <code>condition_p</code>).</p>
+</div>
+<div id="def-condition-on" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4 (Memberwise conditioning (generalized Bayes))</strong></span> For a set <span class="math inline">P</span> of faps and <span class="math inline">e \in \mathcal{E}</span>, the <strong>conditioned credal state</strong> is <span class="math display">
+P|_e := \{\, p|_e \;\mid\; p \in P,\ p(e) \neq 0 \,\},
+</span> the conditionals of those members that do not treat <span class="math inline">e</span> as null. Members with <span class="math inline">p(e) = 0</span> are silently discarded.</p>
+<p><em>Lean:</em> <code>Conditioning.lean · Fap.conditionOn</code>.</p>
+</div>
+<div id="lem-condition-null" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lemma 3 (Nullity transfer)</strong></span> Let <span class="math inline">p(e) \neq 0</span> and <span class="math inline">f \in \mathcal{E}</span>. Then <span class="math inline">p|_e(f) \neq 0</span> iff <span class="math inline">p(e \sqcap f) \neq 0</span>.</p>
+<p><em>Lean:</em> <code>Conditioning.lean · Fap.condition_p_ne_zero_iff</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span><span class="math inline">p|_e(f) = p(f \cap e)/p(e) = p(e \sqcap f)/p(e)</span>, and a quotient is nonzero iff its numerator is (the denominator being nonzero by hypothesis). <span class="math inline">\square</span></p>
+</div>
+<div id="lem-weu-condition" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lemma 4 (Expected utility under conditioning)</strong></span> Let <span class="math inline">p(e) \neq 0</span>. For every supposition <span class="math inline">f</span> and act <span class="math inline">a</span>: <span class="math display">
+\mathrm{wEU}_{p|_e}(f, a) \;=\;
+\frac{\mathrm{wEU}_{p}(e \sqcap f,\, a)}{p(e)}.
+</span></p>
+<p><em>Lean:</em> <code>Conditioning.lean · CredalContext.wEU_condition</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Write <span class="math inline">\ell_r := \{x \mid U(a, x) = r\}</span> for the level sets of <span class="math inline">a</span>. By definition, <span class="math display">
+\mathrm{wEU}_{p|_e}(f, a)
+= \sum_{r \in U(a,\cdot)[f]} r \cdot p|_e(\ell_r \cap f)
+= \sum_{r \in U(a,\cdot)[f]} r \cdot
+\frac{p\bigl(\ell_r \cap f \cap e\bigr)}{p(e)},
+</span> and <span class="math inline">\ell_r \cap f \cap e = \ell_r \cap (e \sqcap f)</span> as sets, so each term is <span class="math inline">r \cdot p(\ell_r \cap (e \sqcap f)) / p(e)</span>.</p>
+<p>The target sum, by contrast, ranges over the utility range of <span class="math inline">a</span> on <span class="math inline">e \sqcap f</span>, which is a subset of the range on <span class="math inline">f</span> (since <span class="math inline">e \sqcap f \subseteq f</span>). The two index sets may differ, but only harmlessly: if <span class="math inline">r</span> is in the range on <span class="math inline">f</span> but not in the range on <span class="math inline">e \sqcap f</span>, then no state of <span class="math inline">e \sqcap f</span> has utility <span class="math inline">r</span>, i.e. <span class="math inline">\ell_r \cap (e \sqcap f) = \emptyset</span>, and the term vanishes (<span class="math inline">p(\emptyset) = 0</span>, Report 3). Discarding the vanishing terms and pulling the constant <span class="math inline">1/p(e)</span> out of the finite sum gives the claim. <span class="math inline">\square</span></p>
+</div>
+<div id="thm-seu-condition" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 7 (Generalized Bayes for SEU)</strong></span> Let <span class="math inline">p(e) \neq 0</span>. For every supposition <span class="math inline">f</span> and menu <span class="math inline">m</span>: <span class="math display">
+C_{\{p|_e\}}(f, m) \;=\; C_{\{p\}}(e \sqcap f,\, m).
+</span></p>
+<p><em>Lean:</em> <code>Conditioning.lean · CredalContext.seu_condition_C</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Membership on the left requires <span class="math inline">p|_e(f) \neq 0</span> and maximality of <span class="math inline">\mathrm{wEU}_{p|_e}(f, \cdot)</span> on <span class="math inline">m</span>; on the right, <span class="math inline">p(e \sqcap f)
+\neq 0</span> and maximality of <span class="math inline">\mathrm{wEU}_p(e \sqcap f, \cdot)</span> on <span class="math inline">m</span>. The nullity conjuncts agree by <a href="#lem-condition-null" class="quarto-xref">Lemma&nbsp;3</a>. For the maximality conjuncts: by <a href="#lem-weu-condition" class="quarto-xref">Lemma&nbsp;4</a> the two utility scales differ by the factor <span class="math inline">1/p(e)</span>, which is <em>positive</em> (<span class="math inline">p(e) \ge 0</span> and <span class="math inline">p(e) \neq 0</span>), and positive rescaling preserves all comparisons — <span class="math inline">b \le a</span> on one scale iff on the other. The membership conditions are therefore equivalent act by act. <span class="math inline">\square</span></p>
+</div>
+<p>This is where the unnormalized-<span class="math inline">\mathrm{wEU}</span> design of Report 3 pays off: the rescaling factor appears once, in <a href="#lem-weu-condition" class="quarto-xref">Lemma&nbsp;4</a>, and is immediately absorbed by the invariance of maximization. No division ever reaches the judgment layer.</p>
+<div id="thm-commutation" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 8 (Commutation (headline))</strong></span> Let <span class="math inline">P</span> be a nonempty credal state and <span class="math inline">e</span> a supposition with <span class="math inline">P|_e \neq \emptyset</span> (some member does not treat <span class="math inline">e</span> as null). Then for every supposition <span class="math inline">f</span> and menu <span class="math inline">m</span>: <span class="math display">
+C_{P|_e}(f, m) \;=\; C_{P}(e \sqcap f,\, m).
+</span> Conditioning the credal state memberwise and then judging on the supposition <span class="math inline">f</span> is the same as judging with the original credal state on the conjoined supposition — <em>E-admissibility conditions memberwise.</em></p>
+<p><em>Lean:</em> <code>Conditioning.lean · CredalContext.eAdm_conditionOn_C</code>; the discarded-member computation is <code>seu_C_null</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>By M1, both sides are unions over their credal states; we show mutual inclusion.</p>
+<p><em>Left <span class="math inline">\subseteq</span> right.</em> A member of <span class="math inline">P|_e</span> has the form <span class="math inline">p|_e</span> with <span class="math inline">p \in P</span>, <span class="math inline">p(e) \neq 0</span>. Its contribution is <span class="math inline">C_{\{p|_e\}}(f, m) = C_{\{p\}}(e \sqcap f, m)</span> by <a href="#thm-seu-condition" class="quarto-xref">Theorem&nbsp;7</a>, which is one of the terms of the union on the right (indexed by <span class="math inline">p \in P</span>).</p>
+<p><em>Right <span class="math inline">\subseteq</span> left.</em> Fix <span class="math inline">p \in P</span>; its contribution to the right side is <span class="math inline">C_{\{p\}}(e \sqcap f, m)</span>. Two cases.</p>
+<p>If <span class="math inline">p(e) = 0</span>: then <span class="math inline">p(e \sqcap f) = 0</span> as well, since <span class="math inline">e \sqcap f \subseteq e</span> gives <span class="math inline">p(e \sqcap f) \le p(e) = 0</span> by monotonicity, and <span class="math inline">\ge 0</span> by nonnegativity. So <span class="math inline">C_{\{p\}}</span> is dead at <span class="math inline">e \sqcap f</span> (Report 3, nullity instantiation), the contribution is <span class="math inline">\emptyset</span>, and there is nothing to include.</p>
+<p>If <span class="math inline">p(e) \neq 0</span>: then <span class="math inline">p|_e \in P|_e</span>, and by <a href="#thm-seu-condition" class="quarto-xref">Theorem&nbsp;7</a> the contribution <span class="math inline">C_{\{p\}}(e \sqcap f, m) = C_{\{p|_e\}}(f, m)</span> is one of the terms of the union on the left. <span class="math inline">\square</span></p>
+</div>
+<p>The null members are the delicate point, and the null-supposition policy of Report 1 is what makes them harmless. Generalized Bayes <em>discards</em> members with <span class="math inline">p(e) = 0</span> — they have no conditional — so the left side never hears from them. On the right side they are still present in <span class="math inline">P</span>, but the policy silences them pointwise: dead at <span class="math inline">e</span>, hence dead at every conjunction <span class="math inline">e \sqcap f</span>, they contribute empty sets to the union. The two sides agree because discarding and silencing are extensionally the same. Under the default-to-the-menu policy the right side would instead receive the <em>whole menu</em> from each null member, and commutation would fail catastrophically.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Why the statement is pointwise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The commutation theorem equates <em>choice sets</em>, not judgments. The reason is that the would-be “conditioned judgment” <span class="math inline">f \mapsto C_P(e \sqcap f, \cdot)</span> need not be an admissibility judgment at all: at the vacuous supposition it evaluates to <span class="math inline">C_P(e \sqcap \top, \cdot) = C_P(e, \cdot)</span>, which is empty whenever every member of <span class="math inline">P</span> nulls <span class="math inline">e</span> — violating vacuous liveness. (The hypothesis <span class="math inline">P|_e \neq \emptyset</span> excludes this on the left side, but the failure explains why conditioning is kept internal to the supposition slot rather than promoted to an operation on judgments.) Formally: precomposition with <span class="math inline">e \sqcap (\cdot)</span> is not an endo-operation on judgments, and the commutation theorem is exactly as strong as it can be.</p>
+</div>
+</div>
+</section>
+<section id="sec-formalization" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="sec-formalization"><span class="header-section-number">9</span> Formalization notes</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Report item</th>
+<th>Lean declaration (file · name)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#def-classes" class="quarto-xref">Definition&nbsp;1</a>, <a href="#prp-kseu-sub" class="quarto-xref">Proposition&nbsp;1</a></td>
+<td><code>MinimalClosure.lean · KSEU</code>, <code>KEadm</code>, <code>seu_mem_KSEU</code>, <code>eAdm_mem_KEadm</code>, <code>KSEU_subset_KEadm</code></td>
+</tr>
+<tr class="even">
+<td><a href="#thm-headline" class="quarto-xref">Theorem&nbsp;1</a></td>
+<td><code>MinimalClosure.lean · commensurationClosure_KSEU</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#cor-join-closed" class="quarto-xref">Corollary&nbsp;1</a>, <a href="#cor-minimal" class="quarto-xref">Corollary&nbsp;2</a></td>
+<td><code>MinimalClosure.lean · joinClosed_KEadm</code>, <code>KEadm_minimal</code></td>
+</tr>
+<tr class="even">
+<td><a href="#thm-union-join" class="quarto-xref">Theorem&nbsp;2</a>, <a href="#thm-m3" class="quarto-xref">Theorem&nbsp;3</a></td>
+<td><code>MinimalClosure.lean · eAdm_union</code>, <code>suspends_eAdm_union</code>, <code>eAdm_union_le</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#cor-cospan-eadm" class="quarto-xref">Corollary&nbsp;3</a></td>
+<td><code>MinimalClosure.lean · eAdm_commensurable</code>, <code>zigZagIn_KEadm_iff</code></td>
+</tr>
+<tr class="even">
+<td><a href="#lem-singleton-determined" class="quarto-xref">Lemma&nbsp;1</a>, <a href="#thm-unique" class="quarto-xref">Theorem&nbsp;4</a></td>
+<td><code>MinimalClosure.lean · eAdm_eq_sJoin_singletons</code>, <code>eAdm_unique</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#prp-sup-alpha" class="quarto-xref">Proposition&nbsp;2</a></td>
+<td><code>BetaCorollary.lean · sup_senAlphaAt</code>, <code>sJoin_senAlphaAt</code></td>
+</tr>
+<tr class="even">
+<td><a href="#thm-seu-warp" class="quarto-xref">Theorem&nbsp;5</a></td>
+<td><code>BetaCorollary.lean · seu_warpAt</code>, <code>seu_warp</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#cor-eadm-alpha" class="quarto-xref">Corollary&nbsp;4</a></td>
+<td><code>BetaCorollary.lean · eAdm_senAlphaAt</code>, <code>eAdm_senAlpha</code></td>
+</tr>
+<tr class="even">
+<td><a href="#lem-beta-witness" class="quarto-xref">Lemma&nbsp;2</a></td>
+<td><code>BetaCorollary.lean · not_senBetaAt_of_witness</code>, <code>not_warpAt_of_not_senBetaAt</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#thm-beta-corollary" class="quarto-xref">Theorem&nbsp;6</a></td>
+<td><code>BetaCorollary.lean · JoinClosed.exists_suspends_not_senBetaAt</code></td>
+</tr>
+<tr class="even">
+<td><a href="#prp-hull-coarsens" class="quarto-xref">Proposition&nbsp;3</a>, <a href="#def-convex-equivalent" class="quarto-xref">Definition&nbsp;2</a></td>
+<td><code>MinimalClosure.lean · eAdm_le_eAdm_convexHull</code>, <code>ConvexEquivalent</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#def-condition" class="quarto-xref">Definition&nbsp;3</a>, <a href="#def-condition-on" class="quarto-xref">Definition&nbsp;4</a></td>
+<td><code>Conditioning.lean · Fap.condition</code>, <code>condition_p</code>, <code>conditionOn</code></td>
+</tr>
+<tr class="even">
+<td><a href="#lem-condition-null" class="quarto-xref">Lemma&nbsp;3</a></td>
+<td><code>Conditioning.lean · condition_p_ne_zero_iff</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#lem-weu-condition" class="quarto-xref">Lemma&nbsp;4</a></td>
+<td><code>Conditioning.lean · wEU_condition</code></td>
+</tr>
+<tr class="even">
+<td><a href="#thm-seu-condition" class="quarto-xref">Theorem&nbsp;7</a></td>
+<td><code>Conditioning.lean · seu_condition_C</code> (null case <code>seu_C_null</code>)</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+<td><code>Conditioning.lean · eAdm_conditionOn_C</code></td>
+</tr>
+</tbody>
+</table>
+<p>Encoding remarks:</p>
+<ul>
+<li><strong><code>KSEU</code> as a range.</strong> <span class="math inline">K_{\mathrm{SEU}}</span> is <code>Set.range cc.seu</code>, so membership is existence of a representing prior; the full-preimage move in <a href="#thm-headline" class="quarto-xref">Theorem&nbsp;1</a> is the set <code>{p | cc.seu p ∈ S}</code>, and the identity of index classes is transported across the join by <code>sJoin_congr</code> (Report 2’s proof-irrelevance lemma) — this is one of the places that lemma was made for.</li>
+<li><strong>Uniqueness without extensionality worries.</strong> In <a href="#thm-unique" class="quarto-xref">Theorem&nbsp;4</a> the assignment <code>F</code> takes the nonemptiness proof as a second argument (matching <code>eAdm</code>); the hypotheses and conclusion are stated at every proof, and proof irrelevance keeps this invisible in prose.</li>
+<li><strong>The witness pattern as a lemma.</strong> <a href="#lem-beta-witness" class="quarto-xref">Lemma&nbsp;2</a> is factored out of the corollary so that Report 5 can apply it directly to concrete membership facts computed by <code>decide</code>/<code>norm_num</code> in the two-prior model.</li>
+<li><strong>Division discipline.</strong> <code>Fap.condition</code> is <code>noncomputable</code> (real division); all division facts are isolated in <a href="#lem-condition-null" class="quarto-xref">Lemma&nbsp;3</a> and <a href="#lem-weu-condition" class="quarto-xref">Lemma&nbsp;4</a>, and reach the judgment layer only through the order-invariance of positive rescaling (<code>div_le_div_iff_of_pos_right</code>). Rewriting under the subtype constructors uses <code>Fap.p_congr</code> (Report 3) to avoid motive issues.</li>
+<li><strong><code>conditionOn</code> needs no proofs.</strong> <span class="math inline">P|_e</span> is defined by an existential formula (<code>∃ p ∈ P, ∃ hpe, q = p.condition e hpe</code>), so it exists for arbitrary <span class="math inline">P, e</span>; only the <em>judgment</em> <span class="math inline">C_{P|_e}</span> needs the nonemptiness hypothesis, exactly as in the statement of
+<ol class="example" type="1">
+<li></li>
+</ol></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

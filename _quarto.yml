@@ -25,6 +25,7 @@ website:
         contents:
           - reports/01_judgments.qmd
           - reports/02_commensuration.qmd
+          - reports/03_credal.qmd
 
 format:
   html:

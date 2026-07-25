@@ -46,8 +46,8 @@ journal presentation would suppress.
    — pointwise joins, suspension and fair hearing, commensurability
    relative to a class, the commensuration closure operator, and the
    zig-zag analysis of change.
-3. *The Credal Layer: Probabilities, Mixtures, and E-admissibility*
-   (forthcoming) — finitely additive probabilities, mixtures and convex
+3. [The Credal Layer: Probabilities, Mixtures, and E-admissibility](reports/03_credal.qmd)
+   — finitely additive probabilities, mixtures and convex
    hulls, SEU judgments, and the join identity for E-admissibility.
 4. *The Headline Package: Minimal Closure, β-Corollary, Commutation*
    (forthcoming) — the minimal-closure theorem, the uniqueness/universal

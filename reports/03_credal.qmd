@@ -1,0 +1,513 @@
+---
+title: "Report 3: The Credal Layer — Probabilities, Mixtures, and E-admissibility"
+subtitle: "Conditional Admissibility Judgments, Technical Report Series"
+author: "Jeff Helzner"
+date: last-modified
+---
+
+::: {.callout-note}
+## Status and provenance
+
+Internal working document. Every definition and result below is verified in
+Lean 4 against Mathlib; each environment cites the corresponding Lean
+declaration in the form `File.lean · Name`. The Lean sources are
+authoritative where this report and the code differ. Library namespace:
+`CAJ` (probabilistic material in `CAJ.Fap`, evaluation material in
+`CAJ.CredalContext`).
+:::
+
+## Introduction
+
+Reports 1 and 2 developed the theory of admissibility judgments with no
+probabilistic input whatever: the order, the joins, the commensuration
+closure are pure order theory over a decision context. This report supplies
+the intended models. It introduces finitely additive probabilities on the
+context's algebra of suppositions, the expected-utility apparatus needed to
+evaluate acts, the **SEU judgment** of a single prior, and the
+**E-admissibility judgment** of a credal set — the judgment that deems an
+act admissible iff *some* member of the credal set makes it an
+expected-utility maximizer.
+
+Three design decisions organize the report.
+
+First, probability is **merely finitely additive**, matching the merely
+finite closure of the set algebras of Report 1. No countable operations are
+assumed anywhere in the development.
+
+Second, the credal layer carries **its own closure operator**. Credal
+states are sets of probabilities; the natural closure on them is the convex
+hull (closure under mixtures), constructed here as a closure operator in
+exact parallel to the commensuration closure of Report 2 — but the two are
+deliberately *not* identified. The judgment-side operator closes under
+joins; the credal-side operator closes under mixtures; and the wedge
+between them (M4, with the witness in Report 5) is a central claim of the
+project: *the commensuration thesis never forces convexity of the credal
+state*. Keeping the operators formally separate is what makes that claim a
+theorem rather than a slogan.
+
+Third, the E-admissibility judgment is **defined as a join**. Rather than
+defining $C_P$ by the existential formula ("admissible iff optimal under
+some $p \in P$") and then proving it equals the join of the singleton
+judgments, the development takes the join as the definition and recovers
+the existential formula as a theorem (@thm-mem-eadm). The join identity M1
+(@thm-m1) — the bridge over which the entire order theory of Report 2
+flows into the credal setting — thereby holds *by definition*, and every
+join fact from Report 2 (liveness, monotonicity, the closure calculus)
+instantiates to E-admissibility without further work.
+
+Throughout, a decision context $\Gamma = (X, \mathcal{E}, A, \mathcal{M})$
+is fixed, with notation as in Reports 1–2.
+
+## Finitely additive probability
+
+::: {#def-fap}
+## Finitely additive probability
+
+A **finitely additive probability** (fap) on the set algebra $\mathcal{E}$
+is a function $p : \mathcal{E} \to \mathbb{R}$ such that
+
+i. (*Nonnegativity.*) $p(s) \ge 0$ for all $s \in \mathcal{E}$;
+ii. (*Normalization.*) $p(X) = 1$;
+iii. (*Finite additivity.*) $p(s \cup t) = p(s) + p(t)$ whenever
+     $s, t \in \mathcal{E}$ are disjoint.
+
+*Lean:* `Fap.lean · CAJ.Fap` (fields `p`, `nonneg`, `p_univ`,
+`additive`).
+:::
+
+::: {#prp-fap-basic}
+## Elementary consequences
+
+Let $p$ be a fap on $\mathcal{E}$ and $s, t \in \mathcal{E}$. Then:
+
+i. $p(\emptyset) = 0$;
+ii. (*Monotonicity.*) if $s \subseteq t$ then $p(s) \le p(t)$;
+iii. $p(s) \le 1$;
+iv. $p(\top) = 1$, where $\top = X$ is the vacuous supposition.
+
+*Lean:* `Fap.lean · Fap.p_empty`, `Fap.mono`, `Fap.p_le_one`;
+`EAdmissibility.lean · Fap.p_topEvent`.
+:::
+
+::: {.proof}
+For (i): $\emptyset$ and $X$ are disjoint members of $\mathcal{E}$, so
+additivity gives $p(\emptyset \cup X) = p(\emptyset) + p(X)$; the left
+side is $p(X) = 1$ and the right side is $p(\emptyset) + 1$.
+
+For (ii): $t \setminus s = t \cap s^{\mathsf{c}} \in \mathcal{E}$ by the
+closure properties of Report 1, and it is disjoint from $s$. Since
+$s \subseteq t$, $s \cup (t \setminus s) = t$, so additivity gives
+$p(t) = p(s) + p(t \setminus s) \ge p(s)$ by nonnegativity.
+
+For (iii): apply (ii) with $t = X$ and normalize. (iv) is normalization
+read at the vacuous supposition. $\square$
+:::
+
+## Mixtures and the convex hull
+
+A **credal state** will be a nonempty set $P$ of faps. The classical
+coherence requirement on credal states is convexity; the machinery here
+sets that requirement up as a *closure demand*, formally parallel to the
+commensuration demand of Report 2, precisely so the two demands can be
+compared — and separated.
+
+::: {#def-mix}
+## Mixture
+
+For faps $p, q$ on $\mathcal{E}$ and $t \in [0, 1]$, the **$t$-mixture**
+$t p + (1 - t) q$ is defined pointwise:
+$$
+\bigl(t p + (1 - t) q\bigr)(s) := t \cdot p(s) + (1 - t) \cdot q(s).
+$$
+It is a fap: nonnegativity and additivity are computed termwise, and
+normalization is $t \cdot 1 + (1 - t) \cdot 1 = 1$.
+
+*Lean:* `Fap.lean · Fap.mix` (well-definedness in the definition;
+defining equation `mix_p`).
+:::
+
+::: {#prp-mix-calc}
+## Mixture identities
+
+$1 p + 0 q = p$; $\ 0 p + 1 q = q$; $\ t p + (1 - t) p = p$.
+
+*Lean:* `Fap.lean · mix_one`, `mix_zero`, `mix_self`.
+:::
+
+::: {.proof}
+Pointwise arithmetic. $\square$
+:::
+
+::: {#def-mixture-closed}
+## Mixture-closedness and the convex hull
+
+A class $P$ of faps is **mixture-closed** iff it contains
+$t p + (1 - t) q$ for all $p, q \in P$ and $t \in [0, 1]$. The **convex
+hull** of $P$ is
+$$
+\mathrm{conv}(P) := \bigcap \,\bigl\{\, Q \;\big|\; P \subseteq Q
+\text{ and } Q \text{ is mixture-closed} \,\bigr\}.
+$$
+
+*Lean:* `Fap.lean · Fap.MixtureClosed`, `Fap.convexHull`.
+:::
+
+::: {#lem-mc-inter}
+## Mixture-closedness survives intersection
+
+An arbitrary intersection of mixture-closed classes is mixture-closed.
+
+*Lean:* `Fap.lean · mixtureClosed_sInter`.
+:::
+
+::: {.proof}
+If $p, q$ lie in every member of the family, then so does each mixture,
+memberwise. $\square$
+:::
+
+::: {#thm-hull-closure}
+## The convex hull is a closure operator
+
+On classes of faps ordered by inclusion, $\mathrm{conv}$ is extensive,
+monotone, and idempotent; $\mathrm{conv}(P)$ is mixture-closed; it is
+contained in every mixture-closed class containing $P$ (minimality); and
+$\mathrm{conv}(P) = P$ iff $P$ is mixture-closed.
+
+*Lean:* `Fap.lean · convexHull` (bundled `ClosureOperator`),
+`subset_convexHull`, `mixtureClosed_convexHull`, `convexHull_le`,
+`isClosed_convexHull_iff`.
+:::
+
+::: {.proof}
+*Extensivity.* Every class $Q$ in the defining family contains $P$, so
+$P \subseteq \bigcap = \mathrm{conv}(P)$.
+
+*Monotonicity.* If $P \subseteq P'$, every class in the family for $P'$
+belongs to the family for $P$; the intersection over the larger family is
+smaller.
+
+*$\mathrm{conv}(P)$ is mixture-closed:* it is an intersection of
+mixture-closed classes (@lem-mc-inter).
+
+*Minimality.* A mixture-closed $Q \supseteq P$ is a member of the
+defining family, and the intersection is contained in each member.
+
+*Idempotency.* $\mathrm{conv}(P)$ is itself a mixture-closed class
+containing $\mathrm{conv}(P)$, so by minimality applied at the base class
+$\mathrm{conv}(P)$ we get
+$\mathrm{conv}(\mathrm{conv}(P)) \subseteq \mathrm{conv}(P)$; the reverse
+is extensivity.
+
+*Fixed points.* If $\mathrm{conv}(P) = P$ then $P$ is mixture-closed by
+the third clause; conversely if $P$ is mixture-closed then minimality
+(with $Q = P$) gives $\mathrm{conv}(P) \subseteq P$, and extensivity the
+reverse. $\square$
+:::
+
+Note the construction is *from above* (intersection of closed supersets),
+where the commensuration closure of Report 2 was *from below* (the class
+of joins). The difference is forced by the operations: a single
+application of "all joins of subclasses" is already closed (flattening),
+whereas a single application of "all binary mixtures" is not — iterated
+mixtures produce new points — so the from-below description of
+$\mathrm{conv}$ would require closing under finite mixture trees. The
+from-above construction sidesteps the bookkeeping, at the price of a less
+explicit description; none of the results below need the explicit one.
+
+::: {.callout-tip}
+## The two closure operators, side by side
+
+| | judgment side (Report 2) | credal side (this report) |
+|---|---|---|
+| carrier | classes $K$ of judgments | classes $P$ of faps |
+| generating operation | nonempty joins $\bigvee S$ | binary mixtures $t p + (1-t) q$ |
+| closure operator | $\mathrm{cc}$ | $\mathrm{conv}$ |
+| closed classes | join-closed | mixture-closed |
+
+The map $p \mapsto C_{\{p\}}$ (SEU, @def-seu) carries the credal side
+into the judgment side, and $P \mapsto C_P$ (E-admissibility, @def-eadm)
+intertwines *joins* with *unions of credal sets* — but nothing intertwines
+$\mathrm{cc}$ with $\mathrm{conv}$. M4 (Report 4) makes the non-relation
+precise, and Report 5 witnesses it: there is a credal set $P$ with
+$C_P \neq C_{\mathrm{conv}(P)}$. Commensuration closure never forces
+convex closure.
+:::
+
+## Credal contexts and expected utility
+
+To evaluate acts, the decision context must be equipped with utilities and
+with just enough finiteness for expectations and maximizers to exist.
+
+::: {#def-credal-context}
+## Credal context
+
+A **credal context** over $\Gamma$ is a state-dependent utility
+$$
+U : A \times X \to \mathbb{R}
+$$
+subject to:
+
+i. (*Finite ranges.*) For each act $a$ and supposition $e$, the image
+   $U(a, \cdot)[e]$ is finite;
+ii. (*Measurable level sets.*) For each act $a$, value $r \in \mathbb{R}$,
+    and supposition $e$, the level set
+    $\{x \in e \mid U(a, x) = r\}$ belongs to $\mathcal{E}$;
+iii. (*Finite menus.*) Every menu $m \in \mathcal{M}$ is finite.
+
+*Lean:* `EAdmissibility.lean · CAJ.CredalContext` (fields `U`,
+`finite_range`, `level_mem`, `menus_finite`).
+:::
+
+Conditions (i)–(ii) are exactly what is needed to compute an expectation
+of $U(a, \cdot)$ over $e$ against a *finitely* additive probability:
+the expectation is a finite sum over the utility range, weighted by the
+probabilities of level sets, and those level sets must be in the algebra
+for the weights to exist. Condition (iii) guarantees maximizers.
+
+::: {#def-weu}
+## Conditional expected utility, unnormalized
+
+Fix a credal context. For a fap $p$, supposition $e$, and act $a$, define
+$$
+\mathrm{wEU}_p(e, a) :=
+\sum_{r \,\in\, U(a,\cdot)[e]} r \cdot p\bigl(\{x \in e \mid U(a, x) = r\}\bigr),
+$$
+the sum ranging over the finite utility range of $a$ on $e$. The sum may
+be computed against any finite enumeration of the range.
+
+*Lean:* `EAdmissibility.lean · CredalContext.wEU`, `wEU_eq_sum`.
+:::
+
+::: {.callout-important}
+## Why unnormalized?
+
+$\mathrm{wEU}_p(e, \cdot)$ omits the normalizing factor $1 / p(e)$ of
+conditional expectation. When $p(e) \neq 0$, dividing by $p(e)$ is a
+*positive rescaling*, and positive rescalings do not disturb which acts
+maximize — so admissibility, which is all the judgment consumes, is
+unaffected. When $p(e) = 0$, the normalized quantity is undefined,
+but the judgment is dead there anyway (@prp-seu-live) and the value of
+$\mathrm{wEU}$ is never consulted. Working unnormalized eliminates every
+division — and every division-by-zero side condition — from the
+development. The commutation theorem of Report 4 is where this choice
+pays off most visibly.
+:::
+
+## SEU judgments
+
+::: {#def-seu}
+## The SEU judgment of a prior
+
+Fix a credal context. For a fap $p$, the **SEU judgment** $C_{\{p\}}$ is
+defined by
+$$
+C_{\{p\}}(e, m) :=
+\bigl\{\, a \in m \;\big|\; p(e) \neq 0 \text{ and }
+\forall b \in m,\ \mathrm{wEU}_p(e, b) \le \mathrm{wEU}_p(e, a) \,\bigr\}.
+$$
+That is: at suppositions $p$ treats as null, nothing is admissible; at
+non-null suppositions, exactly the $\mathrm{wEU}$-maximizers on the menu
+are.
+
+*Lean:* `EAdmissibility.lean · CredalContext.seu`; the membership
+characterization is `mem_seu_C`.
+:::
+
+::: {#prp-seu-judgment}
+## The SEU judgment is a judgment
+
+$C_{\{p\}}$ satisfies the three conditions of Report 1's definition.
+
+*Lean:* well-definedness within `EAdmissibility.lean · CredalContext.seu`.
+:::
+
+::: {.proof}
+*Choice from the menu:* membership requires $a \in m$.
+
+*Dichotomy:* fix $e$. If $p(e) = 0$, the conjunct $p(e) \neq 0$ fails and
+every choice set at $e$ is empty: dead. If $p(e) \neq 0$, fix any menu
+$m$: it is finite (@def-credal-context (iii)) and nonempty (Report 1), so
+the function $\mathrm{wEU}_p(e, \cdot)$ attains a maximum on $m$ at some
+$a$, and this $a$ lies in $C_{\{p\}}(e, m)$: live.
+
+*Vacuous liveness:* $p(\top) = 1 \neq 0$ (@prp-fap-basic (iv)), so the
+non-null case applies at $\top$. $\square$
+:::
+
+::: {#prp-seu-live}
+## Nullity instantiated
+
+$C_{\{p\}}$ is live at $e$ iff $p(e) \neq 0$, and dead at $e$ iff
+$p(e) = 0$.
+
+*Lean:* `EAdmissibility.lean · seu_live_iff`, `seu_dead_iff`.
+:::
+
+::: {.proof}
+If $p(e) \neq 0$, the maximizer argument of @prp-seu-judgment shows every
+choice set at $e$ is nonempty. If $p(e) = 0$, every choice set at $e$ is
+empty; picking any menu (the menu collection is nonempty) refutes
+liveness. The two claims then interchange through the live/dead
+complementarity of Report 1. $\square$
+:::
+
+This discharges the promissory note issued with the null-supposition
+policy in Report 1: in the intended models, deadness *is* nullity of the
+supposition under the prior, and it is uniform across menus exactly as the
+dichotomy demands — $p(e) = 0$ is a property of $e$ and $p$, with no menu
+in sight.
+
+## E-admissibility
+
+::: {#def-eadm}
+## The E-admissibility judgment of a credal set
+
+Fix a credal context. For a nonempty set $P$ of faps (a **credal state**),
+the **E-admissibility judgment** of $P$ is
+$$
+C_P := \bigvee \,\bigl\{\, C_{\{p\}} \;\big|\; p \in P \,\bigr\},
+$$
+the join — in the sense of Report 2 — of the singleton SEU judgments of
+its members. The join exists because $P$, hence the class being joined,
+is nonempty.
+
+*Lean:* `EAdmissibility.lean · CredalContext.eAdm`.
+:::
+
+::: {#thm-m1}
+## M1: the join identity
+
+$C_P = \bigvee_{p \in P} C_{\{p\}}$, definitionally; pointwise,
+$$
+C_P(e, m) = \bigcup_{p \in P} C_{\{p\}}(e, m)
+\quad \text{for all } e, m.
+$$
+
+*Lean:* `EAdmissibility.lean · eAdm_eq_sJoin` (definitional form),
+`eAdm_C` (pointwise form).
+:::
+
+::: {.proof}
+The first identity is the definition. The pointwise form is the defining
+equation of joins (Report 2), with the union over the class
+$\{C_{\{p\}} \mid p \in P\}$ re-indexed along $p \mapsto C_{\{p\}}$.
+$\square$
+:::
+
+M1 is stated as a theorem because it is a genuine commitment about what
+E-admissibility *is*, even though the architecture makes it definitional:
+had $C_P$ been defined by the existential formula below, M1 would be the
+(easy, but not free) content connecting it to the order theory. The
+default-to-the-menu null policy would have *falsified* M1 — see Report 1 —
+and that falsification is what fixed the policy.
+
+::: {#thm-mem-eadm}
+## The existential characterization
+
+For all $e$, $m$, $a$:
+$$
+a \in C_P(e, m) \iff \exists\, p \in P:\ a \in C_{\{p\}}(e, m),
+$$
+i.e. an act is E-admissible iff some member of the credal state deems it
+an expected-utility maximizer at a supposition that member does not treat
+as null.
+
+*Lean:* `EAdmissibility.lean · mem_eAdm_C`.
+:::
+
+::: {.proof}
+Immediate from the pointwise form of M1: membership in a union over $P$
+is existence of a witnessing member. $\square$
+:::
+
+::: {#prp-eadm-calc}
+## E-admissibility calculus
+
+Let $P, Q$ be nonempty sets of faps and $p$ a fap.
+
+i. (*Singletons recover SEU.*) $C_{\{p\}}$ in the sense of @def-eadm
+   equals $C_{\{p\}}$ in the sense of @def-seu.
+ii. (*Members refine.*) If $p \in P$ then $C_{\{p\}} \le C_P$.
+iii. (*Monotonicity.*) If $P \subseteq Q$ then $C_P \le C_Q$.
+iv. (*Liveness.*) $C_P$ is live at $e$ iff $p(e) \neq 0$ for some
+    $p \in P$.
+
+*Lean:* `EAdmissibility.lean · eAdm_singleton`, `seu_le_eAdm`,
+`eAdm_mono`, `eAdm_live_iff`.
+:::
+
+::: {.proof}
+For (i): the join of the singleton class $\{C_{\{p\}}\}$ is $C_{\{p\}}$
+(Report 2, join calculus). For (ii): a member of a class is below its
+join. For (iii): $P \subseteq Q$ gives an inclusion of the joined
+classes, and joins are monotone. For (iv): a join is live iff some
+joinand is (Report 2), and $C_{\{p\}}$ is live at $e$ iff $p(e) \neq 0$
+(@prp-seu-live). $\square$
+:::
+
+Clause (iv) is worth a philosophical gloss: a credal state treats a
+supposition as null only if *every* member does — nullity is a unanimity
+notion under E-admissibility, seriousness a majority-of-one notion. This
+is the credal instantiation of the join/deadness aggregation observed in
+Report 2.
+
+### Outlook
+
+The stage is now fully set for the headline results of Report 4. Two
+classes of judgments are in play:
+$$
+K_{\mathrm{SEU}} := \{\, C_{\{p\}} \mid p \text{ a fap} \,\}, \qquad
+K_{\mathrm{Eadm}} := \{\, C_P \mid P \text{ a nonempty credal state} \,\},
+$$
+with $K_{\mathrm{SEU}} \subseteq K_{\mathrm{Eadm}}$ by
+@prp-eadm-calc (i). Report 4 proves
+$\mathrm{cc}(K_{\mathrm{SEU}}) = K_{\mathrm{Eadm}}$ — E-admissibility is
+exactly the commensuration closure of SEU — together with its uniqueness,
+the β-corollary, and the commutation of Bayesian conditioning with the
+credal join. Report 5 shows the closure is strict
+($K_{\mathrm{SEU}}$ is not join-closed, indeed fails even fair hearing)
+and drives the wedge between $\mathrm{cc}$ and $\mathrm{conv}$.
+
+## Formalization notes {#sec-formalization}
+
+| Report item | Lean declaration (file · name) |
+|---|---|
+| @def-fap | `Fap.lean · CAJ.Fap` |
+| @prp-fap-basic | `Fap.lean · p_empty`, `mono`, `p_le_one`; `EAdmissibility.lean · p_topEvent` |
+| @def-mix, @prp-mix-calc | `Fap.lean · mix`, `mix_p`, `mix_zero`, `mix_one`, `mix_self` |
+| @def-mixture-closed | `Fap.lean · MixtureClosed`, `convexHull` |
+| @lem-mc-inter | `Fap.lean · mixtureClosed_sInter` |
+| @thm-hull-closure | `Fap.lean · convexHull`, `subset_convexHull`, `mixtureClosed_convexHull`, `convexHull_le`, `isClosed_convexHull_iff` |
+| @def-credal-context | `EAdmissibility.lean · CAJ.CredalContext` |
+| @def-weu | `EAdmissibility.lean · wEU`, `wEU_eq_sum` |
+| @def-seu, @prp-seu-judgment | `EAdmissibility.lean · seu`, `mem_seu_C` |
+| @prp-seu-live | `EAdmissibility.lean · seu_live_iff`, `seu_dead_iff` |
+| @def-eadm | `EAdmissibility.lean · eAdm` |
+| @thm-m1 | `EAdmissibility.lean · eAdm_eq_sJoin`, `eAdm_C` |
+| @thm-mem-eadm | `EAdmissibility.lean · mem_eAdm_C` |
+| @prp-eadm-calc | `EAdmissibility.lean · eAdm_singleton`, `seu_le_eAdm`, `eAdm_mono`, `eAdm_live_iff` |
+
+Encoding remarks:
+
+- **Faps on the subtype.** `Fap E` assigns reals to the subtype
+  `{s : Set X // s ∈ E}`, so every argument carries its membership proof.
+  By proof irrelevance the assignment depends only on the carrier set
+  (`p_congr`), and judgments-with-equal-functions arguments go through
+  `Fap.ext`. As with `sJoin_congr` in Report 2, an explicit transport
+  lemma is needed because rewriting a carrier set changes the type of the
+  membership proof.
+- **No module structure.** Mixtures are defined directly on `Fap E`
+  rather than through Mathlib's `Convex`, which would require embedding
+  faps in a module. The bespoke `MixtureClosed`/`convexHull` pair is a
+  few dozen lines and keeps the credal-side closure exactly parallel to
+  the judgment-side one.
+- **`wEU` is noncomputable** (it sums over a `Set.Finite.toFinset` of the
+  utility range and takes values in `ℝ`); `wEU_eq_sum` lets concrete
+  computations — Report 5's witness — proceed against any explicitly
+  given `Finset` enumerating the range.
+- **Maximizer existence** uses Mathlib's `Set.exists_max_image` with the
+  menu's finiteness and nonemptiness; this is the only place
+  @def-credal-context (iii) is used.
+- **`eAdm` takes the nonemptiness proof** `hP : P.Nonempty` as an
+  argument, inherited from `sJoin` (Report 2): there is no empty credal
+  state, matching the absence of a bottom judgment.

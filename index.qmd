@@ -42,10 +42,10 @@ journal presentation would suppress.
    — set algebras, decision contexts, conditional admissibility judgments,
    the null-supposition policy, the pointwise order, and Sen's
    choice-consistency postulates per supposition.
-2. *Commensuration and the Closure Operator* (forthcoming) — pointwise
-   joins, suspension and fair hearing, commensurability relative to a
-   class, the commensuration closure operator, and the zig-zag analysis of
-   change.
+2. [Commensuration and the Closure Operator](reports/02_commensuration.qmd)
+   — pointwise joins, suspension and fair hearing, commensurability
+   relative to a class, the commensuration closure operator, and the
+   zig-zag analysis of change.
 3. *The Credal Layer: Probabilities, Mixtures, and E-admissibility*
    (forthcoming) — finitely additive probabilities, mixtures and convex
    hulls, SEU judgments, and the join identity for E-admissibility.

@@ -24,6 +24,7 @@ website:
       - section: "Reports"
         contents:
           - reports/01_judgments.qmd
+          - reports/02_commensuration.qmd
 
 format:
   html:

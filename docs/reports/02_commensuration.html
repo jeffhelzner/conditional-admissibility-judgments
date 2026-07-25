@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jeff Helzner">
+<meta name="dcterms.date" content="2026-07-24">
+
+<title>Report 2: Commensuration and the Closure Operator – Conditional Admissibility Judgments</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-629c56ba100745318e9dcb35146191d0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Conditional Admissibility Judgments</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jeffhelzner/conditional-admissibility-judgments"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reports/01_judgments.html">Reports</a></li><li class="breadcrumb-item"><a href="../reports/02_commensuration.html">Report 2: Commensuration and the Closure Operator</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conditional Admissibility Judgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Reports</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reports/01_judgments.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Report 1: Decision Contexts and Admissibility Judgments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reports/02_commensuration.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Report 2: Commensuration and the Closure Operator</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a>
+  <ul class="collapse">
+  <li><a href="#sec-notation" id="toc-sec-notation" class="nav-link" data-scroll-target="#sec-notation"><span class="header-section-number">1.1</span> Notation from Report 1</a></li>
+  </ul></li>
+  <li><a href="#joins-of-judgments-m0" id="toc-joins-of-judgments-m0" class="nav-link" data-scroll-target="#joins-of-judgments-m0"><span class="header-section-number">2</span> Joins of judgments (M0)</a>
+  <ul class="collapse">
+  <li><a href="#calculus-of-joins" id="toc-calculus-of-joins" class="nav-link" data-scroll-target="#calculus-of-joins"><span class="header-section-number">2.1</span> Calculus of joins</a></li>
+  </ul></li>
+  <li><a href="#suspension-and-fair-hearing" id="toc-suspension-and-fair-hearing" class="nav-link" data-scroll-target="#suspension-and-fair-hearing"><span class="header-section-number">3</span> Suspension and fair hearing</a></li>
+  <li><a href="#join-closed-classes" id="toc-join-closed-classes" class="nav-link" data-scroll-target="#join-closed-classes"><span class="header-section-number">4</span> Join-closed classes</a></li>
+  <li><a href="#the-commensuration-closure-m2-parametric-form" id="toc-the-commensuration-closure-m2-parametric-form" class="nav-link" data-scroll-target="#the-commensuration-closure-m2-parametric-form"><span class="header-section-number">5</span> The commensuration closure (M2, parametric form)</a></li>
+  <li><a href="#the-zig-zag-interface-mathcallmathcalr" id="toc-the-zig-zag-interface-mathcallmathcalr" class="nav-link" data-scroll-target="#the-zig-zag-interface-mathcallmathcalr"><span class="header-section-number">6</span> The zig-zag interface (<span class="math inline">\mathcal{L}</span>/<span class="math inline">\mathcal{R}</span>)</a></li>
+  <li><a href="#sec-formalization" id="toc-sec-formalization" class="nav-link" data-scroll-target="#sec-formalization"><span class="header-section-number">7</span> Formalization notes</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reports/01_judgments.html">Reports</a></li><li class="breadcrumb-item"><a href="../reports/02_commensuration.html">Report 2: Commensuration and the Closure Operator</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Report 2: Commensuration and the Closure Operator</h1>
+<p class="subtitle lead">Conditional Admissibility Judgments, Technical Report Series</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jeff Helzner </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 24, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Status and provenance
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Internal working document. Every definition and result below is verified in Lean 4 against Mathlib; each environment cites the corresponding Lean declaration in the form <code>File.lean · Name</code>. The Lean sources are authoritative where this report and the code differ. Library namespace: <code>CAJ</code> (results on judgments live in <code>CAJ.AdmissibilityJudgment</code>).</p>
+</div>
+</div>
+<section id="introduction" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
+<p>Report 1 fixed the statics: a decision context <span class="math inline">\Gamma</span>, the conditional admissibility judgments over it, and their pointwise order <span class="math inline">\le</span>. This report develops the dynamics — what it takes for a change of judgment <span class="math inline">C \rightsquigarrow C'</span> to be <em>commensurable</em> — and the order theory that supports it.</p>
+<p>The guiding idea is Levi’s <strong>commensuration thesis</strong>, transferred from belief revision to confirmational commitments: a legitimate change from one commitment to another must be mediated by a state that <em>suspends judgment</em> between them — a state from which both the old and the new commitment are recoverable, so that neither begs the question against the other. Two formal ingredients make this precise here.</p>
+<p>First, the poset of judgments has all <em>nonempty</em> joins, computed pointwise (<a href="#thm-lub" class="quarto-xref">Theorem&nbsp;1</a>, “M0” in the development). The join <span class="math inline">C \vee C'</span> is the canonical candidate for the suspending state: the least judgment above both.</p>
+<p>Second, suspension is relativized to a <strong>class</strong> <span class="math inline">K</span> of judgments. Not every element of the abstract poset need be an available doxastic state; if, say, only SEU judgments are recognized (Report 3), then the commensurating intermediary must itself be an SEU judgment — and Report 5 shows that in general none exists. The central construction of this report is the <strong>commensuration closure</strong> (<a href="#def-cc" class="quarto-xref">Definition&nbsp;8</a>): the operator that closes a class under exactly the intermediaries its own commensurating moves demand. It is a closure operator in the standard order-theoretic sense (<a href="#thm-cc-closure" class="quarto-xref">Theorem&nbsp;3</a>), its closed classes are exactly the join-closed ones (<a href="#thm-closed-iff" class="quarto-xref">Theorem&nbsp;5</a>), and it is the <em>least</em> join-closed extension of any class (<a href="#thm-cc-minimal" class="quarto-xref">Theorem&nbsp;4</a>). Report 4 computes its headline instance: the commensuration closure of the SEU judgments is exactly the class of E-admissibility judgments.</p>
+<p>The report closes with the <strong>zig-zag interface</strong>: contraction and expansion steps (<span class="math inline">\mathcal{L}</span> and <span class="math inline">\mathcal{R}</span>), arbitrary finite zig-zags through a class, and the <em>cospan normal form</em> (<a href="#thm-cospan" class="quarto-xref">Theorem&nbsp;6</a>) — within a join-closed class, every zig-zag reduces to a single contraction followed by a single expansion, through the join.</p>
+<p>Throughout, a decision context <span class="math inline">\Gamma = (X, \mathcal{E}, A, \mathcal{M})</span> is fixed, “judgment” means conditional admissibility judgment over <span class="math inline">\Gamma</span> as defined in Report 1 (notation recalled in <a href="#sec-notation" class="quarto-xref">Section&nbsp;1.1</a>), and <span class="math inline">\mathcal{J}</span> denotes the set of all such judgments.</p>
+<section id="sec-notation" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="sec-notation"><span class="header-section-number">1.1</span> Notation from Report 1</h3>
+<p><span class="math inline">C(e, m) \subseteq m</span> is the choice set at supposition <span class="math inline">e \in \mathcal{E}</span> and menu <span class="math inline">m \in \mathcal{M}</span>; <span class="math inline">C</span> is <em>live</em> at <span class="math inline">e</span> if all its choice sets at <span class="math inline">e</span> are nonempty and <em>dead</em> at <span class="math inline">e</span> if all are empty — exactly one holds (Report 1, live/dead dichotomy) — and every judgment is live at the vacuous supposition <span class="math inline">\top</span>. The order is pointwise: <span class="math inline">C \le D</span> iff <span class="math inline">C(e, m) \subseteq D(e, m)</span> for all <span class="math inline">e, m</span>. The top judgment is <span class="math inline">C_\top(e, m) = m</span>.</p>
+</section>
+</section>
+<section id="joins-of-judgments-m0" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="joins-of-judgments-m0"><span class="header-section-number">2</span> Joins of judgments (M0)</h2>
+<div id="def-sup" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1 (Binary join)</strong></span> For judgments <span class="math inline">C, D</span>, define <span class="math display">
+(C \vee D)(e, m) := C(e, m) \cup D(e, m).
+</span></p>
+<p><em>Lean:</em> <code>Join.lean · AdmissibilityJudgment.sup</code>, exposed through the <code>SemilatticeSup</code> instance; the defining equation is <code>sup_C</code>.</p>
+</div>
+<div id="prp-sup-judgment" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 1 (The binary join is a judgment)</strong></span> <span class="math inline">C \vee D</span> satisfies the three conditions of Report 1’s definition of a judgment, and is the least upper bound of <span class="math inline">\{C, D\}</span> in the pointwise order. The judgments over <span class="math inline">\Gamma</span> thus form a join-semilattice.</p>
+<p><em>Lean:</em> <code>Join.lean · AdmissibilityJudgment.sup</code> (well-definedness), <code>instSemilatticeSupAdmissibilityJudgment</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span><em>Choice from the menu:</em> a union of subsets of <span class="math inline">m</span> is a subset of <span class="math inline">m</span>.</p>
+<p><em>Dichotomy:</em> fix <span class="math inline">e</span>. If <span class="math inline">C</span> is live at <span class="math inline">e</span>, then for every <span class="math inline">m</span> the set <span class="math inline">(C \vee D)(e, m) \supseteq C(e, m)</span> is nonempty, so <span class="math inline">C \vee D</span> is live at <span class="math inline">e</span>; symmetrically if <span class="math inline">D</span> is live at <span class="math inline">e</span>. Otherwise both are dead at <span class="math inline">e</span> and <span class="math inline">(C \vee D)(e, m) = \emptyset \cup \emptyset = \emptyset</span> for every <span class="math inline">m</span>.</p>
+<p><em>Vacuous liveness:</em> <span class="math inline">C</span> is live at <span class="math inline">\top</span>, and <span class="math inline">(C \vee D)(\top, m) \supseteq C(\top, m) \neq \emptyset</span>.</p>
+<p><em>Least upper bound:</em> <span class="math inline">C, D \le C \vee D</span> since each slice includes each component; and if <span class="math inline">C \le E</span> and <span class="math inline">D \le E</span> then <span class="math inline">C(e, m) \cup D(e, m) \subseteq E(e, m)</span> for all <span class="math inline">e, m</span>. <span class="math inline">\square</span></p>
+</div>
+<p>The same construction works for arbitrary <em>nonempty</em> families.</p>
+<div id="def-sjoin" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2 (Nonempty joins)</strong></span> For a nonempty set <span class="math inline">S \subseteq \mathcal{J}</span> of judgments, define <span class="math display">
+\Bigl(\bigvee S\Bigr)(e, m) := \bigcup_{J \in S} J(e, m).
+</span></p>
+<p><em>Lean:</em> <code>Join.lean · AdmissibilityJudgment.sJoin</code>; the defining equation is <code>sJoin_C</code>.</p>
+</div>
+<div id="thm-lub" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 1 (M0: nonempty joins exist and are pointwise)</strong></span> For every nonempty <span class="math inline">S \subseteq \mathcal{J}</span>, <span class="math inline">\bigvee S</span> is a judgment and is the least upper bound of <span class="math inline">S</span> in the pointwise order.</p>
+<p><em>Lean:</em> <code>Join.lean · AdmissibilityJudgment.sJoin</code> (well-definedness), <code>le_sJoin</code>, <code>sJoin_le</code>, <code>isLUB_sJoin</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span><em>Choice from the menu:</em> a union of subsets of <span class="math inline">m</span> is a subset of <span class="math inline">m</span>.</p>
+<p><em>Dichotomy:</em> fix <span class="math inline">e</span> and distinguish two cases. If some <span class="math inline">J \in S</span> is live at <span class="math inline">e</span>, then for every menu <span class="math inline">m</span>, <span class="math inline">\bigl(\bigvee S\bigr)(e, m) \supseteq J(e, m) \neq \emptyset</span>, so <span class="math inline">\bigvee S</span> is live at <span class="math inline">e</span>. Otherwise every <span class="math inline">J \in S</span> is dead at <span class="math inline">e</span> (using the dichotomy memberwise: not live means dead), so each <span class="math inline">J(e, m) = \emptyset</span> and the union is empty at every <span class="math inline">m</span>: <span class="math inline">\bigvee S</span> is dead at <span class="math inline">e</span>.</p>
+<p><em>Vacuous liveness:</em> <span class="math inline">S</span> is nonempty; pick <span class="math inline">J_0 \in S</span>. Then <span class="math inline">J_0</span> is live at <span class="math inline">\top</span> and <span class="math inline">\bigl(\bigvee S\bigr)(\top, m) \supseteq J_0(\top, m)</span>.</p>
+<p><em>Upper bound:</em> for <span class="math inline">J \in S</span>, <span class="math inline">J(e, m) \subseteq \bigcup_{J' \in S}
+J'(e, m)</span> at every <span class="math inline">e, m</span>, so <span class="math inline">J \le \bigvee S</span>.</p>
+<p><em>Least:</em> if <span class="math inline">J \le K</span> for every <span class="math inline">J \in S</span>, then at each <span class="math inline">e, m</span> the union <span class="math inline">\bigcup_{J \in S} J(e, m)</span> is a union of subsets of <span class="math inline">K(e, m)</span>, hence <span class="math inline">\bigvee S \le K</span>. <span class="math inline">\square</span></p>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>No empty join, no bottom
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The empty union is everywhere empty, and the everywhere-empty function is dead at <span class="math inline">\top</span> — it violates vacuous liveness and is <em>not</em> a judgment. So the poset of judgments has no bottom element and no empty join, and nonemptiness hypotheses on <span class="math inline">S</span> are genuinely necessary throughout. This is a deliberate consequence of the null-supposition policy of Report 1: a judgment must actually judge at the vacuous supposition.</p>
+</div>
+</div>
+<p>Note also how the dichotomy case of the proof of <a href="#thm-lub" class="quarto-xref">Theorem&nbsp;1</a> vindicates the empty-choice policy: <strong>a join is dead at <span class="math inline">e</span> exactly when every joinand is</strong> — nullity aggregates by conjunction across the family, with no side conditions. Under the default-to-the-menu policy the corresponding case would fail (a single member treating <span class="math inline">e</span> as null would flood the union with the whole menu).</p>
+<section id="calculus-of-joins" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="calculus-of-joins"><span class="header-section-number">2.1</span> Calculus of joins</h3>
+<p>The following identities are used constantly in Reports 3 and 4. All proofs are immediate from the least-upper-bound property or from pointwise computation with unions; we record the arguments briefly.</p>
+<div id="prp-join-calc" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 2 (Join calculus)</strong></span> Let <span class="math inline">S, T \subseteq \mathcal{J}</span> be nonempty and <span class="math inline">J, K \in \mathcal{J}</span>.</p>
+<ol type="i">
+<li>(<em>Monotonicity.</em>) If <span class="math inline">S \subseteq T</span> then <span class="math inline">\bigvee S \le \bigvee T</span>.</li>
+<li>(<em>Singleton.</em>) <span class="math inline">\bigvee \{J\} = J</span>.</li>
+<li>(<em>Pair.</em>) <span class="math inline">\bigvee \{J, K\} = J \vee K</span>.</li>
+<li>(<em>Union splitting.</em>) <span class="math inline">\bigvee (S \cup T) = \bigvee S \vee \bigvee T</span>.</li>
+</ol>
+<p><em>Lean:</em> <code>Join.lean · sJoin_mono</code>, <code>sJoin_singleton</code>, <code>sJoin_pair</code>, <code>sJoin_union</code>; also <code>sJoin_congr</code> (see <a href="#sec-formalization" class="quarto-xref">Section&nbsp;7</a>).</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>For (i): every member of <span class="math inline">S</span> is a member of <span class="math inline">T</span>, hence <span class="math inline">\le \bigvee T</span> by the upper-bound property; conclude by the least property. For (ii)–(iii): pointwise, the union over a singleton (pair) index is the set itself (the binary union). For (iv): pointwise, <span class="math inline">\bigcup_{J \in S \cup T} J(e, m) = \bigcup_{J \in S} J(e, m) \cup
+\bigcup_{J \in T} J(e, m)</span>. <span class="math inline">\square</span></p>
+</div>
+<div id="prp-join-live" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 3 (Liveness of a join)</strong></span> For nonempty <span class="math inline">S</span> and any event <span class="math inline">e</span>: <span class="math inline">\bigvee S</span> is live at <span class="math inline">e</span> iff some <span class="math inline">J \in S</span> is live at <span class="math inline">e</span>.</p>
+<p><em>Lean:</em> <code>Join.lean · sJoin_live_iff</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>(<span class="math inline">\Leftarrow</span>) If <span class="math inline">J \in S</span> is live at <span class="math inline">e</span>, then <span class="math inline">J \le \bigvee S</span> and liveness is monotone (Report 1).</p>
+<p>(<span class="math inline">\Rightarrow</span>) Contrapositively, suppose no member of <span class="math inline">S</span> is live at <span class="math inline">e</span>; by the dichotomy every member is dead at <span class="math inline">e</span>. Pick any menu <span class="math inline">m</span> (the menu collection is nonempty). If <span class="math inline">a \in \bigl(\bigvee S\bigr)(e, m)</span> then <span class="math inline">a \in J(e, m)</span> for some <span class="math inline">J \in S</span>; but <span class="math inline">J(e, m) = \emptyset</span> — contradiction. So <span class="math inline">\bigl(\bigvee S\bigr)(e, m) = \emptyset</span> and <span class="math inline">\bigvee S</span> is not live at <span class="math inline">e</span>. <span class="math inline">\square</span></p>
+</div>
+</section>
+</section>
+<section id="suspension-and-fair-hearing" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="suspension-and-fair-hearing"><span class="header-section-number">3</span> Suspension and fair hearing</h2>
+<p>We now give the order theory its Levi reading. A change of judgment <span class="math inline">C \rightsquigarrow C'</span> is <em>external</em> to both judgments; the question is what mediates it.</p>
+<div id="def-suspends" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3 (Suspension)</strong></span> A judgment <span class="math inline">D</span> <strong>suspends the issue between</strong> <span class="math inline">C</span> and <span class="math inline">C'</span> iff <span class="math inline">C \le D</span> and <span class="math inline">C' \le D</span> — that is, at every supposition and menu, <span class="math inline">D</span> deems admissible everything either judgment does.</p>
+<p><em>Lean:</em> <code>Commensuration.lean · AdmissibilityJudgment.Suspends</code>.</p>
+</div>
+<p>Suspension is the strong reading of “not begging the question”: from <span class="math inline">D</span>, each of <span class="math inline">C</span> and <span class="math inline">C'</span> is reachable by pure expansion (shrinking choice sets), with no option that either party regards as admissible having been foreclosed in the interim. A natural weakening only requires <span class="math inline">D</span> to keep each party’s admissible options <em>represented</em>:</p>
+<div id="def-fair-hearing" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4 (Fair hearing)</strong></span> A judgment <span class="math inline">D</span> gives <span class="math inline">C</span> and <span class="math inline">C'</span> a <strong>fair hearing</strong> iff for every supposition <span class="math inline">e</span> and menu <span class="math inline">m</span>:</p>
+<ol type="i">
+<li>if <span class="math inline">C(e, m) \neq \emptyset</span> then <span class="math inline">D(e, m) \cap C(e, m) \neq \emptyset</span>;</li>
+<li>if <span class="math inline">C'(e, m) \neq \emptyset</span> then <span class="math inline">D(e, m) \cap C'(e, m) \neq
+\emptyset</span>.</li>
+</ol>
+<p><em>Lean:</em> <code>Commensuration.lean · AdmissibilityJudgment.FairHearing</code>.</p>
+</div>
+<div id="prp-suspends-fair" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 4 (Suspension implies fair hearing)</strong></span> If <span class="math inline">D</span> suspends the issue between <span class="math inline">C</span> and <span class="math inline">C'</span>, then <span class="math inline">D</span> gives <span class="math inline">C</span> and <span class="math inline">C'</span> a fair hearing.</p>
+<p><em>Lean:</em> <code>Commensuration.lean · Suspends.fairHearing</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Suppose <span class="math inline">C(e, m) \neq \emptyset</span>, say <span class="math inline">a \in C(e, m)</span>. Since <span class="math inline">C \le D</span>, also <span class="math inline">a \in D(e, m)</span>, so <span class="math inline">a \in D(e, m) \cap C(e, m)</span>. Clause (ii) is symmetric. <span class="math inline">\square</span></p>
+</div>
+<p>The converse fails, and the failure is not a curiosity: Report 5 exhibits a change between two SEU judgments for which <em>no</em> SEU judgment provides even a fair hearing — the weak condition — so <em>a fortiori</em> none suspends. Stating both conditions makes that negative result as strong as possible.</p>
+<div id="def-commensurable" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5 (Commensurability within a class)</strong></span> Let <span class="math inline">K \subseteq \mathcal{J}</span> be a class of judgments. The change <span class="math inline">C \rightsquigarrow C'</span> is <strong>commensurable within <span class="math inline">K</span></strong> iff some <span class="math inline">D \in K</span> suspends the issue between <span class="math inline">C</span> and <span class="math inline">C'</span>; it is <strong>weakly commensurable within <span class="math inline">K</span></strong> iff some <span class="math inline">D \in K</span> gives <span class="math inline">C</span> and <span class="math inline">C'</span> a fair hearing. Commensurability implies weak commensurability.</p>
+<p><em>Lean:</em> <code>Commensuration.lean · AdmissibilityJudgment.Commensurable</code>, <code>WeaklyCommensurable</code>, <code>Commensurable.weaklyCommensurable</code>.</p>
+</div>
+<p>The relativization to <span class="math inline">K</span> carries the philosophical weight. In the unrelativized poset the question is trivial: the top judgment suspends between any two judgments, and complete suspense across the board is always “available” in the formal sense. The serious question is whether an intermediary exists <em>of the kind of doxastic state the agent’s theory recognizes</em> — an SEU state, a credal state, and so on. Everything that follows is parametric in <span class="math inline">K</span> for exactly this reason.</p>
+<div id="def-suspension-join" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 6 (The canonical intermediary)</strong></span> For judgments <span class="math inline">C, C'</span>, the <strong>suspension</strong> of the issue between them is the join <span class="math inline">C \vee C'</span>, and it does suspend: <span class="math inline">C \le C \vee C'</span> and <span class="math inline">C' \le C \vee C'</span>.</p>
+<p><em>Lean:</em> <code>Commensuration.lean · AdmissibilityJudgment.suspension</code>, <code>suspends_suspension</code>.</p>
+</div>
+<p>The join is not merely <em>a</em> suspending judgment but the least one: any <span class="math inline">D</span> suspending between <span class="math inline">C</span> and <span class="math inline">C'</span> is an upper bound of <span class="math inline">\{C, C'\}</span>, and <span class="math inline">C \vee C' \le D</span> by <a href="#prp-sup-judgment" class="quarto-xref">Proposition&nbsp;1</a>. The suspension is thus the unique minimal resolution of the commensuration demand — it concedes to suspense exactly what the two judgments disagree about, and nothing more. (Report 4 sharpens this into a universal property for the credal instance.)</p>
+</section>
+<section id="join-closed-classes" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="join-closed-classes"><span class="header-section-number">4</span> Join-closed classes</h2>
+<div id="def-join-closed" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7 (Join-closedness)</strong></span> A class <span class="math inline">K \subseteq \mathcal{J}</span> is <strong>join-closed</strong> iff for every nonempty <span class="math inline">S \subseteq K</span>, <span class="math inline">\bigvee S \in K</span>.</p>
+<p><em>Lean:</em> <code>Commensuration.lean · AdmissibilityJudgment.JoinClosed</code>.</p>
+</div>
+<div id="lem-sup-mem" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lemma 1 (Binary case)</strong></span> If <span class="math inline">K</span> is join-closed and <span class="math inline">C, D \in K</span>, then <span class="math inline">C \vee D \in K</span>.</p>
+<p><em>Lean:</em> <code>Commensuration.lean · JoinClosed.sup_mem</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span><span class="math inline">\{C, D\}</span> is a nonempty subset of <span class="math inline">K</span>, so <span class="math inline">\bigvee \{C, D\} \in K</span>; and <span class="math inline">\bigvee \{C, D\} = C \vee D</span> by <a href="#prp-join-calc" class="quarto-xref">Proposition&nbsp;2</a> (iii). <span class="math inline">\square</span></p>
+</div>
+<div id="thm-join-closed-comm" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 2 (Join-closed classes are internally commensurable)</strong></span> If <span class="math inline">K</span> is join-closed, then any two members of <span class="math inline">K</span> are commensurable within <span class="math inline">K</span>: the suspension <span class="math inline">C \vee C'</span> is a commensurating intermediary lying in <span class="math inline">K</span>.</p>
+<p><em>Lean:</em> <code>Commensuration.lean · JoinClosed.commensurable</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>By <a href="#lem-sup-mem" class="quarto-xref">Lemma&nbsp;1</a>, <span class="math inline">C \vee C' \in K</span>; by <a href="#def-suspension-join" class="quarto-xref">Definition&nbsp;6</a> it suspends the issue. <span class="math inline">\square</span></p>
+</div>
+<p>This is the positive half of the project’s central contrast. Join-closedness is precisely the structural property that makes a class of doxastic states <em>dynamically self-sufficient</em>: every change between its members can be commensurated without leaving the class, and by the least possible concession. The negative half (Report 5) is that the SEU judgments are <em>not</em> join-closed — not even weakly commensurable in the relevant instance — which forces the closure construction of the next section.</p>
+</section>
+<section id="the-commensuration-closure-m2-parametric-form" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="the-commensuration-closure-m2-parametric-form"><span class="header-section-number">5</span> The commensuration closure (M2, parametric form)</h2>
+<p>If a class <span class="math inline">K</span> fails to contain the intermediaries its changes demand, the commensuration thesis demands the least extension that does. That extension exists and has a transparent description.</p>
+<div id="def-cc" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 8 (Commensuration closure)</strong></span> For <span class="math inline">K \subseteq \mathcal{J}</span>, define <span class="math display">
+\mathrm{cc}(K) := \Bigl\{\, \bigvee S \;\Big|\; S \subseteq K,\ S \neq
+\emptyset \,\Bigr\},
+</span> the class of joins of nonempty subclasses of <span class="math inline">K</span>.</p>
+<p><em>Lean:</em> <code>Commensuration.lean · AdmissibilityJudgment.commensurationClosure</code>; the membership characterization is <code>mem_commensurationClosure</code>.</p>
+</div>
+<div id="thm-cc-closure" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 3 (M2 (parametric): <span class="math inline">\mathrm{cc}</span> is a closure operator)</strong></span> On classes of judgments ordered by inclusion, <span class="math inline">\mathrm{cc}</span> is</p>
+<ol type="i">
+<li>(<em>extensive</em>) <span class="math inline">K \subseteq \mathrm{cc}(K)</span>;</li>
+<li>(<em>monotone</em>) <span class="math inline">K \subseteq L</span> implies <span class="math inline">\mathrm{cc}(K) \subseteq \mathrm{cc}(L)</span>;</li>
+<li>(<em>idempotent</em>) <span class="math inline">\mathrm{cc}(\mathrm{cc}(K)) = \mathrm{cc}(K)</span>.</li>
+</ol>
+<p><em>Lean:</em> <code>Commensuration.lean · commensurationClosure</code> (bundled as a Mathlib <code>ClosureOperator</code> on <code>Set (AdmissibilityJudgment ctx)</code>).</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span><em>Extensivity.</em> For <span class="math inline">J \in K</span>, the singleton <span class="math inline">\{J\}</span> is a nonempty subclass of <span class="math inline">K</span> and <span class="math inline">J = \bigvee \{J\}</span> by <a href="#prp-join-calc" class="quarto-xref">Proposition&nbsp;2</a> (ii).</p>
+<p><em>Monotonicity.</em> A nonempty subclass of <span class="math inline">K</span> is a nonempty subclass of <span class="math inline">L</span>.</p>
+<p><em>Idempotency.</em> The inclusion <span class="math inline">\supseteq</span> is extensivity applied to <span class="math inline">\mathrm{cc}(K)</span>. For <span class="math inline">\subseteq</span>, let <span class="math inline">J \in
+\mathrm{cc}(\mathrm{cc}(K))</span>, say <span class="math inline">J = \bigvee S'</span> with <span class="math inline">S' \subseteq \mathrm{cc}(K)</span> nonempty. Each <span class="math inline">J' \in S'</span> is itself a join: choose for each a nonempty <span class="math inline">S_{J'} \subseteq K</span> with <span class="math inline">J' = \bigvee S_{J'}</span>. Put <span class="math display">
+U := \bigcup_{J' \in S'} S_{J'} \subseteq K,
+</span> which is nonempty (pick <span class="math inline">J' \in S'</span>, then any member of <span class="math inline">S_{J'}</span>). We claim <span class="math inline">J = \bigvee U</span>, which places <span class="math inline">J \in \mathrm{cc}(K)</span>.</p>
+<p><span class="math inline">\bigvee U \le J</span>: it suffices that every <span class="math inline">J'' \in U</span> satisfies <span class="math inline">J'' \le J</span>. Indeed <span class="math inline">J'' \in S_{J'}</span> for some <span class="math inline">J' \in S'</span>, so <span class="math inline">J'' \le \bigvee S_{J'} = J' \le \bigvee S' = J</span>, using the upper-bound property twice.</p>
+<p><span class="math inline">J \le \bigvee U</span>: it suffices that every <span class="math inline">J' \in S'</span> satisfies <span class="math inline">J' \le \bigvee U</span>. Indeed <span class="math inline">J' = \bigvee S_{J'} \le \bigvee U</span> by monotonicity of joins (<a href="#prp-join-calc" class="quarto-xref">Proposition&nbsp;2</a> (i)), since <span class="math inline">S_{J'} \subseteq U</span>. <span class="math inline">\square</span></p>
+</div>
+<p>Idempotency is the mathematically substantive clause: it is the <em>flattening of joins of joins</em>, and it is what entitles us to speak of “the” closure — iterating the construction adds nothing after one step.</p>
+<div id="prp-cc-join-closed" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 5 (The closure is join-closed)</strong></span> For every <span class="math inline">K</span>, <span class="math inline">\mathrm{cc}(K)</span> is join-closed.</p>
+<p><em>Lean:</em> <code>Commensuration.lean · joinClosed_commensurationClosure</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>A join of a nonempty subclass of <span class="math inline">\mathrm{cc}(K)</span> lies in <span class="math inline">\mathrm{cc}(\mathrm{cc}(K))</span> by definition, and <span class="math inline">\mathrm{cc}(\mathrm{cc}(K)) = \mathrm{cc}(K)</span> by idempotency. <span class="math inline">\square</span></p>
+</div>
+<div id="thm-cc-minimal" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4 (Minimality)</strong></span> If <span class="math inline">K \subseteq L</span> and <span class="math inline">L</span> is join-closed, then <span class="math inline">\mathrm{cc}(K) \subseteq L</span>. Hence <span class="math inline">\mathrm{cc}(K)</span> is the least join-closed class containing <span class="math inline">K</span>.</p>
+<p><em>Lean:</em> <code>Commensuration.lean · commensurationClosure_le</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Let <span class="math inline">J = \bigvee S</span> with <span class="math inline">S \subseteq K</span> nonempty. Then <span class="math inline">S \subseteq L</span>, and join-closedness of <span class="math inline">L</span> gives <span class="math inline">\bigvee S \in L</span>. Combined with <a href="#prp-cc-join-closed" class="quarto-xref">Proposition&nbsp;5</a>, <span class="math inline">\mathrm{cc}(K)</span> is a join-closed class containing <span class="math inline">K</span> (extensivity) that is contained in every such class. <span class="math inline">\square</span></p>
+</div>
+<div id="thm-closed-iff" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 5 (The closed classes)</strong></span> <span class="math inline">\mathrm{cc}(K) = K</span> if and only if <span class="math inline">K</span> is join-closed.</p>
+<p><em>Lean:</em> <code>Commensuration.lean · isClosed_commensurationClosure_iff</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>(<span class="math inline">\Rightarrow</span>) If <span class="math inline">\mathrm{cc}(K) = K</span> then <span class="math inline">K</span> is join-closed by <a href="#prp-cc-join-closed" class="quarto-xref">Proposition&nbsp;5</a>. (<span class="math inline">\Leftarrow</span>) If <span class="math inline">K</span> is join-closed, apply <a href="#thm-cc-minimal" class="quarto-xref">Theorem&nbsp;4</a> with <span class="math inline">L = K</span> to get <span class="math inline">\mathrm{cc}(K) \subseteq K</span>; the reverse inclusion is extensivity. <span class="math inline">\square</span></p>
+</div>
+<p>Together, <a href="#thm-cc-closure" class="quarto-xref">Theorem&nbsp;3</a>–<a href="#thm-closed-iff" class="quarto-xref">Theorem&nbsp;5</a> say: the commensuration demand, iterated to a fixed point, is exactly the demand of join-closedness — no more and no less. The fixed points of <span class="math inline">\mathrm{cc}</span> are the dynamically self-sufficient classes of <a href="#thm-join-closed-comm" class="quarto-xref">Theorem&nbsp;2</a>, and <span class="math inline">\mathrm{cc}(K)</span> is the canonical repair of a deficient <span class="math inline">K</span>. Report 4 proves the instance the project is named for: <span class="math display">
+\mathrm{cc}(K_{\mathrm{SEU}}) = K_{\mathrm{Eadm}},
+</span> the closure of the SEU judgments is exactly the class of E-admissibility judgments — E-admissibility is what the commensuration thesis <em>costs</em>, and (by <a href="#thm-cc-minimal" class="quarto-xref">Theorem&nbsp;4</a>) it is the cheapest adequate repair.</p>
+</section>
+<section id="the-zig-zag-interface-mathcallmathcalr" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="the-zig-zag-interface-mathcallmathcalr"><span class="header-section-number">6</span> The zig-zag interface (<span class="math inline">\mathcal{L}</span>/<span class="math inline">\mathcal{R}</span>)</h2>
+<p>Commensurability through a single intermediary is a <em>cospan</em>: <span class="math inline">C \nearrow D \searrow C'</span>. One might worry that restricting attention to single intermediaries understates what an agent can reach — perhaps a longer alternation of expansions and contractions, each step legitimate, connects judgments that no single cospan connects. Within a join-closed class, it does not.</p>
+<div id="def-steps" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 9 (Contraction, expansion, zig-zag)</strong></span> For judgments <span class="math inline">C, D</span>:</p>
+<ul>
+<li>a <strong>contraction</strong> step moves up the order: <span class="math inline">C \mathrel{\mathcal{L}} D</span> iff <span class="math inline">C \le D</span> (the agent retreats toward suspense, enlarging choice sets);</li>
+<li>an <strong>expansion</strong> step moves down: <span class="math inline">C \mathrel{\mathcal{R}} D</span> iff <span class="math inline">D \le C</span> (the agent takes on commitment, shrinking choice sets).</li>
+</ul>
+<p>For a class <span class="math inline">K</span>, a <strong>single step within <span class="math inline">K</span></strong> from <span class="math inline">C</span> to <span class="math inline">D</span> requires <span class="math inline">C, D \in K</span> and either <span class="math inline">C \mathrel{\mathcal{L}} D</span> or <span class="math inline">C \mathrel{\mathcal{R}} D</span>. The <strong>zig-zag relation</strong> <span class="math inline">\rightsquigarrow_K</span> is the reflexive-transitive closure of single steps within <span class="math inline">K</span>: there is a finite chain <span class="math inline">C = J_0, J_1, \dots, J_n = C'</span> in <span class="math inline">K</span>, each consecutive pair related by <span class="math inline">\le</span> in one direction or the other.</p>
+<p><em>Lean:</em> <code>Commensuration.lean · AdmissibilityJudgment.Contraction</code>, <code>Expansion</code>, <code>StepIn</code>, <code>ZigZagIn</code> (via Mathlib’s <code>Relation.ReflTransGen</code>).</p>
+</div>
+<p>The terminology is calibrated to Levi’s usage for corpora: <em>contracting</em> one’s confirmational commitment means becoming less opinionated — more acts survive as admissible — which is upward movement in the pointwise order; <em>expanding</em> commitment prunes the admissible set. The zig-zag relation is the hom-existence relation of the thin category on <span class="math inline">K</span> generated by both kinds of step.</p>
+<div id="lem-comm-zigzag" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lemma 2 (Commensurability yields a two-step zig-zag)</strong></span> If <span class="math inline">C, C' \in K</span> and <span class="math inline">C \rightsquigarrow C'</span> is commensurable within <span class="math inline">K</span>, then <span class="math inline">C \rightsquigarrow_K C'</span> — indeed by a zig-zag of length two: a contraction into the intermediary and an expansion out of it.</p>
+<p><em>Lean:</em> <code>Commensuration.lean · Commensurable.zigZagIn</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Let <span class="math inline">D \in K</span> suspend the issue: <span class="math inline">C \le D</span> and <span class="math inline">C' \le D</span>. Then <span class="math inline">C \mathrel{\mathcal{L}} D</span> is a single step within <span class="math inline">K</span> (both endpoints in <span class="math inline">K</span>), and <span class="math inline">D \mathrel{\mathcal{R}} C'</span> is another. Compose. <span class="math inline">\square</span></p>
+</div>
+<div id="thm-cospan" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 6 (Cospan normal form)</strong></span> Let <span class="math inline">K</span> be join-closed and <span class="math inline">C, C' \in K</span>. Then the following are equivalent:</p>
+<ol type="i">
+<li><span class="math inline">C \rightsquigarrow_K C'</span> (some finite zig-zag within <span class="math inline">K</span> connects them);</li>
+<li><span class="math inline">C \rightsquigarrow C'</span> is commensurable within <span class="math inline">K</span> (a single cospan through some <span class="math inline">D \in K</span> connects them).</li>
+</ol>
+<p><em>Lean:</em> <code>Commensuration.lean · zigZagIn_iff_commensurable</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span></p>
+<ol start="2" type="i">
+<li><p><span class="math inline">\Rightarrow</span> (i) is <a href="#lem-comm-zigzag" class="quarto-xref">Lemma&nbsp;2</a>.</p></li>
+<li><p><span class="math inline">\Rightarrow</span> (ii): in fact, for join-closed <span class="math inline">K</span> the hypothesis (i) is not needed — any two members of <span class="math inline">K</span> are commensurable within <span class="math inline">K</span> by <a href="#thm-join-closed-comm" class="quarto-xref">Theorem&nbsp;2</a>, the suspension <span class="math inline">C \vee C'</span> serving as intermediary. <span class="math inline">\square</span></p></li>
+</ol>
+</div>
+<p>The proof of (i) <span class="math inline">\Rightarrow</span> (ii) deserves a candid remark. Within a join-closed class, commensurability is <em>total</em> — every pair of members is connected by the canonical cospan — so the equivalence is not a delicate induction over zig-zags but a collapse: once the class contains its joins, arbitrary finite alternations of contraction and expansion buy no connectivity beyond what the single two-step cospan through the join already provides. That is the precise sense in which the cospan <span class="math inline">C \nearrow C \vee C' \searrow C'</span> is a <em>normal form</em> for change within a join-closed class, and it is why the project can focus on single intermediaries without loss. The interesting failures are all outside join-closed classes: in <span class="math inline">K_{\mathrm{SEU}}</span>, Report 5’s witness pair is not connected even by the weak (fair-hearing) condition, while inside the closure <span class="math inline">K_{\mathrm{Eadm}}</span> the normal form applies. Report 4 instantiates this contrast.</p>
+</section>
+<section id="sec-formalization" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="sec-formalization"><span class="header-section-number">7</span> Formalization notes</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Report item</th>
+<th>Lean declaration (file · name)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#def-sup" class="quarto-xref">Definition&nbsp;1</a>, <a href="#prp-sup-judgment" class="quarto-xref">Proposition&nbsp;1</a></td>
+<td><code>Join.lean · AdmissibilityJudgment.sup</code>, <code>SemilatticeSup</code> instance, <code>sup_C</code></td>
+</tr>
+<tr class="even">
+<td><a href="#def-sjoin" class="quarto-xref">Definition&nbsp;2</a></td>
+<td><code>Join.lean · sJoin</code>, <code>sJoin_C</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#thm-lub" class="quarto-xref">Theorem&nbsp;1</a></td>
+<td><code>Join.lean · le_sJoin</code>, <code>sJoin_le</code>, <code>isLUB_sJoin</code></td>
+</tr>
+<tr class="even">
+<td><a href="#prp-join-calc" class="quarto-xref">Proposition&nbsp;2</a></td>
+<td><code>Join.lean · sJoin_mono</code>, <code>sJoin_singleton</code>, <code>sJoin_pair</code>, <code>sJoin_union</code>, <code>sJoin_congr</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#prp-join-live" class="quarto-xref">Proposition&nbsp;3</a></td>
+<td><code>Join.lean · sJoin_live_iff</code></td>
+</tr>
+<tr class="even">
+<td><a href="#def-suspends" class="quarto-xref">Definition&nbsp;3</a></td>
+<td><code>Commensuration.lean · Suspends</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#def-fair-hearing" class="quarto-xref">Definition&nbsp;4</a></td>
+<td><code>Commensuration.lean · FairHearing</code></td>
+</tr>
+<tr class="even">
+<td><a href="#prp-suspends-fair" class="quarto-xref">Proposition&nbsp;4</a></td>
+<td><code>Commensuration.lean · Suspends.fairHearing</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#def-commensurable" class="quarto-xref">Definition&nbsp;5</a></td>
+<td><code>Commensuration.lean · Commensurable</code>, <code>WeaklyCommensurable</code>, <code>Commensurable.weaklyCommensurable</code></td>
+</tr>
+<tr class="even">
+<td><a href="#def-suspension-join" class="quarto-xref">Definition&nbsp;6</a></td>
+<td><code>Commensuration.lean · suspension</code>, <code>suspends_suspension</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#def-join-closed" class="quarto-xref">Definition&nbsp;7</a>, <a href="#lem-sup-mem" class="quarto-xref">Lemma&nbsp;1</a></td>
+<td><code>Commensuration.lean · JoinClosed</code>, <code>JoinClosed.sup_mem</code></td>
+</tr>
+<tr class="even">
+<td><a href="#thm-join-closed-comm" class="quarto-xref">Theorem&nbsp;2</a></td>
+<td><code>Commensuration.lean · JoinClosed.commensurable</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#def-cc" class="quarto-xref">Definition&nbsp;8</a>, <a href="#thm-cc-closure" class="quarto-xref">Theorem&nbsp;3</a></td>
+<td><code>Commensuration.lean · commensurationClosure</code>, <code>mem_commensurationClosure</code></td>
+</tr>
+<tr class="even">
+<td><a href="#prp-cc-join-closed" class="quarto-xref">Proposition&nbsp;5</a></td>
+<td><code>Commensuration.lean · joinClosed_commensurationClosure</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#thm-cc-minimal" class="quarto-xref">Theorem&nbsp;4</a></td>
+<td><code>Commensuration.lean · commensurationClosure_le</code></td>
+</tr>
+<tr class="even">
+<td><a href="#thm-closed-iff" class="quarto-xref">Theorem&nbsp;5</a></td>
+<td><code>Commensuration.lean · isClosed_commensurationClosure_iff</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#def-steps" class="quarto-xref">Definition&nbsp;9</a></td>
+<td><code>Commensuration.lean · Contraction</code>, <code>Expansion</code>, <code>StepIn</code>, <code>ZigZagIn</code></td>
+</tr>
+<tr class="even">
+<td><a href="#lem-comm-zigzag" class="quarto-xref">Lemma&nbsp;2</a></td>
+<td><code>Commensuration.lean · Commensurable.zigZagIn</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#thm-cospan" class="quarto-xref">Theorem&nbsp;6</a></td>
+<td><code>Commensuration.lean · zigZagIn_iff_commensurable</code></td>
+</tr>
+</tbody>
+</table>
+<p>Encoding remarks:</p>
+<ul>
+<li><strong>Nonemptiness as a proof argument.</strong> <code>sJoin S hS</code> takes the nonemptiness proof <code>hS : S.Nonempty</code> as an explicit argument, since the empty join does not exist (no bottom). By proof irrelevance the value does not depend on <em>which</em> proof is supplied; the transport lemma <code>sJoin_congr</code> (<code>(h : S = T) → sJoin S hS = sJoin T (h ▸ hS)</code>) is provided because rewriting the index class changes the type of the proof, and several Phase-4 arguments need this explicitly.</li>
+<li><strong>Mathlib’s <code>ClosureOperator</code>.</strong> <a href="#thm-cc-closure" class="quarto-xref">Theorem&nbsp;3</a> is packaged as a Mathlib <code>ClosureOperator (Set (AdmissibilityJudgment ctx))</code>, so the general theory (closed elements, Galois-insertion facts) is available for free. In the idempotency proof, the memberwise choice of the witnessing subclasses <span class="math inline">S_{J'}</span> is performed by <code>choose!</code>; no choice beyond what Mathlib’s classical foundations already provide is used.</li>
+<li><strong>Zig-zags via <code>Relation.ReflTransGen</code>.</strong> The zig-zag relation is the reflexive-transitive closure of <code>StepIn K</code>, taken from Mathlib’s relation library; <a href="#lem-comm-zigzag" class="quarto-xref">Lemma&nbsp;2</a> composes a <code>single</code> step and a <code>tail</code> step. The “thin category” gloss is not formalized — only the hom-existence relation is.</li>
+<li><strong><code>Suspends</code> versus Mathlib’s order.</strong> <code>Suspends D C C'</code> is literally the conjunction <code>C ≤ D ∧ C' ≤ D</code>; it is kept as a named definition (rather than unfolded) because the negative results of Report 5 are stated against it and its weakening <code>FairHearing</code>.</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

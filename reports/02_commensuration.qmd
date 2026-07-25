@@ -1,0 +1,641 @@
+---
+title: "Report 2: Commensuration and the Closure Operator"
+subtitle: "Conditional Admissibility Judgments, Technical Report Series"
+author: "Jeff Helzner"
+date: last-modified
+---
+
+::: {.callout-note}
+## Status and provenance
+
+Internal working document. Every definition and result below is verified in
+Lean 4 against Mathlib; each environment cites the corresponding Lean
+declaration in the form `File.lean · Name`. The Lean sources are
+authoritative where this report and the code differ. Library namespace:
+`CAJ` (results on judgments live in `CAJ.AdmissibilityJudgment`).
+:::
+
+## Introduction
+
+Report 1 fixed the statics: a decision context $\Gamma$, the conditional
+admissibility judgments over it, and their pointwise order $\le$. This
+report develops the dynamics — what it takes for a change of judgment
+$C \rightsquigarrow C'$ to be *commensurable* — and the order theory that
+supports it.
+
+The guiding idea is Levi's **commensuration thesis**, transferred from
+belief revision to confirmational commitments: a legitimate change from one
+commitment to another must be mediated by a state that *suspends judgment*
+between them — a state from which both the old and the new commitment are
+recoverable, so that neither begs the question against the other. Two
+formal ingredients make this precise here.
+
+First, the poset of judgments has all *nonempty* joins, computed pointwise
+(@thm-lub, "M0" in the development). The join $C \vee C'$ is the canonical
+candidate for the suspending state: the least judgment above both.
+
+Second, suspension is relativized to a **class** $K$ of judgments. Not
+every element of the abstract poset need be an available doxastic state;
+if, say, only SEU judgments are recognized (Report 3), then the
+commensurating intermediary must itself be an SEU judgment — and Report 5
+shows that in general none exists. The central construction of this report
+is the **commensuration closure** (@def-cc): the operator that closes a
+class under exactly the intermediaries its own commensurating moves demand.
+It is a closure operator in the standard order-theoretic sense
+(@thm-cc-closure), its closed classes are exactly the join-closed ones
+(@thm-closed-iff), and it is the *least* join-closed extension of any class
+(@thm-cc-minimal). Report 4 computes its headline instance: the
+commensuration closure of the SEU judgments is exactly the class of
+E-admissibility judgments.
+
+The report closes with the **zig-zag interface**: contraction and expansion
+steps ($\mathcal{L}$ and $\mathcal{R}$), arbitrary finite zig-zags through
+a class, and the *cospan normal form* (@thm-cospan) — within a join-closed
+class, every zig-zag reduces to a single contraction followed by a single
+expansion, through the join.
+
+Throughout, a decision context $\Gamma = (X, \mathcal{E}, A, \mathcal{M})$
+is fixed, "judgment" means conditional admissibility judgment over
+$\Gamma$ as defined in Report 1 (notation recalled in @sec-notation), and
+$\mathcal{J}$ denotes the set of all such judgments.
+
+### Notation from Report 1 {#sec-notation}
+
+$C(e, m) \subseteq m$ is the choice set at supposition $e \in \mathcal{E}$
+and menu $m \in \mathcal{M}$; $C$ is *live* at $e$ if all its choice sets
+at $e$ are nonempty and *dead* at $e$ if all are empty — exactly one holds
+(Report 1, live/dead dichotomy) — and every judgment is live at the vacuous
+supposition $\top$. The order is pointwise: $C \le D$ iff
+$C(e, m) \subseteq D(e, m)$ for all $e, m$. The top judgment is
+$C_\top(e, m) = m$.
+
+## Joins of judgments (M0)
+
+::: {#def-sup}
+## Binary join
+
+For judgments $C, D$, define
+$$
+(C \vee D)(e, m) := C(e, m) \cup D(e, m).
+$$
+
+*Lean:* `Join.lean · AdmissibilityJudgment.sup`, exposed through the
+`SemilatticeSup` instance; the defining equation is `sup_C`.
+:::
+
+::: {#prp-sup-judgment}
+## The binary join is a judgment
+
+$C \vee D$ satisfies the three conditions of Report 1's definition of a
+judgment, and is the least upper bound of $\{C, D\}$ in the pointwise
+order. The judgments over $\Gamma$ thus form a join-semilattice.
+
+*Lean:* `Join.lean · AdmissibilityJudgment.sup` (well-definedness),
+`instSemilatticeSupAdmissibilityJudgment`.
+:::
+
+::: {.proof}
+*Choice from the menu:* a union of subsets of $m$ is a subset of $m$.
+
+*Dichotomy:* fix $e$. If $C$ is live at $e$, then for every $m$ the set
+$(C \vee D)(e, m) \supseteq C(e, m)$ is nonempty, so $C \vee D$ is live at
+$e$; symmetrically if $D$ is live at $e$. Otherwise both are dead at $e$
+and $(C \vee D)(e, m) = \emptyset \cup \emptyset = \emptyset$ for every
+$m$.
+
+*Vacuous liveness:* $C$ is live at $\top$, and
+$(C \vee D)(\top, m) \supseteq C(\top, m) \neq \emptyset$.
+
+*Least upper bound:* $C, D \le C \vee D$ since each slice includes each
+component; and if $C \le E$ and $D \le E$ then
+$C(e, m) \cup D(e, m) \subseteq E(e, m)$ for all $e, m$. $\square$
+:::
+
+The same construction works for arbitrary *nonempty* families.
+
+::: {#def-sjoin}
+## Nonempty joins
+
+For a nonempty set $S \subseteq \mathcal{J}$ of judgments, define
+$$
+\Bigl(\bigvee S\Bigr)(e, m) := \bigcup_{J \in S} J(e, m).
+$$
+
+*Lean:* `Join.lean · AdmissibilityJudgment.sJoin`; the defining equation
+is `sJoin_C`.
+:::
+
+::: {#thm-lub}
+## M0: nonempty joins exist and are pointwise
+
+For every nonempty $S \subseteq \mathcal{J}$, $\bigvee S$ is a judgment
+and is the least upper bound of $S$ in the pointwise order.
+
+*Lean:* `Join.lean · AdmissibilityJudgment.sJoin` (well-definedness),
+`le_sJoin`, `sJoin_le`, `isLUB_sJoin`.
+:::
+
+::: {.proof}
+*Choice from the menu:* a union of subsets of $m$ is a subset of $m$.
+
+*Dichotomy:* fix $e$ and distinguish two cases. If some $J \in S$ is live
+at $e$, then for every menu $m$,
+$\bigl(\bigvee S\bigr)(e, m) \supseteq J(e, m) \neq \emptyset$, so
+$\bigvee S$ is live at $e$. Otherwise every $J \in S$ is dead at $e$
+(using the dichotomy memberwise: not live means dead), so each
+$J(e, m) = \emptyset$ and the union is empty at every $m$: $\bigvee S$ is
+dead at $e$.
+
+*Vacuous liveness:* $S$ is nonempty; pick $J_0 \in S$. Then $J_0$ is live
+at $\top$ and $\bigl(\bigvee S\bigr)(\top, m) \supseteq J_0(\top, m)$.
+
+*Upper bound:* for $J \in S$, $J(e, m) \subseteq \bigcup_{J' \in S}
+J'(e, m)$ at every $e, m$, so $J \le \bigvee S$.
+
+*Least:* if $J \le K$ for every $J \in S$, then at each $e, m$ the union
+$\bigcup_{J \in S} J(e, m)$ is a union of subsets of $K(e, m)$, hence
+$\bigvee S \le K$. $\square$
+:::
+
+::: {.callout-important}
+## No empty join, no bottom
+
+The empty union is everywhere empty, and the everywhere-empty function is
+dead at $\top$ — it violates vacuous liveness and is *not* a judgment. So
+the poset of judgments has no bottom element and no empty join, and
+nonemptiness hypotheses on $S$ are genuinely necessary throughout. This is
+a deliberate consequence of the null-supposition policy of Report 1: a
+judgment must actually judge at the vacuous supposition.
+:::
+
+Note also how the dichotomy case of the proof of @thm-lub vindicates the
+empty-choice policy: **a join is dead at $e$ exactly when every joinand
+is** — nullity aggregates by conjunction across the family, with no side
+conditions. Under the default-to-the-menu policy the corresponding case
+would fail (a single member treating $e$ as null would flood the union
+with the whole menu).
+
+### Calculus of joins
+
+The following identities are used constantly in Reports 3 and 4. All
+proofs are immediate from the least-upper-bound property or from pointwise
+computation with unions; we record the arguments briefly.
+
+::: {#prp-join-calc}
+## Join calculus
+
+Let $S, T \subseteq \mathcal{J}$ be nonempty and $J, K \in \mathcal{J}$.
+
+i. (*Monotonicity.*) If $S \subseteq T$ then
+   $\bigvee S \le \bigvee T$.
+ii. (*Singleton.*) $\bigvee \{J\} = J$.
+iii. (*Pair.*) $\bigvee \{J, K\} = J \vee K$.
+iv. (*Union splitting.*) $\bigvee (S \cup T) = \bigvee S \vee \bigvee T$.
+
+*Lean:* `Join.lean · sJoin_mono`, `sJoin_singleton`, `sJoin_pair`,
+`sJoin_union`; also `sJoin_congr` (see @sec-formalization).
+:::
+
+::: {.proof}
+For (i): every member of $S$ is a member of $T$, hence
+$\le \bigvee T$ by the upper-bound property; conclude by the least
+property. For (ii)–(iii): pointwise, the union over a singleton (pair)
+index is the set itself (the binary union). For (iv): pointwise,
+$\bigcup_{J \in S \cup T} J(e, m) = \bigcup_{J \in S} J(e, m) \cup
+\bigcup_{J \in T} J(e, m)$. $\square$
+:::
+
+::: {#prp-join-live}
+## Liveness of a join
+
+For nonempty $S$ and any event $e$: $\bigvee S$ is live at $e$ iff some
+$J \in S$ is live at $e$.
+
+*Lean:* `Join.lean · sJoin_live_iff`.
+:::
+
+::: {.proof}
+($\Leftarrow$) If $J \in S$ is live at $e$, then $J \le \bigvee S$ and
+liveness is monotone (Report 1).
+
+($\Rightarrow$) Contrapositively, suppose no member of $S$ is live at $e$;
+by the dichotomy every member is dead at $e$. Pick any menu $m$ (the menu
+collection is nonempty). If $a \in \bigl(\bigvee S\bigr)(e, m)$ then
+$a \in J(e, m)$ for some $J \in S$; but $J(e, m) = \emptyset$ —
+contradiction. So $\bigl(\bigvee S\bigr)(e, m) = \emptyset$ and
+$\bigvee S$ is not live at $e$. $\square$
+:::
+
+## Suspension and fair hearing
+
+We now give the order theory its Levi reading. A change of judgment
+$C \rightsquigarrow C'$ is *external* to both judgments; the question is
+what mediates it.
+
+::: {#def-suspends}
+## Suspension
+
+A judgment $D$ **suspends the issue between** $C$ and $C'$ iff
+$C \le D$ and $C' \le D$ — that is, at every supposition and menu, $D$
+deems admissible everything either judgment does.
+
+*Lean:* `Commensuration.lean · AdmissibilityJudgment.Suspends`.
+:::
+
+Suspension is the strong reading of "not begging the question": from $D$,
+each of $C$ and $C'$ is reachable by pure expansion (shrinking choice
+sets), with no option that either party regards as admissible having been
+foreclosed in the interim. A natural weakening only requires $D$ to keep
+each party's admissible options *represented*:
+
+::: {#def-fair-hearing}
+## Fair hearing
+
+A judgment $D$ gives $C$ and $C'$ a **fair hearing** iff for every
+supposition $e$ and menu $m$:
+
+i. if $C(e, m) \neq \emptyset$ then $D(e, m) \cap C(e, m) \neq \emptyset$;
+ii. if $C'(e, m) \neq \emptyset$ then $D(e, m) \cap C'(e, m) \neq
+    \emptyset$.
+
+*Lean:* `Commensuration.lean · AdmissibilityJudgment.FairHearing`.
+:::
+
+::: {#prp-suspends-fair}
+## Suspension implies fair hearing
+
+If $D$ suspends the issue between $C$ and $C'$, then $D$ gives $C$ and
+$C'$ a fair hearing.
+
+*Lean:* `Commensuration.lean · Suspends.fairHearing`.
+:::
+
+::: {.proof}
+Suppose $C(e, m) \neq \emptyset$, say $a \in C(e, m)$. Since $C \le D$,
+also $a \in D(e, m)$, so $a \in D(e, m) \cap C(e, m)$. Clause (ii) is
+symmetric. $\square$
+:::
+
+The converse fails, and the failure is not a curiosity: Report 5 exhibits
+a change between two SEU judgments for which *no* SEU judgment provides
+even a fair hearing — the weak condition — so *a fortiori* none suspends.
+Stating both conditions makes that negative result as strong as possible.
+
+::: {#def-commensurable}
+## Commensurability within a class
+
+Let $K \subseteq \mathcal{J}$ be a class of judgments. The change
+$C \rightsquigarrow C'$ is **commensurable within $K$** iff some $D \in K$
+suspends the issue between $C$ and $C'$; it is **weakly commensurable
+within $K$** iff some $D \in K$ gives $C$ and $C'$ a fair hearing.
+Commensurability implies weak commensurability.
+
+*Lean:* `Commensuration.lean · AdmissibilityJudgment.Commensurable`,
+`WeaklyCommensurable`, `Commensurable.weaklyCommensurable`.
+:::
+
+The relativization to $K$ carries the philosophical weight. In the
+unrelativized poset the question is trivial: the top judgment suspends
+between any two judgments, and complete suspense across the board is
+always "available" in the formal sense. The serious question is whether an
+intermediary exists *of the kind of doxastic state the agent's theory
+recognizes* — an SEU state, a credal state, and so on. Everything that
+follows is parametric in $K$ for exactly this reason.
+
+::: {#def-suspension-join}
+## The canonical intermediary
+
+For judgments $C, C'$, the **suspension** of the issue between them is
+the join $C \vee C'$, and it does suspend:
+$C \le C \vee C'$ and $C' \le C \vee C'$.
+
+*Lean:* `Commensuration.lean · AdmissibilityJudgment.suspension`,
+`suspends_suspension`.
+:::
+
+The join is not merely *a* suspending judgment but the least one: any $D$
+suspending between $C$ and $C'$ is an upper bound of $\{C, C'\}$, and
+$C \vee C' \le D$ by @prp-sup-judgment. The suspension is thus the unique
+minimal resolution of the commensuration demand — it concedes to suspense
+exactly what the two judgments disagree about, and nothing more. (Report 4
+sharpens this into a universal property for the credal instance.)
+
+## Join-closed classes
+
+::: {#def-join-closed}
+## Join-closedness
+
+A class $K \subseteq \mathcal{J}$ is **join-closed** iff for every
+nonempty $S \subseteq K$, $\bigvee S \in K$.
+
+*Lean:* `Commensuration.lean · AdmissibilityJudgment.JoinClosed`.
+:::
+
+::: {#lem-sup-mem}
+## Binary case
+
+If $K$ is join-closed and $C, D \in K$, then $C \vee D \in K$.
+
+*Lean:* `Commensuration.lean · JoinClosed.sup_mem`.
+:::
+
+::: {.proof}
+$\{C, D\}$ is a nonempty subset of $K$, so
+$\bigvee \{C, D\} \in K$; and $\bigvee \{C, D\} = C \vee D$ by
+@prp-join-calc (iii). $\square$
+:::
+
+::: {#thm-join-closed-comm}
+## Join-closed classes are internally commensurable
+
+If $K$ is join-closed, then any two members of $K$ are commensurable
+within $K$: the suspension $C \vee C'$ is a commensurating intermediary
+lying in $K$.
+
+*Lean:* `Commensuration.lean · JoinClosed.commensurable`.
+:::
+
+::: {.proof}
+By @lem-sup-mem, $C \vee C' \in K$; by @def-suspension-join it suspends
+the issue. $\square$
+:::
+
+This is the positive half of the project's central contrast.
+Join-closedness is precisely the structural property that makes a class of
+doxastic states *dynamically self-sufficient*: every change between its
+members can be commensurated without leaving the class, and by the least
+possible concession. The negative half (Report 5) is that the SEU
+judgments are *not* join-closed — not even weakly commensurable in the
+relevant instance — which forces the closure construction of the next
+section.
+
+## The commensuration closure (M2, parametric form)
+
+If a class $K$ fails to contain the intermediaries its changes demand, the
+commensuration thesis demands the least extension that does. That
+extension exists and has a transparent description.
+
+::: {#def-cc}
+## Commensuration closure
+
+For $K \subseteq \mathcal{J}$, define
+$$
+\mathrm{cc}(K) := \Bigl\{\, \bigvee S \;\Big|\; S \subseteq K,\ S \neq
+\emptyset \,\Bigr\},
+$$
+the class of joins of nonempty subclasses of $K$.
+
+*Lean:* `Commensuration.lean ·
+AdmissibilityJudgment.commensurationClosure`; the membership
+characterization is `mem_commensurationClosure`.
+:::
+
+::: {#thm-cc-closure}
+## M2 (parametric): $\mathrm{cc}$ is a closure operator
+
+On classes of judgments ordered by inclusion, $\mathrm{cc}$ is
+
+i. (*extensive*) $K \subseteq \mathrm{cc}(K)$;
+ii. (*monotone*) $K \subseteq L$ implies
+    $\mathrm{cc}(K) \subseteq \mathrm{cc}(L)$;
+iii. (*idempotent*) $\mathrm{cc}(\mathrm{cc}(K)) = \mathrm{cc}(K)$.
+
+*Lean:* `Commensuration.lean · commensurationClosure` (bundled as a
+Mathlib `ClosureOperator` on `Set (AdmissibilityJudgment ctx)`).
+:::
+
+::: {.proof}
+*Extensivity.* For $J \in K$, the singleton $\{J\}$ is a nonempty
+subclass of $K$ and $J = \bigvee \{J\}$ by @prp-join-calc (ii).
+
+*Monotonicity.* A nonempty subclass of $K$ is a nonempty subclass of $L$.
+
+*Idempotency.* The inclusion $\supseteq$ is extensivity applied to
+$\mathrm{cc}(K)$. For $\subseteq$, let $J \in
+\mathrm{cc}(\mathrm{cc}(K))$, say $J = \bigvee S'$ with
+$S' \subseteq \mathrm{cc}(K)$ nonempty. Each $J' \in S'$ is itself a
+join: choose for each a nonempty $S_{J'} \subseteq K$ with
+$J' = \bigvee S_{J'}$. Put
+$$
+U := \bigcup_{J' \in S'} S_{J'} \subseteq K,
+$$
+which is nonempty (pick $J' \in S'$, then any member of $S_{J'}$). We
+claim $J = \bigvee U$, which places $J \in \mathrm{cc}(K)$.
+
+$\bigvee U \le J$: it suffices that every $J'' \in U$ satisfies
+$J'' \le J$. Indeed $J'' \in S_{J'}$ for some $J' \in S'$, so
+$J'' \le \bigvee S_{J'} = J' \le \bigvee S' = J$, using the upper-bound
+property twice.
+
+$J \le \bigvee U$: it suffices that every $J' \in S'$ satisfies
+$J' \le \bigvee U$. Indeed $J' = \bigvee S_{J'} \le \bigvee U$ by
+monotonicity of joins (@prp-join-calc (i)), since $S_{J'} \subseteq U$.
+$\square$
+:::
+
+Idempotency is the mathematically substantive clause: it is the
+*flattening of joins of joins*, and it is what entitles us to speak of
+"the" closure — iterating the construction adds nothing after one step.
+
+::: {#prp-cc-join-closed}
+## The closure is join-closed
+
+For every $K$, $\mathrm{cc}(K)$ is join-closed.
+
+*Lean:* `Commensuration.lean · joinClosed_commensurationClosure`.
+:::
+
+::: {.proof}
+A join of a nonempty subclass of $\mathrm{cc}(K)$ lies in
+$\mathrm{cc}(\mathrm{cc}(K))$ by definition, and
+$\mathrm{cc}(\mathrm{cc}(K)) = \mathrm{cc}(K)$ by idempotency. $\square$
+:::
+
+::: {#thm-cc-minimal}
+## Minimality
+
+If $K \subseteq L$ and $L$ is join-closed, then
+$\mathrm{cc}(K) \subseteq L$. Hence $\mathrm{cc}(K)$ is the least
+join-closed class containing $K$.
+
+*Lean:* `Commensuration.lean · commensurationClosure_le`.
+:::
+
+::: {.proof}
+Let $J = \bigvee S$ with $S \subseteq K$ nonempty. Then
+$S \subseteq L$, and join-closedness of $L$ gives $\bigvee S \in L$.
+Combined with @prp-cc-join-closed, $\mathrm{cc}(K)$ is a join-closed class
+containing $K$ (extensivity) that is contained in every such class.
+$\square$
+:::
+
+::: {#thm-closed-iff}
+## The closed classes
+
+$\mathrm{cc}(K) = K$ if and only if $K$ is join-closed.
+
+*Lean:* `Commensuration.lean · isClosed_commensurationClosure_iff`.
+:::
+
+::: {.proof}
+($\Rightarrow$) If $\mathrm{cc}(K) = K$ then $K$ is join-closed by
+@prp-cc-join-closed. ($\Leftarrow$) If $K$ is join-closed, apply
+@thm-cc-minimal with $L = K$ to get $\mathrm{cc}(K) \subseteq K$; the
+reverse inclusion is extensivity. $\square$
+:::
+
+Together, @thm-cc-closure–@thm-closed-iff say: the commensuration demand,
+iterated to a fixed point, is exactly the demand of join-closedness — no
+more and no less. The fixed points of $\mathrm{cc}$ are the dynamically
+self-sufficient classes of @thm-join-closed-comm, and $\mathrm{cc}(K)$ is
+the canonical repair of a deficient $K$. Report 4 proves the instance the
+project is named for:
+$$
+\mathrm{cc}(K_{\mathrm{SEU}}) = K_{\mathrm{Eadm}},
+$$
+the closure of the SEU judgments is exactly the class of E-admissibility
+judgments — E-admissibility is what the commensuration thesis *costs*,
+and (by @thm-cc-minimal) it is the cheapest adequate repair.
+
+## The zig-zag interface ($\mathcal{L}$/$\mathcal{R}$)
+
+Commensurability through a single intermediary is a *cospan*:
+$C \nearrow D \searrow C'$. One might worry that restricting attention to
+single intermediaries understates what an agent can reach — perhaps a
+longer alternation of expansions and contractions, each step legitimate,
+connects judgments that no single cospan connects. Within a join-closed
+class, it does not.
+
+::: {#def-steps}
+## Contraction, expansion, zig-zag
+
+For judgments $C, D$:
+
+- a **contraction** step moves up the order: $C \mathrel{\mathcal{L}} D$
+  iff $C \le D$ (the agent retreats toward suspense, enlarging choice
+  sets);
+- an **expansion** step moves down: $C \mathrel{\mathcal{R}} D$ iff
+  $D \le C$ (the agent takes on commitment, shrinking choice sets).
+
+For a class $K$, a **single step within $K$** from $C$ to $D$ requires
+$C, D \in K$ and either $C \mathrel{\mathcal{L}} D$ or
+$C \mathrel{\mathcal{R}} D$. The **zig-zag relation**
+$\rightsquigarrow_K$ is the reflexive-transitive closure of single steps
+within $K$: there is a finite chain
+$C = J_0, J_1, \dots, J_n = C'$ in $K$, each consecutive pair related by
+$\le$ in one direction or the other.
+
+*Lean:* `Commensuration.lean · AdmissibilityJudgment.Contraction`,
+`Expansion`, `StepIn`, `ZigZagIn` (via Mathlib's
+`Relation.ReflTransGen`).
+:::
+
+The terminology is calibrated to Levi's usage for corpora: *contracting*
+one's confirmational commitment means becoming less opinionated — more
+acts survive as admissible — which is upward movement in the pointwise
+order; *expanding* commitment prunes the admissible set. The zig-zag
+relation is the hom-existence relation of the thin category on $K$
+generated by both kinds of step.
+
+::: {#lem-comm-zigzag}
+## Commensurability yields a two-step zig-zag
+
+If $C, C' \in K$ and $C \rightsquigarrow C'$ is commensurable within $K$,
+then $C \rightsquigarrow_K C'$ — indeed by a zig-zag of length two:
+a contraction into the intermediary and an expansion out of it.
+
+*Lean:* `Commensuration.lean · Commensurable.zigZagIn`.
+:::
+
+::: {.proof}
+Let $D \in K$ suspend the issue: $C \le D$ and $C' \le D$. Then
+$C \mathrel{\mathcal{L}} D$ is a single step within $K$ (both endpoints in
+$K$), and $D \mathrel{\mathcal{R}} C'$ is another. Compose. $\square$
+:::
+
+::: {#thm-cospan}
+## Cospan normal form
+
+Let $K$ be join-closed and $C, C' \in K$. Then the following are
+equivalent:
+
+i. $C \rightsquigarrow_K C'$ (some finite zig-zag within $K$ connects
+   them);
+ii. $C \rightsquigarrow C'$ is commensurable within $K$ (a single cospan
+    through some $D \in K$ connects them).
+
+*Lean:* `Commensuration.lean · zigZagIn_iff_commensurable`.
+:::
+
+::: {.proof}
+(ii) $\Rightarrow$ (i) is @lem-comm-zigzag.
+
+(i) $\Rightarrow$ (ii): in fact, for join-closed $K$ the hypothesis (i) is
+not needed — any two members of $K$ are commensurable within $K$ by
+@thm-join-closed-comm, the suspension $C \vee C'$ serving as
+intermediary. $\square$
+:::
+
+The proof of (i) $\Rightarrow$ (ii) deserves a candid remark. Within a
+join-closed class, commensurability is *total* — every pair of members is
+connected by the canonical cospan — so the equivalence is not a delicate
+induction over zig-zags but a collapse: once the class contains its joins,
+arbitrary finite alternations of contraction and expansion buy no
+connectivity beyond what the single two-step cospan through the join
+already provides. That is the precise sense in which the cospan
+$C \nearrow C \vee C' \searrow C'$ is a *normal form* for change within a
+join-closed class, and it is why the project can focus on single
+intermediaries without loss. The interesting failures are all outside
+join-closed classes: in $K_{\mathrm{SEU}}$, Report 5's witness pair is not
+connected even by the weak (fair-hearing) condition, while inside the
+closure $K_{\mathrm{Eadm}}$ the normal form applies. Report 4 instantiates
+this contrast.
+
+## Formalization notes {#sec-formalization}
+
+| Report item | Lean declaration (file · name) |
+|---|---|
+| @def-sup, @prp-sup-judgment | `Join.lean · AdmissibilityJudgment.sup`, `SemilatticeSup` instance, `sup_C` |
+| @def-sjoin | `Join.lean · sJoin`, `sJoin_C` |
+| @thm-lub | `Join.lean · le_sJoin`, `sJoin_le`, `isLUB_sJoin` |
+| @prp-join-calc | `Join.lean · sJoin_mono`, `sJoin_singleton`, `sJoin_pair`, `sJoin_union`, `sJoin_congr` |
+| @prp-join-live | `Join.lean · sJoin_live_iff` |
+| @def-suspends | `Commensuration.lean · Suspends` |
+| @def-fair-hearing | `Commensuration.lean · FairHearing` |
+| @prp-suspends-fair | `Commensuration.lean · Suspends.fairHearing` |
+| @def-commensurable | `Commensuration.lean · Commensurable`, `WeaklyCommensurable`, `Commensurable.weaklyCommensurable` |
+| @def-suspension-join | `Commensuration.lean · suspension`, `suspends_suspension` |
+| @def-join-closed, @lem-sup-mem | `Commensuration.lean · JoinClosed`, `JoinClosed.sup_mem` |
+| @thm-join-closed-comm | `Commensuration.lean · JoinClosed.commensurable` |
+| @def-cc, @thm-cc-closure | `Commensuration.lean · commensurationClosure`, `mem_commensurationClosure` |
+| @prp-cc-join-closed | `Commensuration.lean · joinClosed_commensurationClosure` |
+| @thm-cc-minimal | `Commensuration.lean · commensurationClosure_le` |
+| @thm-closed-iff | `Commensuration.lean · isClosed_commensurationClosure_iff` |
+| @def-steps | `Commensuration.lean · Contraction`, `Expansion`, `StepIn`, `ZigZagIn` |
+| @lem-comm-zigzag | `Commensuration.lean · Commensurable.zigZagIn` |
+| @thm-cospan | `Commensuration.lean · zigZagIn_iff_commensurable` |
+
+Encoding remarks:
+
+- **Nonemptiness as a proof argument.** `sJoin S hS` takes the
+  nonemptiness proof `hS : S.Nonempty` as an explicit argument, since the
+  empty join does not exist (no bottom). By proof irrelevance the value
+  does not depend on *which* proof is supplied; the transport lemma
+  `sJoin_congr` (`(h : S = T) → sJoin S hS = sJoin T (h ▸ hS)`) is
+  provided because rewriting the index class changes the type of the
+  proof, and several Phase-4 arguments need this explicitly.
+- **Mathlib's `ClosureOperator`.** @thm-cc-closure is packaged as a
+  Mathlib `ClosureOperator (Set (AdmissibilityJudgment ctx))`, so the
+  general theory (closed elements, Galois-insertion facts) is available
+  for free. In the idempotency proof, the memberwise choice of the
+  witnessing subclasses $S_{J'}$ is performed by `choose!`; no choice
+  beyond what Mathlib's classical foundations already provide is used.
+- **Zig-zags via `Relation.ReflTransGen`.** The zig-zag relation is the
+  reflexive-transitive closure of `StepIn K`, taken from Mathlib's
+  relation library; @lem-comm-zigzag composes a `single` step and a
+  `tail` step. The "thin category" gloss is not formalized — only the
+  hom-existence relation is.
+- **`Suspends` versus Mathlib's order.** `Suspends D C C'` is literally
+  the conjunction `C ≤ D ∧ C' ≤ D`; it is kept as a named definition
+  (rather than unfolded) because the negative results of Report 5 are
+  stated against it and its weakening `FairHearing`.

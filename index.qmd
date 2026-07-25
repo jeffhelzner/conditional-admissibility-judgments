@@ -54,9 +54,9 @@ journal presentation would suppress.
    property, the commensurating intermediary, the cospan normal form, the
    β-corollary, and the commutation of suppositional conditioning with
    credal joins.
-5. *The Two-Prior Witness and the M5 Negatives* (forthcoming) — one small
-   designed context witnessing all the negative results: no SEU
-   intermediary, the convexity wedge, and the β-violation.
+5. [The Two-Prior Witness and the M5 Negatives](reports/05_witness.qmd)
+   — one small designed context witnessing all the negative results: no
+   SEU intermediary, the convexity wedge, and the β-violation.
 
 ## Status
 

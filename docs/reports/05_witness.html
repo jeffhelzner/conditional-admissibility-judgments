@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jeff Helzner">
+<meta name="dcterms.date" content="2026-07-24">
+
+<title>Report 5: The Two-Prior Witness and the M5 Negatives – Conditional Admissibility Judgments</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-629c56ba100745318e9dcb35146191d0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Conditional Admissibility Judgments</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jeffhelzner/conditional-admissibility-judgments"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reports/01_judgments.html">Reports</a></li><li class="breadcrumb-item"><a href="../reports/05_witness.html">Report 5: The Two-Prior Witness and the M5 Negatives</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conditional Admissibility Judgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Reports</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reports/01_judgments.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Report 1: Decision Contexts and Admissibility Judgments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reports/02_commensuration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Report 2: Commensuration and the Closure Operator</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reports/03_credal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Report 3: The Credal Layer — Probabilities, Mixtures, and E-admissibility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reports/04_headline.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Report 4: The Headline Package — Minimal Closure, β-Corollary, Commutation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reports/05_witness.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Report 5: The Two-Prior Witness and the M5 Negatives</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#sec-context" id="toc-sec-context" class="nav-link" data-scroll-target="#sec-context"><span class="header-section-number">2</span> The witness context</a></li>
+  <li><a href="#the-expected-utility-table" id="toc-the-expected-utility-table" class="nav-link" data-scroll-target="#the-expected-utility-table"><span class="header-section-number">3</span> The expected-utility table</a></li>
+  <li><a href="#choice-sets" id="toc-choice-sets" class="nav-link" data-scroll-target="#choice-sets"><span class="header-section-number">4</span> Choice sets</a></li>
+  <li><a href="#m5a-incommensurability-within-the-seu-class" id="toc-m5a-incommensurability-within-the-seu-class" class="nav-link" data-scroll-target="#m5a-incommensurability-within-the-seu-class"><span class="header-section-number">5</span> M5(a): incommensurability within the SEU class</a></li>
+  <li><a href="#m5c-the-β-violation-realized" id="toc-m5c-the-β-violation-realized" class="nav-link" data-scroll-target="#m5c-the-β-violation-realized"><span class="header-section-number">6</span> M5(c): the β-violation realized</a></li>
+  <li><a href="#m5b-the-convexity-wedge-realized" id="toc-m5b-the-convexity-wedge-realized" class="nav-link" data-scroll-target="#m5b-the-convexity-wedge-realized"><span class="header-section-number">7</span> M5(b): the convexity wedge realized</a></li>
+  <li><a href="#commutation-sanity-check" id="toc-commutation-sanity-check" class="nav-link" data-scroll-target="#commutation-sanity-check"><span class="header-section-number">8</span> Commutation sanity check</a></li>
+  <li><a href="#sec-formalization" id="toc-sec-formalization" class="nav-link" data-scroll-target="#sec-formalization"><span class="header-section-number">9</span> Formalization notes</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reports/01_judgments.html">Reports</a></li><li class="breadcrumb-item"><a href="../reports/05_witness.html">Report 5: The Two-Prior Witness and the M5 Negatives</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Report 5: The Two-Prior Witness and the M5 Negatives</h1>
+<p class="subtitle lead">Conditional Admissibility Judgments, Technical Report Series</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jeff Helzner </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 24, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Status and provenance
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Internal working document. Every definition and result below is verified in Lean 4 against Mathlib; each environment cites the corresponding Lean declaration in the form <code>File.lean · Name</code>. The witness lives in the test tree (<code>test/CAJTest/TwoPrior.lean</code>, namespace <code>CAJTest</code>), deliberately outside the library: the library <code>CAJ</code> carries the general theory, the test tree its concrete models. The Lean sources are authoritative where this report and the code differ.</p>
+</div>
+</div>
+<section id="introduction" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
+<p>The positive results of Report 4 say what the commensuration thesis <em>yields</em>: the E-admissibility class, minimally. This report supplies the negatives that make those results bite, all witnessed by a single small, fully designed decision problem — two states, three acts, two priors:</p>
+<ul>
+<li><strong>M5(a) — incommensurability within SEU</strong> (<a href="#thm-m5a" class="quarto-xref">Theorem&nbsp;2</a>): no SEU judgment gives the two extreme SEU judgments even a <em>fair hearing</em> (the weak condition of Report 2), a fortiori none suspends between them. The change between them is not commensurable within <span class="math inline">K_{\mathrm{SEU}}</span> — but it <em>is</em> within <span class="math inline">K_{\mathrm{Eadm}}</span> (<a href="#prp-keadm-yes" class="quarto-xref">Proposition&nbsp;2</a>). This is Levi’s argument in miniature, and it shows the closure of Report 4 is <em>strict</em>: <span class="math inline">K_{\mathrm{SEU}}</span> is not join-closed.</li>
+<li><strong>M5(b) — the convexity wedge</strong> (<a href="#thm-m5b" class="quarto-xref">Theorem&nbsp;4</a>): the two-prior credal state is not choice-equivalent to its convex hull; the even mixture of the priors admits an act both extreme priors reject. Commensuration closure never forces convex closure.</li>
+<li><strong>M5(c) — the β-violation</strong> (<a href="#thm-m5c" class="quarto-xref">Theorem&nbsp;3</a>): the pair’s E-admissibility judgment satisfies Sen’s α but violates β — hence WARP — already at the vacuous supposition. The β-corollary of Report 4 is realized, not hypothetical.</li>
+</ul>
+<p>The report also records the design rationale of the witness (every numerical choice is load-bearing; see the callout in <a href="#sec-context" class="quarto-xref">Section&nbsp;2</a>) and a commutation sanity check.</p>
+</section>
+<section id="sec-context" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="sec-context"><span class="header-section-number">2</span> The witness context</h2>
+<div id="def-witness-context" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1 (The two-prior context)</strong></span> The decision context is:</p>
+<ul>
+<li><strong>States:</strong> <span class="math inline">X = \{F, T\}</span> (in Lean, <code>Bool</code>, with <span class="math inline">F</span> = <code>false</code>, <span class="math inline">T</span> = <code>true</code>);</li>
+<li><strong>Suppositions:</strong> the full powerset of <span class="math inline">X</span>;</li>
+<li><strong>Acts:</strong> <span class="math inline">A = \{a_0, a_1, a_2\}</span> (in Lean, <code>Fin 3</code>);</li>
+<li><strong>Menus:</strong> every nonempty set of acts.</li>
+</ul>
+<p>The utility is state-dependent payoff:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>state <span class="math inline">F</span></th>
+<th>state <span class="math inline">T</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">a_0</span> (safe)</td>
+<td><span class="math inline">6/5</span></td>
+<td><span class="math inline">6/5</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">a_1</span> (bet on <span class="math inline">F</span>)</td>
+<td><span class="math inline">2</span></td>
+<td><span class="math inline">0</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">a_2</span> (bet on <span class="math inline">T</span>)</td>
+<td><span class="math inline">0</span></td>
+<td><span class="math inline">2</span></td>
+</tr>
+</tbody>
+</table>
+<p>All the credal-context side conditions of Report 3 hold trivially: every set is in the algebra, every utility range and menu is finite.</p>
+<p><em>Lean:</em> <code>TwoPrior.lean · twoPriorCtx</code>, <code>payoff</code>, <code>twoPriorCC</code>; the powerset algebra is <code>Smoke.lean · powersetAlgebra</code>. Named events and menus: <code>eFalse</code>, <code>eTrue</code>; <code>fullMenu</code> <span class="math inline">= \{a_0, a_1, a_2\}</span>, <code>menu01</code> <span class="math inline">= \{a_0, a_1\}</span>, <code>menu02</code> <span class="math inline">= \{a_0, a_2\}</span>.</p>
+</div>
+<div id="def-witness-priors" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2 (The two priors)</strong></span> Since the algebra is the powerset of a two-element state space, a fap is exactly a pair of nonnegative weights summing to <span class="math inline">1</span> (the general weights-to-fap construction is <code>finFap</code>). Define: <span class="math display">
+p_0(F) = \tfrac{7}{10},\ p_0(T) = \tfrac{3}{10};
+\qquad
+p_1(F) = \tfrac{3}{10},\ p_1(T) = \tfrac{7}{10}.
+</span> <span class="math inline">p_0</span> favors the bet on <span class="math inline">F</span>; <span class="math inline">p_1</span> the bet on <span class="math inline">T</span>. The <strong>credal pair</strong> is <span class="math inline">P := \{p_0, p_1\}</span>.</p>
+<p><em>Lean:</em> <code>TwoPrior.lean · finFap</code>, <code>finFap_p</code>, <code>w0</code>, <code>w1</code>, <code>prior0</code>, <code>prior1</code>, <code>credalPair</code>; atom values <code>prior0_eFalse</code> etc.</p>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Every number is load-bearing
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The safe payoff <span class="math inline">6/5</span> is chosen strictly inside the interval <span class="math inline">(1, 7/5)</span>, and both endpoints matter.</p>
+<ul>
+<li><em>Below <span class="math inline">7/5</span>:</em> under each extreme prior the favored bet has expected utility <span class="math inline">7/5 &gt; 6/5</span>, so each extreme prior <em>rejects</em> the safe act — this drives the Levi/SSK exclusion pattern (<a href="#thm-levi-pattern" class="quarto-xref">Theorem&nbsp;1</a>) and the β-violation.</li>
+<li><em>Above <span class="math inline">1</span>:</em> under the even mixture of the two priors each bet has expected utility <span class="math inline">1 &lt; 6/5</span>, so the mixture <em>uniquely</em> favors the safe act — this drives the convexity wedge (<a href="#thm-m5b" class="quarto-xref">Theorem&nbsp;4</a>).</li>
+<li><em>Not equal to <span class="math inline">1</span>:</em> with safe payoff exactly <span class="math inline">1</span>, the even mixture would tie all three acts, its SEU judgment would suspend the issue between the extreme judgments on every menu, and M5(a) would be <em>false</em> — a single prior would commensurate the change. The witness must sit off the tie.</li>
+</ul>
+<p>The weights <span class="math inline">7/10</span>–<span class="math inline">3/10</span> are symmetric and comfortably away from the threshold weight <span class="math inline">3/5</span> that appears in the proof of <a href="#thm-m5a" class="quarto-xref">Theorem&nbsp;2</a>.</p>
+</div>
+</div>
+</section>
+<section id="the-expected-utility-table" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="the-expected-utility-table"><span class="header-section-number">3</span> The expected-utility table</h2>
+<p>Throughout, judgments are evaluated at the vacuous supposition <span class="math inline">\top</span> (where every fap is non-null). Write <span class="math inline">\mathrm{wEU}_q := \mathrm{wEU}_q
+(\top, \cdot)</span> for the unnormalized expected utility of Report 3.</p>
+<div id="lem-eu-generic" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lemma 1 (Generic expected utilities)</strong></span> For <em>every</em> fap <span class="math inline">q</span> on the witness algebra: <span class="math display">
+\mathrm{wEU}_q(a_0) = \tfrac{6}{5}, \qquad
+\mathrm{wEU}_q(a_1) = 2\, q(\{F\}), \qquad
+\mathrm{wEU}_q(a_2) = 2\, q(\{T\}),
+</span> and <span class="math inline">q(\{F\}) + q(\{T\}) = 1</span>.</p>
+<p><em>Lean:</em> <code>TwoPrior.lean · wEU_top_act0</code>, <code>wEU_top_act1</code>, <code>wEU_top_act2</code>, <code>q_split</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>The utility range of <span class="math inline">a_0</span> on <span class="math inline">\top</span> is <span class="math inline">\{6/5\}</span> with level set all of <span class="math inline">X</span>, so the sum defining <span class="math inline">\mathrm{wEU}</span> (Report 3) has the single term <span class="math inline">\tfrac{6}{5} \cdot q(X) = \tfrac{6}{5}</span>. The range of <span class="math inline">a_1</span> is <span class="math inline">\{0, 2\}</span> with level sets <span class="math inline">\{T\}</span> and <span class="math inline">\{F\}</span> respectively; the term at <span class="math inline">0</span> vanishes and the term at <span class="math inline">2</span> is <span class="math inline">2 \, q(\{F\})</span>. Symmetrically for <span class="math inline">a_2</span>. The split identity is additivity on the disjoint atoms <span class="math inline">\{F\} \cup \{T\} = X</span> plus normalization. <span class="math inline">\square</span></p>
+</div>
+<p>Specializing to the two priors and the mixture (computed by <a href="#lem-eu-generic" class="quarto-xref">Lemma&nbsp;1</a> and the atom values):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><span class="math inline">p_0</span></th>
+<th><span class="math inline">p_1</span></th>
+<th><span class="math inline">\tfrac12 p_0 + \tfrac12 p_1</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">a_0</span> (safe)</td>
+<td><span class="math inline">6/5</span></td>
+<td><span class="math inline">6/5</span></td>
+<td><span class="math inline">6/5</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">a_1</span> (bet on <span class="math inline">F</span>)</td>
+<td><span class="math inline">7/5</span></td>
+<td><span class="math inline">3/5</span></td>
+<td><span class="math inline">1</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">a_2</span> (bet on <span class="math inline">T</span>)</td>
+<td><span class="math inline">3/5</span></td>
+<td><span class="math inline">7/5</span></td>
+<td><span class="math inline">1</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Lean:</em> <code>TwoPrior.lean · wEU_prior0_act0</code> … <code>wEU_prior1_act2</code>; mixture atoms <code>uniformP_eFalse</code>, <code>uniformP_eTrue</code>.</p>
+</section>
+<section id="choice-sets" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="choice-sets"><span class="header-section-number">4</span> Choice sets</h2>
+<p>All six SEU choice sets needed below follow from the table by reading off the maxima; the Lean proofs check each act against each menu by direct computation.</p>
+<div id="prp-choice-sets" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 1 (SEU choice sets at <span class="math inline">\top</span>)</strong></span> <span class="math display">
+\begin{array}{l|ccc}
+&amp; \{a_0,a_1,a_2\} &amp; \{a_0,a_1\} &amp; \{a_0,a_2\} \\\hline
+C_{\{p_0\}} &amp; \{a_1\} &amp; \{a_1\} &amp; \{a_0\} \\
+C_{\{p_1\}} &amp; \{a_2\} &amp; \{a_0\} &amp; \{a_2\}
+\end{array}
+</span></p>
+<p><em>Lean:</em> <code>TwoPrior.lean · seu_prior0_full</code>, <code>seu_prior1_full</code>, <code>seu_prior0_menu01</code>, <code>seu_prior1_menu01</code>, <code>seu_prior0_menu02</code>, <code>seu_prior1_menu02</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Read the table. Under <span class="math inline">p_0</span>: on the full menu <span class="math inline">a_1</span> (<span class="math inline">7/5</span>) strictly beats <span class="math inline">a_0</span> (<span class="math inline">6/5</span>) and <span class="math inline">a_2</span> (<span class="math inline">3/5</span>); on <span class="math inline">\{a_0, a_1\}</span> likewise <span class="math inline">a_1</span> wins; on <span class="math inline">\{a_0, a_2\}</span> the safe act (<span class="math inline">6/5</span>) strictly beats <span class="math inline">a_2</span> (<span class="math inline">3/5</span>). Under <span class="math inline">p_1</span>, symmetrically with the roles of the bets swapped. Every maximum is strict, so every choice set is a singleton, and <span class="math inline">p_i(\top) = 1 \neq 0</span> throughout. <span class="math inline">\square</span></p>
+</div>
+<div id="thm-levi-pattern" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 1 (The Levi/SSK pattern)</strong></span> The E-admissibility judgment of the credal pair chooses exactly the two bets from the full menu: <span class="math display">
+C_P(\top, \{a_0, a_1, a_2\}) = \{a_1, a_2\},
+</span> so the safe act is E-inadmissible — excluded despite being no prior’s worst option and the only act that is second-best by both lights. On the submenu <span class="math inline">\{a_0, a_1\}</span>, by contrast, <em>both</em> acts are E-admissible: <span class="math display">
+C_P(\top, \{a_0, a_1\}) = \{a_0, a_1\}.
+</span></p>
+<p><em>Lean:</em> <code>TwoPrior.lean · eAdm_pair_full</code>, <code>safe_excluded</code>, <code>eAdm_pair_menu01</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>By M1 (Report 3), <span class="math inline">C_P</span> is the pointwise union of the two SEU choice sets. On the full menu: <span class="math inline">\{a_1\} \cup \{a_2\} = \{a_1, a_2\}</span>. On <span class="math inline">\{a_0, a_1\}</span>: <span class="math inline">\{a_1\} \cup \{a_0\} = \{a_0, a_1\}</span>. <span class="math inline">\square</span></p>
+</div>
+<p>The full-menu verdict is the classic E-admissibility phenomenon (Levi; Seidenfeld–Schervish–Kadane): an act can be uniformly moderate — never optimal for any member of the credal state — and hence excluded, even though intuitively it is the natural compromise. Here it is not the target of criticism but the <em>engine</em> of the negatives: the submenu verdict keeps the safe act alive, and the tension between the two verdicts is precisely a β-violation (<a href="#thm-m5c" class="quarto-xref">Theorem&nbsp;3</a>).</p>
+</section>
+<section id="m5a-incommensurability-within-the-seu-class" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="m5a-incommensurability-within-the-seu-class"><span class="header-section-number">5</span> M5(a): incommensurability within the SEU class</h2>
+<div id="thm-m5a" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 2 (No SEU judgment gives the extremes a fair hearing)</strong></span> There is no fap <span class="math inline">q</span> such that <span class="math inline">C_{\{q\}}</span> gives <span class="math inline">C_{\{p_0\}}</span> and <span class="math inline">C_{\{p_1\}}</span> a fair hearing (Report 2). Consequently no SEU judgment suspends the issue between them.</p>
+<p><em>Lean:</em> <code>TwoPrior.lean · no_seu_fairHearing</code>, <code>no_seu_suspends</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Suppose <span class="math inline">C_{\{q\}}</span> gives both a fair hearing. All four choice sets of <a href="#prp-choice-sets" class="quarto-xref">Proposition&nbsp;1</a> on the two submenus are nonempty singletons, so fair hearing forces <span class="math inline">C_{\{q\}}</span>’s choice set to <em>contain</em> each of them:</p>
+<ul>
+<li>meeting <span class="math inline">C_{\{p_0\}}(\top, \{a_0,a_1\}) = \{a_1\}</span> forces <span class="math inline">a_1 \in C_{\{q\}}(\top, \{a_0,a_1\})</span>, i.e. <span class="math inline">\mathrm{wEU}_q(a_0) \le \mathrm{wEU}_q(a_1)</span>: <span class="math inline">\ \tfrac{6}{5} \le 2\, q(\{F\})</span>;</li>
+<li>meeting <span class="math inline">C_{\{p_1\}}(\top, \{a_0,a_1\}) = \{a_0\}</span> forces <span class="math inline">a_0 \in C_{\{q\}}(\top, \{a_0,a_1\})</span>, i.e. <span class="math inline">2\, q(\{F\}) \le \tfrac{6}{5}</span>;</li>
+<li>meeting <span class="math inline">C_{\{p_1\}}(\top, \{a_0,a_2\}) = \{a_2\}</span> and <span class="math inline">C_{\{p_0\}}(\top, \{a_0,a_2\}) = \{a_0\}</span> likewise forces <span class="math inline">2\, q(\{T\}) = \tfrac{6}{5}</span>.</li>
+</ul>
+<p>So <span class="math inline">q(\{F\}) = q(\{T\}) = \tfrac{3}{5}</span>, whence <span class="math inline">q(\{F\}) + q(\{T\}) = \tfrac{6}{5} \neq 1</span>, contradicting <a href="#lem-eu-generic" class="quarto-xref">Lemma&nbsp;1</a>’s split identity. Since suspension implies fair hearing (Report 2), no SEU judgment suspends either. <span class="math inline">\square</span></p>
+</div>
+<p>The proof exhibits the structural obstruction cleanly: <em>fair hearing at singleton choice sets means agreement</em>, and no single coherent prior can agree with <span class="math inline">p_0</span> about the menu <span class="math inline">\{a_0, a_1\}</span> and with <span class="math inline">p_1</span> about <span class="math inline">\{a_0, a_2\}</span> — the two agreements pin its atom probabilities to values that violate additivity. Suspension between SEU judgments demands more probability than a coherent prior has to give.</p>
+<div id="cor-m5a" class="theorem corollary">
+<p><span class="theorem-title"><strong>Corollary 1 (M5(a), class form)</strong></span> The change <span class="math inline">C_{\{p_0\}} \rightsquigarrow C_{\{p_1\}}</span> is not weakly commensurable — a fortiori not commensurable — within <span class="math inline">K_{\mathrm{SEU}}</span>. In particular <span class="math inline">K_{\mathrm{SEU}}</span> is not join-closed, so the closure of Report 4 is strict: <span class="math inline">K_{\mathrm{SEU}} \subsetneq K_{\mathrm{Eadm}}</span>.</p>
+<p><em>Lean:</em> <code>TwoPrior.lean · not_weaklyCommensurable_KSEU</code>, <code>not_commensurable_KSEU</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>A commensurating (or fairly-hearing) member of <span class="math inline">K_{\mathrm{SEU}}</span> is by definition <span class="math inline">C_{\{q\}}</span> for some fap <span class="math inline">q</span>, contradicting <a href="#thm-m5a" class="quarto-xref">Theorem&nbsp;2</a>. If <span class="math inline">K_{\mathrm{SEU}}</span> were join-closed, Report 2’s internal-commensurability theorem would commensurate the change within it. <span class="math inline">\square</span></p>
+</div>
+<div id="prp-keadm-yes" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 2 (Levi’s move in miniature)</strong></span> The same change <em>is</em> commensurable within <span class="math inline">K_{\mathrm{Eadm}}</span>: the E-admissibility judgment of the union credal state — here <span class="math inline">C_P</span> itself, since <span class="math inline">P = \{p_0\} \cup \{p_1\}</span> — suspends the issue.</p>
+<p><em>Lean:</em> <code>TwoPrior.lean · commensurable_KEadm</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span><span class="math inline">K_{\mathrm{Eadm}}</span> is join-closed (Report 4) and contains both extreme judgments (singleton credal states); apply internal commensurability. The intermediary produced is the join, which by Report 4’s M3 is <span class="math inline">C_{\{p_0\} \cup \{p_1\}} = C_P</span>. <span class="math inline">\square</span></p>
+</div>
+<p>Together, <a href="#cor-m5a" class="quarto-xref">Corollary&nbsp;1</a> and <a href="#prp-keadm-yes" class="quarto-xref">Proposition&nbsp;2</a> are the project’s central contrast realized in the smallest possible arena. An SEU agent contemplating the change from <span class="math inline">p_0</span> to <span class="math inline">p_1</span> — a perfectly ordinary reversal of opinion about a coin’s bias — has, within her own theory of rational states, <em>no state from which the change can be adjudicated without begging the question</em>. The minimal repair is to admit the two-membered credal state <span class="math inline">P</span>, and with it E-admissibility. Nothing in the repair asks for the mixtures in between: that is M5(b).</p>
+</section>
+<section id="m5c-the-β-violation-realized" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="m5c-the-β-violation-realized"><span class="header-section-number">6</span> M5(c): the β-violation realized</h2>
+<div id="thm-m5c" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 3 (The pair’s judgment violates β (hence WARP) at <span class="math inline">\top</span>)</strong></span> <span class="math inline">C_P</span> satisfies Sen’s α at <span class="math inline">\top</span> but violates Sen’s β — and therefore WARP — at <span class="math inline">\top</span>.</p>
+<p><em>Lean:</em> <code>TwoPrior.lean · eAdm_pair_not_senBetaAt</code>, <code>eAdm_pair_not_warpAt</code>; the α instance is the <code>example</code> following them.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>α holds at every supposition for every E-admissibility judgment (Report 4). For β, <a href="../reports/04_headline.html#lem-beta-witness">the witness pattern of Report 4</a> is exhibited by <span class="math inline">m' = \{a_0, a_1\} \subseteq m = \{a_0, a_1, a_2\}</span> with acts <span class="math inline">a_0, a_1</span>: by <a href="#thm-levi-pattern" class="quarto-xref">Theorem&nbsp;1</a>, <span class="math display">
+a_0, a_1 \in C_P(\top, m'), \qquad
+a_0 \notin C_P(\top, m), \qquad
+a_1 \in C_P(\top, m).
+</span> Two acts jointly admissible from the submenu fail to stand or fall together in the full menu; β fails, and WARP fails with it (WARP implies β, Report 1). <span class="math inline">\square</span></p>
+</div>
+<p>The mechanism is exactly the one diagnosed abstractly in Report 4: different joinands vouch for the two acts on the submenu (<span class="math inline">p_0</span> for <span class="math inline">a_1</span>, <span class="math inline">p_1</span> for <span class="math inline">a_0</span>), and only one of the vouchers survives enlargement. Combined with <a href="#prp-keadm-yes" class="quarto-xref">Proposition&nbsp;2</a>, this instantiates the β-corollary: <em>the</em> commensurating intermediary that Levi’s move provides for the change <span class="math inline">C_{\{p_0\}} \rightsquigarrow C_{\{p_1\}}</span> is itself a WARP-violating judgment. Dynamic rationality is purchased at a static price, and the price is paid at the vacuous supposition — no exotic conditioning is involved.</p>
+</section>
+<section id="m5b-the-convexity-wedge-realized" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="m5b-the-convexity-wedge-realized"><span class="header-section-number">7</span> M5(b): the convexity wedge realized</h2>
+<div id="def-uniformP" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3 (The even mixture)</strong></span> Let <span class="math inline">u := \tfrac12 p_0 + \tfrac12 p_1</span>, so <span class="math inline">u(\{F\}) = u(\{T\}) =
+\tfrac12</span>. By construction <span class="math inline">u \in \mathrm{conv}(P)</span>.</p>
+<p><em>Lean:</em> <code>TwoPrior.lean · uniformP</code>, <code>uniformP_eFalse</code>, <code>uniformP_eTrue</code>, <code>uniformP_mem_hull</code>.</p>
+</div>
+<div id="thm-m5b" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4 (M5(b): the pair is not convex-equivalent)</strong></span> The safe act is SEU-admissible (indeed uniquely optimal) under <span class="math inline">u</span> from the full menu; hence <span class="math inline">a_0 \in C_{\mathrm{conv}(P)}(\top, \text{full})</span> while <span class="math inline">a_0 \notin C_P(\top, \text{full})</span>. Therefore <span class="math display">
+C_P \neq C_{\mathrm{conv}(P)}:
+</span> the credal pair is not convex-equivalent (Report 4, M4), and convexification strictly coarsens its judgment.</p>
+<p><em>Lean:</em> <code>TwoPrior.lean · safe_in_seu_uniform</code>, <code>not_convexEquivalent</code>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>By the expected-utility table, under <span class="math inline">u</span> the safe act scores <span class="math inline">6/5</span> against <span class="math inline">1</span> for each bet, so it is the unique maximizer on the full menu, and <span class="math inline">u(\top) = 1 \neq 0</span>: thus <span class="math inline">a_0 \in C_{\{u\}}(\top, \text{full})</span>. Since <span class="math inline">u \in \mathrm{conv}(P)</span>, the existential characterization of E-admissibility (Report 3) gives <span class="math inline">a_0 \in C_{\mathrm{conv}(P)}(\top, \text{full})</span>. But <span class="math inline">a_0 \notin C_P(\top, \text{full})</span> by <a href="#thm-levi-pattern" class="quarto-xref">Theorem&nbsp;1</a>. The two judgments differ at <span class="math inline">(\top, \text{full})</span>, refuting convex equivalence. <span class="math inline">\square</span></p>
+</div>
+<p>This completes the wedge announced in Reports 3 and 4. The commensuration thesis moved the SEU theorist to <span class="math inline">K_{\mathrm{Eadm}}</span> (<a href="#cor-m5a" class="quarto-xref">Corollary&nbsp;1</a>, <a href="#prp-keadm-yes" class="quarto-xref">Proposition&nbsp;2</a>); every step of that derivation used unions and joins, never mixtures; and here is a credal state where the mixture makes a <em>choice-relevant</em> difference — <span class="math inline">\mathrm{conv}(P)</span> admits the compromise act that <span class="math inline">P</span> rejects. Whether to convexify is therefore a genuine further question, on which commensuration is silent. (Which answer is <em>right</em> is a substantive matter the formal development does not adjudicate; what it proves is that the two commitments are independent.)</p>
+</section>
+<section id="commutation-sanity-check" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="commutation-sanity-check"><span class="header-section-number">8</span> Commutation sanity check</h2>
+<p>As a use of Report 4’s machinery in the witness: conditioning <span class="math inline">p_0</span> on <span class="math inline">\{F\}</span> (probability <span class="math inline">7/10 \neq 0</span>) and judging at the vacuous supposition agrees, menu by menu, with judging <span class="math inline">p_0</span> at the conjoined supposition <span class="math inline">\{F\} \sqcap \top</span>: <span class="math display">
+C_{\{p_0|_{\{F\}}\}}(\top, m) = C_{\{p_0\}}(\{F\} \sqcap \top,\, m).
+</span></p>
+<p><em>Lean:</em> <code>TwoPrior.lean · prior0_eFalse_ne_zero</code> and the closing <code>example</code>, instantiating <code>seu_condition_C</code>.</p>
+</section>
+<section id="sec-formalization" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="sec-formalization"><span class="header-section-number">9</span> Formalization notes</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Report item</th>
+<th>Lean declaration (file · name)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#def-witness-context" class="quarto-xref">Definition&nbsp;1</a></td>
+<td><code>TwoPrior.lean · twoPriorCtx</code>, <code>payoff</code>, <code>twoPriorCC</code>, <code>fullMenu</code>, <code>menu01</code>, <code>menu02</code>, <code>eFalse</code>, <code>eTrue</code>; <code>Smoke.lean · powersetAlgebra</code></td>
+</tr>
+<tr class="even">
+<td><a href="#def-witness-priors" class="quarto-xref">Definition&nbsp;2</a></td>
+<td><code>TwoPrior.lean · finFap</code>, <code>finFap_p</code>, <code>w0</code>, <code>w1</code>, <code>prior0</code>, <code>prior1</code>, <code>credalPair</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#lem-eu-generic" class="quarto-xref">Lemma&nbsp;1</a></td>
+<td><code>TwoPrior.lean · wEU_top_act0/1/2</code>, <code>q_split</code></td>
+</tr>
+<tr class="even">
+<td>EU table</td>
+<td><code>TwoPrior.lean · prior0_eFalse</code> …, <code>wEU_prior0_act0</code> … <code>wEU_prior1_act2</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#prp-choice-sets" class="quarto-xref">Proposition&nbsp;1</a></td>
+<td><code>TwoPrior.lean · seu_prior0_full</code>, <code>seu_prior1_full</code>, <code>seu_prior0_menu01</code>, <code>seu_prior1_menu01</code>, <code>seu_prior0_menu02</code>, <code>seu_prior1_menu02</code></td>
+</tr>
+<tr class="even">
+<td><a href="#thm-levi-pattern" class="quarto-xref">Theorem&nbsp;1</a></td>
+<td><code>TwoPrior.lean · eAdm_pair_full</code>, <code>safe_excluded</code>, <code>eAdm_pair_menu01</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#thm-m5a" class="quarto-xref">Theorem&nbsp;2</a></td>
+<td><code>TwoPrior.lean · no_seu_fairHearing</code>, <code>no_seu_suspends</code></td>
+</tr>
+<tr class="even">
+<td><a href="#cor-m5a" class="quarto-xref">Corollary&nbsp;1</a></td>
+<td><code>TwoPrior.lean · not_weaklyCommensurable_KSEU</code>, <code>not_commensurable_KSEU</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#prp-keadm-yes" class="quarto-xref">Proposition&nbsp;2</a></td>
+<td><code>TwoPrior.lean · commensurable_KEadm</code></td>
+</tr>
+<tr class="even">
+<td><a href="#thm-m5c" class="quarto-xref">Theorem&nbsp;3</a></td>
+<td><code>TwoPrior.lean · eAdm_pair_not_senBetaAt</code>, <code>eAdm_pair_not_warpAt</code></td>
+</tr>
+<tr class="odd">
+<td><a href="#def-uniformP" class="quarto-xref">Definition&nbsp;3</a>, <a href="#thm-m5b" class="quarto-xref">Theorem&nbsp;4</a></td>
+<td><code>TwoPrior.lean · uniformP</code>, <code>uniformP_mem_hull</code>, <code>safe_in_seu_uniform</code>, <code>not_convexEquivalent</code></td>
+</tr>
+<tr class="even">
+<td>Commutation check</td>
+<td><code>TwoPrior.lean · prior0_eFalse_ne_zero</code> + closing <code>example</code></td>
+</tr>
+</tbody>
+</table>
+<p>Encoding remarks:</p>
+<ul>
+<li><strong>Weights to faps.</strong> <code>finFap</code> builds a fap on the powerset algebra of any finite type from a nonnegative weight function summing to <span class="math inline">1</span> (probability of a set = sum of its weights, via <code>Finset</code> sums); <code>finFap_p</code> evaluates it against any explicit <code>Finset</code> enumeration. This is the reusable part of the witness file.</li>
+<li><strong>Concrete computation style.</strong> The context is marked <code>@[reducible]</code> so instance search sees through it; membership facts are computed by <code>rw</code> with the specific <code>wEU_…</code> equations followed by <code>norm_num</code>, with <code>decide</code> handling <code>Fin 3</code> and <code>Bool</code> case splits. The library-side <code>Min</code> instance on events is bridged to the concrete context by a one-line <code>instance</code> so that <code>⊓</code> notation applies (Report 1’s conjunction).</li>
+<li><strong>The fair-hearing refutation is four instantiations and <code>linarith</code>:</strong> each of the four forced memberships yields one linear inequality in <span class="math inline">q(\{F\}), q(\{T\})</span> (via <a href="#lem-eu-generic" class="quarto-xref">Lemma&nbsp;1</a>), and the split identity closes the system. The proof is robust to the particular weights so long as the safe payoff stays off the tie (see the design callout).</li>
+<li><strong>Library/test separation.</strong> Nothing in <code>CAJ</code> depends on the witness; the negatives are facts <em>about</em> the general theory, established in its test suite. A journal presentation would state M5 as “there exists a context and credal pair such that …” — the Lean statement is exactly that, with the existential witnessed by construction.</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

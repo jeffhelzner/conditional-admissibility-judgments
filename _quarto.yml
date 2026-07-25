@@ -27,6 +27,7 @@ website:
           - reports/02_commensuration.qmd
           - reports/03_credal.qmd
           - reports/04_headline.qmd
+          - reports/05_witness.qmd
 
 format:
   html:
